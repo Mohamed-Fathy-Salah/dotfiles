@@ -1,0 +1,7 @@
+case $(echo -ne "Shutdown\nReboot\nWindows\nSleep\nExit" | dmenu -i -p "Choose action: ") in
+    Shutdown)systemctl poweroff;;
+    Reboot)systemctl reboot;;
+    Windows)rwin;;
+    Sleep)systemctl suspend;;
+    Exit)killall dwm;;
+esac

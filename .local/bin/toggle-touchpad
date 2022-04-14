@@ -1,0 +1,3 @@
+#!/bin/sh
+
+[[ xinput list-props $touchpad | grep "Device Enabled" | grep -q "1$" ]] && xinput disable 18 || xinput enable 18

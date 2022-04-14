@@ -1,0 +1,7 @@
+#!/bin/sh
+# [[ `setxkbmap -print | awk '/xkb_symbols/ {print $4}' | awk -F"+" '{print $2}'` = us ]] && (echo "؏ ⌨" ; setxkbmap ar) || (echo "E ⌨" && setxkbmap us)
+#case "$(xset -q|grep LED| awk '{ print $10 }')" in  
+    #"00000000") echo -ne "E ⌨";;
+    #"00001000") echo -ne "؏ ⌨";;
+#esac
+[[ "$(xset -q|awk '/LED/ { print substr($10,5,1)}')" -eq "0" ]] && echo "E ⌨" || echo "؏ ⌨"

@@ -1,0 +1,10 @@
+#!/bin/sh
+
+case $BLOCK_BUTTON in
+    1) pactl set-source-mute 0 toggle;;
+    4) pactl -- set-source-volume 0 +1%;;
+    5) pactl -- set-source-volume 0 -1%;;
+esac
+
+[[ "$(pactl get-source-mute 0)" = 'Mute: yes' ]] && echo " " || echo " "
+echo "$(pactl get-source-volume 0 | tail -n 2 | sed -e 's,.* \([0-9][0-9]*\)%.*,\1,' | head -n 1)%"
