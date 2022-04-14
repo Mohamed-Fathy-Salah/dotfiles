@@ -1,0 +1,165 @@
+# Basic Settings
+set hidden true
+set ignorecase true
+set icons
+set shellopts '-eu'
+set ifs "\n"
+set drawbox
+set scrolloff 10 
+set period 1 # DK
+
+set previewer stpv
+set cleaner stpvimgclr
+&stpvimg --listen $id
+
+# Custom Functions
+cmd mkdir ${{
+  printf "Directory Name: "
+  read ans
+  mkdir "$ans"
+}}
+
+cmd mkfile ${{
+  printf "File Name: "
+  read ans
+  $EDITOR "$ans"
+}}
+
+cmd setwallpaper %cp "$f" ~/.config/wall.jpg && xwallpaper --zoom "$f"
+
+cmd trash ${{
+    set -f
+    for x in $fx ; do
+        eval mv -iv \"$x\" ~/Trash
+    done
+    notify-send "File(s) moved to trash"
+}}
+
+cmd extract ${{
+    set -f
+    case $f in
+        *.tar.bz|*.tar.bz2|*.tbz|*.tbz2) tar xjvf "$f";;
+        *.tar.gz|*.tgz) tar xzvf "$f";;
+        *.tar.xz|*.txz) tar xJvf "$f";;
+        *.zip) unzip "$f";;
+        *.rar) unrar x "$f";;
+        *.7z) 7z x "$f";;
+    esac
+}}
+#cmd open ${{
+ #case $(file --mime-type "$f" -b) in
+     #text/*|application/octet-stream) $EDITOR "$f";;
+     ## application/pdf|application/gzip) printf "1:xournalpp *\n2:evince\n" ; read ans ; [[ ans -eq "2" ]] && { setsid -f evince "$f">/dev/null 2>&1 } || { setsid -f xournalpp "$f">/dev/null 2>&1 } ;;
+     #application/pdf|application/gzip) { setsid -f xournalpp "$f">/dev/null 2>&1 && xdotool key super+2 } ;;
+     #application/vnd*|application/epub*) setsid -f libreoffice "$f">/dev/null 2>&1;;
+     #image/*) setsid -f sxiv "$f">/dev/null 2>&1;;
+     #audio/*) mpv --audio-display=no "$f" >/dev/null 2>&1;;
+     #video/*) setsid -f mpv "$f" -quiet >/dev/null 2>&1;;
+     #*) for f in "$fx"; do setsid -f $OPENER $f >/dev/null 2>&1; done;;
+ #esac
+#}}
+
+cmd open ${{
+    case $(file --mime-type "$(readlink -f $f)" -b) in
+    application/vnd.openxmlformats-officedocument.spreadsheetml.sheet) localc $fx ;;
+    image/vnd.djvu|application/pdf|application/octet-stream|application/postscript) setsid -f xournalpp $fx >/dev/null 2>&1 ;;
+    text/*|application/json|inode/x-empty) $EDITOR $fx;;
+    image/*) setsid -f sxiv "$f" -quiet >/dev/null 2>&1;;
+    audio/*) mpv --audio-display=no $f ;;
+    video/*) setsid -f mpv $f -quiet >/dev/null 2>&1 ;;
+    application/pdf|application/vnd*|application/epub*) setsid -f xournalpp $fx >/dev/null 2>&1 ;;
+    application/pgp-encrypted) $EDITOR $fx ;;
+    *) for f in $fx; do setsid -f $OPENER $f >/dev/null 2>&1; done;;
+    esac
+}}
+
+cmd find_file ${{printf "File name: " && read name && printf "$(find . -maxdepth 4 -iname name)"}}
+
+cmd link %{{
+    set -- $(cat ~/.local/share/lf/files)
+    mode="$1"
+    shift
+    if [ "$#" -lt 1 ]; then
+        lf -remote "send $id echo no files to link"
+        exit 0
+    fi
+    case "$mode" in
+        # symbolically copy mode is indicating a soft link
+        copy) ln -sr -t . -- "$@";;
+        # while a move mode is indicating a hard link
+        move) ln -t . -- "$@";;
+    esac
+    rm ~/.local/share/lf/files
+    lf -remote "send clear"
+}}
+
+cmd bookmark_jump ${{
+    res="$(cat $LF_BOOKMARK_PATH/$(ls $LF_BOOKMARK_PATH | fzf))"
+    lf -remote "send $id cd \"$res\""
+}}
+
+cmd bookmark_create ${{
+    read ans
+    echo $PWD > $LF_BOOKMARK_PATH/$ans
+}}
+
+# Bindings
+# Remove some defaults
+map m
+map "'"
+map '"'
+
+map o $code "$f"
+map E $(sudo $EDITOR "$f")
+
+map Z extract
+
+# Basic Functions
+map . set hidden!
+map D trash
+map p paste
+map x cut
+map y copy
+map Y $(echo "$f" | xclip -selection clipboard)
+#map <enter> open
+#map l open
+map <delete> trash
+map R reload
+map mf mkfile
+map md mkdir
+map C clear
+map f find_file
+#map d $(mv "$f" done/)
+map bg setwallpaper
+#map gb $(gruvbox-factory -i "$f")
+map A rename # at the very end
+map c push A<c-u> # new rename
+map I push A<c-a> # at the very beginning
+map i push A<a-b><a-b><a-f> # before extention
+map a push A<a-b> # after extention
+map B $printf '%s\n' $fx | vidir -
+map P :link
+map mj bookmark_jump
+map mc bookmark_create
+
+# Movement
+map gd cd ~/Documents
+map gD cd ~/Downloads
+map gp cd ~/Pictures
+map gm cd ~/Music
+map gc cd ~/.config/lf
+map gn cd ~/.config/nvim
+map gk cd /mnt/data/Graduation\ project
+map gl cd /mnt/data/Graduation\ project/GP-Demo/src
+map gj cd /mnt/data/4-2
+map gs cd ~/apps/Arch-Setup/dwm
+map ga cd ~/apps
+map gr cd /
+map gb cd ~/.local/bin
+
+
+map ml $(sudo mount /dev/sda6 /mnt/data)
+map zl $(sudo umount /mnt/data)
+
+map gt $(git clone $(xclip -o -selection clipboard))
+# map gt $([[ "$(xclip -o -selection clipboard)" =~ ^git\sclone ]] && {$(xclip -o -selection clipboard)} || git clone $(xclip -o -selection clipboard))
