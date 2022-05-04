@@ -66,7 +66,7 @@ cmd open ${{
         application/vnd*|application/epub*) setsid -f libreoffice $fx >/dev/null 2>&1 ;;
         application/pdf|application/gzip) xdotool key super+2 && setsid -f xournalpp $fx >/dev/null 2>&1 ;;
         text/*|application/json|inode/x-empty) $EDITOR $fx;;
-        image/*) setsid -f sxiv "$f" -quiet >/dev/null 2>&1;;
+        image/*) setsid -f sxiv "$f" >/dev/null 2>&1;;
         audio/*) mpv --audio-display=no $f ;;
         video/*) setsid -f mpv $f -quiet >/dev/null 2>&1 ;;
         application/pgp-encrypted) $EDITOR $fx ;;

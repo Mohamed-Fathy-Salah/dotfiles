@@ -1,0 +1,47 @@
+super + Return
+    $TERMINAL
+
+super + {v, f, s, m, o}
+    $TERMINAL -e {$EDITOR, lf, sudo htop, ncmpcpp, calcurse}
+
+XF86Calculator
+    $TERMINAL -e bc -ql
+
+super + space
+    kill -42 $(pidof dwmblocks)
+
+super + d
+    dmenu_run
+
+super + {w, t}
+    $BROWSER { ,'https://translate.google.com.eg/?hl=ar'} ; xdotool key super+1
+
+#super + p
+#    $BROWSER "$(xclip -o -selection clipboard)"
+
+# super + {equal, minus, BackSpace}
+#    vol.sh {up, down, toggle}
+
+alt + {F4, F2}
+    {quit, killall sxhkd; sxhkd &}
+
+{ ,shift,alt} Print
+    maim -{u,us,i $(xdotool getactivewindow)} "$PICTURES/pic-full-$(date '+%y%m%d-%H%M-%S').png"
+
+ctrl + { ,shift,alt} Print
+    maim -{u,us,i $(xdotool getactivewindow)} | xclip -selection clipboard -t image/png
+
+{XF86AudioMute,XF86AudioRaiseVolume,XF86AudioLowerVolume}
+    pactl set-sink-{mute 0 toggle,volume 0 +5%,volume 0 -5%} ; kill -40 $(pidof dwmblocks)
+
+super + {XF86AudioMute,XF86AudioRaiseVolume,XF86AudioLowerVolume}
+    pactl set-source-{mute 0 toggle,volume 0 +5%,volume 0 -5%};kill -41 $(pidof dwmblocks)
+
+{XF86AudioPrev,XF86AudioNext,XF86AudioPlay,XF86AudioStop}
+    mpc {prev,next,toggle,stop}
+
+super + {bracketleft,bracketright}
+    mpc seek {-,+}10
+
+{XF86MonBrightnessUp, XF86MonBrightnessDown}
+    xbacklight -{inc,dec} 5
