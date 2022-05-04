@@ -6,7 +6,7 @@ export TERMINAL="st"
 export PAGER="less"
 export BROWSER="firefox"
 export PATH="${PATH}:/home/mofasa/.local/bin"
-export PICTURES=~/Pictures/nodejs
+export PICTURES=~/Pictures
 
 #for idea
 export _JAVA_AWT_WM_NONREPARENTING=1

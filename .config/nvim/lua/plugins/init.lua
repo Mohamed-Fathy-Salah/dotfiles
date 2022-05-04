@@ -1,8 +1,12 @@
 return require('packer').startup(function()
     use 'wbthomason/packer.nvim'
+    --use {
+        --'gruvbox-community/gruvbox',
+        --config = "vim.cmd('colorscheme gruvbox')"
+    --}
     use {
-        'gruvbox-community/gruvbox',
-        config = "vim.cmd('colorscheme gruvbox')"
+        'doums/darcula',
+        config = "vim.cmd('colorscheme darcula')"
     }
     use {
         'nvim-treesitter/nvim-treesitter',
@@ -66,5 +70,8 @@ return require('packer').startup(function()
         -- event = "InsertEnter"
     }
     use 'preservim/nerdcommenter'
+    use 'github/copilot.vim'
+    use 'nvim-lua/plenary.nvim'
+    use 'mfussenegger/nvim-jdtls'
 end)
 

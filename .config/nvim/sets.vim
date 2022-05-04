@@ -16,7 +16,7 @@ set undodir=~/.cache/nvim/undo
 set undofile
 set incsearch
 set hlsearch
-set relativenumber number
+set number relativenumber cursorline
 set nohlsearch
 set hidden
 set clipboard=unnamed
@@ -30,4 +30,7 @@ set noshowmode
 set termguicolors
 set signcolumn=yes
 
+"hi LineNr guifg=gold
+
 let g:python3_host_prog = expand("/usr/bin/python3")
+

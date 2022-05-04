@@ -1,12 +1,14 @@
 # Basic Settings
 set hidden true
-set ignorecase true
 set icons
 set shellopts '-eu'
 set ifs "\n"
 set drawbox
 set scrolloff 10 
-set period 1 # DK
+set period 1 
+set number true
+set relativenumber true
+set incsearch
 
 set previewer stpv
 set cleaner stpvimgclr
@@ -60,16 +62,15 @@ cmd extract ${{
 #}}
 
 cmd open ${{
-    case $(file --mime-type "$(readlink -f $f)" -b) in
-    application/vnd.openxmlformats-officedocument.spreadsheetml.sheet) localc $fx ;;
-    image/vnd.djvu|application/pdf|application/octet-stream|application/postscript) setsid -f xournalpp $fx >/dev/null 2>&1 ;;
-    text/*|application/json|inode/x-empty) $EDITOR $fx;;
-    image/*) setsid -f sxiv "$f" -quiet >/dev/null 2>&1;;
-    audio/*) mpv --audio-display=no $f ;;
-    video/*) setsid -f mpv $f -quiet >/dev/null 2>&1 ;;
-    application/pdf|application/vnd*|application/epub*) setsid -f xournalpp $fx >/dev/null 2>&1 ;;
-    application/pgp-encrypted) $EDITOR $fx ;;
-    *) for f in $fx; do setsid -f $OPENER $f >/dev/null 2>&1; done;;
+    case $(file --mime-type "$f" -b) in
+        application/vnd*|application/epub*) setsid -f libreoffice $fx >/dev/null 2>&1 ;;
+        application/pdf|application/gzip) xdotool key super+2 && setsid -f xournalpp $fx >/dev/null 2>&1 ;;
+        text/*|application/json|inode/x-empty) $EDITOR $fx;;
+        image/*) setsid -f sxiv "$f" -quiet >/dev/null 2>&1;;
+        audio/*) mpv --audio-display=no $f ;;
+        video/*) setsid -f mpv $f -quiet >/dev/null 2>&1 ;;
+        application/pgp-encrypted) $EDITOR $fx ;;
+        *) for f in $fx; do setsid -f $OPENER $f >/dev/null 2>&1; done;;
     esac
 }}
 
@@ -93,22 +94,18 @@ cmd link %{{
     lf -remote "send clear"
 }}
 
-cmd bookmark_jump ${{
-    res="$(cat $LF_BOOKMARK_PATH/$(ls $LF_BOOKMARK_PATH | fzf))"
-    lf -remote "send $id cd \"$res\""
-}}
+#cmd bookmark_jump ${{
+    #res="$(cat $LF_BOOKMARK_PATH/$(ls $LF_BOOKMARK_PATH | fzf))"
+    #lf -remote "send $id cd \"$res\""
+#}}
 
-cmd bookmark_create ${{
-    read ans
-    echo $PWD > $LF_BOOKMARK_PATH/$ans
-}}
+#cmd bookmark_create ${{
+    #read ans
+    #echo $PWD > $LF_BOOKMARK_PATH/$ans
+#}}
 
 # Bindings
-# Remove some defaults
 map m
-map "'"
-map '"'
-
 map o $code "$f"
 map E $(sudo $EDITOR "$f")
 
@@ -120,7 +117,7 @@ map D trash
 map p paste
 map x cut
 map y copy
-map Y $(echo "$f" | xclip -selection clipboard)
+map Y $(echo "$fx" | xclip -selection clipboard)
 #map <enter> open
 #map l open
 map <delete> trash
@@ -139,27 +136,27 @@ map i push A<a-b><a-b><a-f> # before extention
 map a push A<a-b> # after extention
 map B $printf '%s\n' $fx | vidir -
 map P :link
-map mj bookmark_jump
-map mc bookmark_create
+map g mark-load
+map T top
+map M mark-save
 
 # Movement
-map gd cd ~/Documents
-map gD cd ~/Downloads
-map gp cd ~/Pictures
-map gm cd ~/Music
-map gc cd ~/.config/lf
-map gn cd ~/.config/nvim
-map gk cd /mnt/data/Graduation\ project
-map gl cd /mnt/data/Graduation\ project/GP-Demo/src
-map gj cd /mnt/data/4-2
-map gs cd ~/apps/Arch-Setup/dwm
-map ga cd ~/apps
-map gr cd /
-map gb cd ~/.local/bin
-
+#map gd cd ~/Documents
+#map gD cd ~/Downloads
+#map gp cd ~/Pictures
+#map gm cd ~/Music
+#map gc cd ~/.config/lf
+#map gn cd ~/.config/nvim
+#map gk cd /mnt/data/Graduation\ project
+#map gl cd /mnt/data/Graduation\ project/GP-Demo/src
+#map gj cd /mnt/data/4-2
+#map gs cd ~/apps/Arch-Setup/dwm
+#map ga cd ~/apps
+#map gr cd /
+#map gb cd ~/.local/bin
 
 map ml $(sudo mount /dev/sda6 /mnt/data)
 map zl $(sudo umount /mnt/data)
 
-map gt $(git clone $(xclip -o -selection clipboard))
+map t $(git clone $(xclip -o -selection clipboard))
 # map gt $([[ "$(xclip -o -selection clipboard)" =~ ^git\sclone ]] && {$(xclip -o -selection clipboard)} || git clone $(xclip -o -selection clipboard))

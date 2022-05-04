@@ -68,7 +68,7 @@ nnoremap <Leader>= :wincmd =<CR>
 nmap <leader>/ <Plug>NERDCommenterToggle
 vmap <leader>/ <Plug>NERDCommenterToggle<CR>gv
 
-nmap <leader>i :lua vim.lsp.buf.declaration()<CR>
+nmap <leader>i :lua vim.lsp.buf.definition()<CR>
 nmap <leader>r :lua vim.lsp.buf.rename()<CR>
 nmap <leader>p :lua vim.lsp.buf.hover()<CR>
 nmap <leader>o :lua vim.lsp.buf.references()<CR>
@@ -77,3 +77,4 @@ nmap <leader>N :lua vim.diagnostic.goto_prev()<CR>
 nmap <leader>n :lua vim.diagnostic.goto_next()<CR>
 
 autocmd FileType python map <buffer> <F9> :w<CR>:exec '!python' shellescape(@%, 1)<CR>
+autocmd FileType python map <buffer> <F7> :w<CR>:exec '!python2' shellescape(@%, 1)<CR>
