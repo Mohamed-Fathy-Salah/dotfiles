@@ -204,7 +204,7 @@ require('lualine').setup{
     options = {
         component_separators = '┃',
         section_separators = { left = '', right = '' },
-        theme = 'drakula'
+        theme = 'gruvbox'
     },
     sections = {
         lualine_a = {
