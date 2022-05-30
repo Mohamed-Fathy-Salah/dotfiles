@@ -29,8 +29,11 @@ set mouse=a
 set noshowmode
 set termguicolors
 set signcolumn=yes
+colorscheme darcula
 
-"hi LineNr guifg=gold
+hi LineNr guifg=light
+hi CursorLineNr guifg=gold
 
-let g:python3_host_prog = expand("/usr/bin/python3")
+let g:python3_host_prog = expand("/usr/bin/python")
+"let g:python3_host_prog = expand("/home/mofasa/miniconda3/bin/python")
 

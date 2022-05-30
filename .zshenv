@@ -5,7 +5,8 @@ export EDITOR="nvim"
 export TERMINAL="st"
 export PAGER="less"
 export BROWSER="firefox"
-export PATH="${PATH}:/home/mofasa/.local/bin"
+export OPENER="xdg-open"
+export PATH="${PATH}:/home/mofasa/.local/bin:/usr:/usr/lib/python3.10/site-packages/opencv_python-4.5.5.62-py3.10-linux-x86_64.egg/cv2"
 export PICTURES=~/Pictures
 
 #for idea
@@ -13,6 +14,7 @@ export _JAVA_AWT_WM_NONREPARENTING=1
 
 export LF_BOOKMARK_PATH=~/.config/book_marks
 
+#export VIRTUAL_ENV=/home/mofasa/miniconda3/envs/TM/bin/python3.10-config
 
 export LF_ICONS="\
 di=:\

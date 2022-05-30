@@ -9,10 +9,14 @@ set period 1
 set number true
 set relativenumber true
 set incsearch
+set mouse
 
 set previewer stpv
 set cleaner stpvimgclr
 &stpvimg --listen $id
+
+#set cleaner '~/.config/lf/cleaner'
+#set previewer '~/.config/lf/scope'
 
 # Custom Functions
 cmd mkdir ${{
@@ -32,9 +36,9 @@ cmd setwallpaper %cp "$f" ~/.config/wall.jpg && xwallpaper --zoom "$f"
 cmd trash ${{
     set -f
     for x in $fx ; do
-        eval mv -iv \"$x\" ~/Trash
+        eval mv -v \"$x\" ~/Trash
     done
-    notify-send "File(s) moved to trash"
+    echo "File(s) moved to trash"
 }}
 
 cmd extract ${{
@@ -48,33 +52,33 @@ cmd extract ${{
         *.7z) 7z x "$f";;
     esac
 }}
+
 #cmd open ${{
- #case $(file --mime-type "$f" -b) in
-     #text/*|application/octet-stream) $EDITOR "$f";;
-     ## application/pdf|application/gzip) printf "1:xournalpp *\n2:evince\n" ; read ans ; [[ ans -eq "2" ]] && { setsid -f evince "$f">/dev/null 2>&1 } || { setsid -f xournalpp "$f">/dev/null 2>&1 } ;;
-     #application/pdf|application/gzip) { setsid -f xournalpp "$f">/dev/null 2>&1 && xdotool key super+2 } ;;
-     #application/vnd*|application/epub*) setsid -f libreoffice "$f">/dev/null 2>&1;;
-     #image/*) setsid -f sxiv "$f">/dev/null 2>&1;;
-     #audio/*) mpv --audio-display=no "$f" >/dev/null 2>&1;;
-     #video/*) setsid -f mpv "$f" -quiet >/dev/null 2>&1;;
-     #*) for f in "$fx"; do setsid -f $OPENER $f >/dev/null 2>&1; done;;
- #esac
+    #case $(file --mime-type "$f" -b) in
+        ##application/vnd*|application/epub*) setsid -f libreoffice $fx >/dev/null 2>&1 ;;
+        #application/vnd*|application/epub*) xdotool key super+2 F11; libreoffice $fx ;xdotool key super+3 ;;
+        ##application/pdf|application/gzip) xdotool key super+2 && setsid -f xournalpp $fx >/dev/null 2>&1 ;;
+        #application/pdf|application/gzip) xdotool key super+2 ;xdotool mousemove 31 1005; ((sleep .5;  xdotool key F11 click 1) & evince $fx  )  ; xdotool key super+3 ;;
+        #text/*|application/json|inode/x-empty) $EDITOR $fx;;
+        ##image/*) setsid -f sxiv "$f" >/dev/null 2>&1;;
+        #image/*) xdotool key super+2; sxiv $fx ; xdotool key super+3 ;;
+        #audio/*) mpv --audio-display=no $f ;;
+        #video/*) setsid -f mpv $f -quiet >/dev/null 2>&1 ;;
+        #application/pgp-encrypted) $EDITOR $fx ;;
+        #*) for f in $fx; do setsid -f $OPENER $f >/dev/null 2>&1; done;;
+    #esac
 #}}
 
 cmd open ${{
-    case $(file --mime-type "$f" -b) in
-        application/vnd*|application/epub*) setsid -f libreoffice $fx >/dev/null 2>&1 ;;
-        application/pdf|application/gzip) xdotool key super+2 && setsid -f xournalpp $fx >/dev/null 2>&1 ;;
-        text/*|application/json|inode/x-empty) $EDITOR $fx;;
-        image/*) setsid -f sxiv "$f" >/dev/null 2>&1;;
-        audio/*) mpv --audio-display=no $f ;;
-        video/*) setsid -f mpv $f -quiet >/dev/null 2>&1 ;;
-        application/pgp-encrypted) $EDITOR $fx ;;
-        *) for f in $fx; do setsid -f $OPENER $f >/dev/null 2>&1; done;;
+    case $f in 
+        #*.exe) wine $f ;;
+        *.obj) blender -P /home/mofasa/.local/bin/importInBlender.py -- $fx ;;
+        *.xopp) xournalpp $f ;;
+        *) $OPENER $f ;;
     esac
 }}
 
-cmd find_file ${{printf "File name: " && read name && printf "$(find . -maxdepth 4 -iname name)"}}
+cmd find_file ${{ $OPENER $(fzf)}}
 
 cmd link %{{
     set -- $(cat ~/.local/share/lf/files)
@@ -113,7 +117,7 @@ map Z extract
 
 # Basic Functions
 map . set hidden!
-map D trash
+#map D trash
 map p paste
 map x cut
 map y copy
@@ -125,8 +129,7 @@ map R reload
 map mf mkfile
 map md mkdir
 map C clear
-map f find_file
-#map d $(mv "$f" done/)
+map D $( [[ ! -d done/ ]]&&mkdir done ; mv "$f" done/ )
 map bg setwallpaper
 #map gb $(gruvbox-factory -i "$f")
 map A rename # at the very end
@@ -136,8 +139,7 @@ map i push A<a-b><a-b><a-f> # before extention
 map a push A<a-b> # after extention
 map B $printf '%s\n' $fx | vidir -
 map P :link
-map g mark-load
-map T top
+map f mark-load
 map M mark-save
 
 # Movement
@@ -160,3 +162,18 @@ map zl $(sudo umount /mnt/data)
 
 map t $(git clone $(xclip -o -selection clipboard))
 # map gt $([[ "$(xclip -o -selection clipboard)" =~ ^git\sclone ]] && {$(xclip -o -selection clipboard)} || git clone $(xclip -o -selection clipboard))
+
+# dragon
+map x
+map xr $(dragon -a -x $fx)
+map xs $(dragon -a $fx)
+map xm $(dragon -t -x $fx)
+
+map X $(sh $f)
+
+map F find_file
+
+map <m-up> up
+map <m-down> down
+#map <m-1> cd ..
+#map <m-2> open

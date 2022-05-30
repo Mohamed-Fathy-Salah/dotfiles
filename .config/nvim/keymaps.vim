@@ -76,5 +76,30 @@ nmap <leader>o :lua vim.lsp.buf.references()<CR>
 nmap <leader>N :lua vim.diagnostic.goto_prev()<CR>
 nmap <leader>n :lua vim.diagnostic.goto_next()<CR>
 
-autocmd FileType python map <buffer> <F9> :w<CR>:exec '!python' shellescape(@%, 1)<CR>
-autocmd FileType python map <buffer> <F7> :w<CR>:exec '!python2' shellescape(@%, 1)<CR>
+"autocmd FileType python map <buffer> <F10> :w<CR>:exec '!python' shellescape(@%, 1)<CR>
+autocmd FileType python map <buffer> <F10> :w<CR>:exec '!python %:t'<CR>
+autocmd FileType cpp map <buffer> <F9> :w<CR>:exec '!g++ %:t'<CR>
+autocmd FileType cpp map <buffer> <F10> :w<CR>:exec '!./%:t:r.out'<CR>
+autocmd FileType python map <buffer> <F12> :w<CR>:exec '!git add *; git commit ; git push'<CR>
+
+nmap <leader>t :exe "10sp\|terminal"<CR>
+
+nmap <C-h> :ColorizerToggle<CR> 
+
+" gitsigns
+nmap <leader>gs :Gitsigns stage_hunk<CR>
+nmap <leader>gr :Gitsigns reset_hunk<CR>
+nmap <leader>gS :Gitsigns stage_buffer<CR>
+nmap <leader>gu :Gitsigns undo_stage_hunk<CR>
+nmap <leader>gR :Gitsigns reset_buffer<CR>
+nmap <leader>gp :Gitsigns preview_hunk<CR>
+nmap <leader>gb :Gitsigns toggle_current_line_blame<CR>
+nmap <leader>gd :Gitsigns diffthis<CR>
+
+" debugger
+nmap <F8> :lua require'dap'.toggle_breakpoint()<CR>
+nmap <leader><F8> :lua require'dap'.set_breakpoint(vim.fn.input('Breakpoint condition: '))<CR>
+nmap <F5> :lua require'dap'.continue()<CR>
+nmap <F6> :lua require'dap'.step_over()<CR>
+nmap <F7> :lua require'dap'.step_into()<CR>
+nmap <leader><F5> :lua require'dap'.repl.open()<CR>

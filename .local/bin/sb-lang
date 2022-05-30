@@ -4,4 +4,5 @@
     #"00000000") echo -ne "E ⌨";;
     #"00001000") echo -ne "؏ ⌨";;
 #esac
-[[ "$(xset -q|awk '/LED/ { print substr($10,5,1)}')" -eq "0" ]] && echo "E ⌨" || echo "؏ ⌨"
+
+[[ "$(xset -q|awk '/LED/ { print substr($10,5,1)}')" -eq "0" ]] && echo "E " || echo "؏ "

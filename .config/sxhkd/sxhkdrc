@@ -5,7 +5,8 @@ super + {v, f, s, m, o}
     $TERMINAL -e {$EDITOR, lf, sudo htop, ncmpcpp, calcurse}
 
 XF86Calculator
-    $TERMINAL -e bc -ql
+    rofi -show calc
+    #$TERMINAL -e bc -ql
 
 super + space
     kill -42 $(pidof dwmblocks)
@@ -13,8 +14,12 @@ super + space
 super + d
     dmenu_run
 
+# TODO:fix
 super + {w, t}
-    $BROWSER { ,'https://translate.google.com.eg/?hl=ar'} ; xdotool key super+1
+    $BROWSER { ,'https://translate.google.com.eg/?hl=ar'}
+
+super + p
+    passmenu && xdotool key ctrl+v
 
 #super + p
 #    $BROWSER "$(xclip -o -selection clipboard)"
