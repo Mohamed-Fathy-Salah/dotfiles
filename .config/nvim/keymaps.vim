@@ -1,3 +1,4 @@
+" split long line in multiple lines -> visual gq
 let mapleader = " "
 
 " Resize with arrows
@@ -57,9 +58,9 @@ nnoremap <leader>d :bd <CR>
 nnoremap <leader>Q :q! <CR>
 nnoremap <leader>w :w <CR>
 nnoremap <leader>W :w !sudo tee % <CR>
-nnoremap <leader>s :bw <CR>
-nnoremap <Leader>+ :exe "vertical resize +5"<CR>
-nnoremap <Leader>- :exe "vertical resize -5"<CR>
+"nnoremap <leader>s :bw <CR>
+"nnoremap <Leader>+ :vertical resize +5<CR>
+"nnoremap <Leader>- :vertical resize -5<CR>
 nnoremap <Leader>= :wincmd =<CR>
 " nnoremap <Leader>c :call popup_clear()<CR>
 "nnoremap <leader>n :noh <CR>"
@@ -72,19 +73,25 @@ nmap <leader>i :lua vim.lsp.buf.definition()<CR>
 nmap <leader>r :lua vim.lsp.buf.rename()<CR>
 nmap <leader>p :lua vim.lsp.buf.hover()<CR>
 nmap <leader>o :lua vim.lsp.buf.references()<CR>
+nmap <leader>u :lua vim.lsp.buf.code_action({apply=true, context={only={'quickfix'}}})<CR><CR>
 
 nmap <leader>N :lua vim.diagnostic.goto_prev()<CR>
 nmap <leader>n :lua vim.diagnostic.goto_next()<CR>
 
 "autocmd FileType python map <buffer> <F10> :w<CR>:exec '!python' shellescape(@%, 1)<CR>
-autocmd FileType python map <buffer> <F10> :w<CR>:exec '!python %:t'<CR>
-autocmd FileType cpp map <buffer> <F9> :w<CR>:exec '!g++ %:t'<CR>
-autocmd FileType cpp map <buffer> <F10> :w<CR>:exec '!./%:t:r.out'<CR>
-autocmd FileType python map <buffer> <F12> :w<CR>:exec '!git add *; git commit ; git push'<CR>
+autocmd FileType python map <buffer> <F10> :w<CR>:!python %:t<CR>
+"autocmd FileType cpp map <buffer> <F10> :w<CR>:!g++ -g %:t -o %:t:r.out<CR>:!./%:t:r.out<CR>
+autocmd FileType cpp map <buffer> <F10> :w<CR>:!g++ %:t -o %:t:r.out<CR>:!./%:t:r.out<CR>
+autocmd FileType sh map <buffer> <F10> :w<CR>:!bash %:t<CR>
+autocmd FileType javascript map <buffer> <F10> :w<CR>:!node %:t<CR>
+autocmd FileType typescript map <buffer> <F10> :w<CR>:!ts-node %:t<CR>
+autocmd FileType * map <buffer> <F12> :w<CR>:!git add *<CR>:!git commit<CR>:!git push<CR>
 
-nmap <leader>t :exe "10sp\|terminal"<CR>
+autocmd BufWritePre <buffer> lua vim.lsp.buf.formatting_sync()
 
-nmap <C-h> :ColorizerToggle<CR> 
+nmap <leader>fm :lua vim.lsp.buf.formatting_sync()<CR>
+
+"nmap <C-h> :ColorizerToggle<CR> 
 
 " gitsigns
 nmap <leader>gs :Gitsigns stage_hunk<CR>
@@ -103,3 +110,12 @@ nmap <F5> :lua require'dap'.continue()<CR>
 nmap <F6> :lua require'dap'.step_over()<CR>
 nmap <F7> :lua require'dap'.step_into()<CR>
 nmap <leader><F5> :lua require'dap'.repl.open()<CR>
+
+" term
+nmap <leader>t :exec '10sp \| terminal'<CR>
+nmap <leader>s :Cheat<CR>
+
+" postman
+nmap <leader>m :e ~/Documents/devops/rest/test.rest<CR>
+nmap <leader>a :call VrcQuery()<CR>
+"leader remaining prefixes : b c v x y z A B C D E F G H I J K L M O P R S T U V X Y Z

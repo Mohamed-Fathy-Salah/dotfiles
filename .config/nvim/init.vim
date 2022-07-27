@@ -20,7 +20,15 @@ call plug#begin('/home/mofasa/.local/share/nvim/plugged')
     Plug 'norcalli/nvim-colorizer.lua',
     Plug 'lewis6991/gitsigns.nvim',
     Plug 'mfussenegger/nvim-dap',
-    Plug 'dstein64/vim-startuptime'
+    Plug 'theHamsta/nvim-dap-virtual-text',
+    "Plug 'dstein64/vim-startuptime',
+    Plug 'RishabhRD/popfix',
+    Plug 'Mohamed-Fathy-Salah/nvim-cheat.sh',
+    Plug 'dcampos/nvim-snippy',
+    Plug 'folke/lua-dev.nvim',
+    Plug 'jose-elias-alvarez/null-ls.nvim',
+    Plug 'jose-elias-alvarez/nvim-lsp-ts-utils',
+    Plug 'diepm/vim-rest-console'
 call plug#end()
 
 source /home/mofasa/.config/nvim/keymaps.vim

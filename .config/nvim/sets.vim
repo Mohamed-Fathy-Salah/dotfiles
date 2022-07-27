@@ -5,11 +5,11 @@ set fenc=utf-8
 set termencoding=utf-8
 set nocompatible
 set autoindent
+set linebreak tw=80
 set smartindent
 set noerrorbells
 set expandtab tabstop=4 softtabstop=4
 set shiftwidth=4
-set wrap
 set noswapfile
 set nobackup
 set undodir=~/.cache/nvim/undo
@@ -34,6 +34,17 @@ colorscheme darcula
 hi LineNr guifg=light
 hi CursorLineNr guifg=gold
 
-let g:python3_host_prog = expand("/usr/bin/python")
+"let g:python3_host_prog = expand("/usr/bin/python")
 "let g:python3_host_prog = expand("/home/mofasa/miniconda3/bin/python")
 
+" vim-rest-console
+let g:vrc_curl_opts = {
+  \ '--connect-timeout' : 10,
+  \ '-b': '/home/mofasa/Documents/devops/rest/cookie',
+  \ '-c': '/home/mofasa/Documents/devops/rest/cookie',
+  \ '-L': '',
+  \ '-s': '',
+  \ '--max-time': 60,
+  \ '--ipv4': '',
+  \ '-k': '',
+\}

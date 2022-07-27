@@ -22,7 +22,8 @@ set cleaner stpvimgclr
 cmd mkdir ${{
   printf "Directory Name: "
   read ans
-  mkdir "$ans"
+  mkdir "$ans" 
+  lf -remote "send $id cd \"$ans\""
 }}
 
 cmd mkfile ${{
@@ -36,7 +37,7 @@ cmd setwallpaper %cp "$f" ~/.config/wall.jpg && xwallpaper --zoom "$f"
 cmd trash ${{
     set -f
     for x in $fx ; do
-        eval mv -v \"$x\" ~/Trash
+        trash $x
     done
     echo "File(s) moved to trash"
 }}
@@ -70,15 +71,30 @@ cmd extract ${{
 #}}
 
 cmd open ${{
-    case $f in 
+    #case $f in 
         #*.exe) wine $f ;;
-        *.obj) blender -P /home/mofasa/.local/bin/importInBlender.py -- $fx ;;
-        *.xopp) xournalpp $f ;;
-        *) $OPENER $f ;;
+        #*.obj) blender -P /home/mofasa/.local/bin/importInBlender.py -- $fx ;;
+        #*.xopp) setsid -f xournalpp $f >/dev/null 2>&1 ;;
+    case $(file --mime-type $f -b) in 
+        text/*) $EDITOR $fx ;; 
+        *) for f in $fx; do setsid -f $OPENER $f > /dev/null 2> /dev/null & done;;
     esac
 }}
 
-cmd find_file ${{ $OPENER $(fzf)}}
+cmd find_file ${{
+    FILE=$(fzf)
+    case $(file --mime-type $FILE -b) in 
+        text/*) $EDITOR $FILE ;; 
+        *) setsid -f $OPENER $FILE > /dev/null 2> /dev/null & ;;
+    esac
+}}
+
+cmd git_branch ${{
+    git branch | fzf | xargs git checkout
+    pwd_shell=$(pwd)
+    lf -remote "send $id updir"
+    lf -remote "send $id cd \"$pwd_shell\""
+}}
 
 cmd link %{{
     set -- $(cat ~/.local/share/lf/files)
@@ -98,6 +114,12 @@ cmd link %{{
     lf -remote "send clear"
 }}
 
+cmd download %{{
+    LINK=$(xclip -o -selection clipboard)
+    #[[ $LINK =~ "git" ]] && ( [[ $LINK =~ "clone" ]] && $LINK || $(git clone $LINK) ) || $(wget $LINK)
+    [[ $LINK =~ "git" ]] && $(git clone $LINK) || $(wget $LINK)
+}}
+
 #cmd bookmark_jump ${{
     #res="$(cat $LF_BOOKMARK_PATH/$(ls $LF_BOOKMARK_PATH | fzf))"
     #lf -remote "send $id cd \"$res\""
@@ -110,6 +132,7 @@ cmd link %{{
 
 # Bindings
 map m
+map w $$SHELL -c scroll
 map o $code "$f"
 map E $(sudo $EDITOR "$f")
 
@@ -129,7 +152,7 @@ map R reload
 map mf mkfile
 map md mkdir
 map C clear
-map D $( [[ ! -d done/ ]]&&mkdir done ; mv "$f" done/ )
+#map D $( [[ ! -d done/ ]]&&mkdir done ; mv "$f" done/ )
 map bg setwallpaper
 #map gb $(gruvbox-factory -i "$f")
 map A rename # at the very end
@@ -157,10 +180,11 @@ map M mark-save
 #map gr cd /
 #map gb cd ~/.local/bin
 
-map ml $(sudo mount /dev/sda6 /mnt/data)
-map zl $(sudo umount /mnt/data)
+map ml $(sudo mount /dev/sda7 /mnt)
+map zl $(sudo umount /mnt)
 
-map t $(git clone $(xclip -o -selection clipboard))
+#map t $(git clone $(xclip -o -selection clipboard))
+map t download
 # map gt $([[ "$(xclip -o -selection clipboard)" =~ ^git\sclone ]] && {$(xclip -o -selection clipboard)} || git clone $(xclip -o -selection clipboard))
 
 # dragon
@@ -172,6 +196,8 @@ map xm $(dragon -t -x $fx)
 map X $(sh $f)
 
 map F find_file
+
+map br git_branch
 
 map <m-up> up
 map <m-down> down

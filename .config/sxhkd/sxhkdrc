@@ -1,8 +1,8 @@
 super + Return
     $TERMINAL
 
-super + {v, f, s, m, o}
-    $TERMINAL -e {$EDITOR, lf, sudo htop, ncmpcpp, calcurse}
+super + {v, f, s, m}
+    $TERMINAL -e {$EDITOR, lf, sudo htop, ncmpcpp}
 
 XF86Calculator
     rofi -show calc

@@ -1,0 +1,2 @@
+void='osprober-gnulinux-simple-62db5db1-5e0e-42f6-a1db-4cca68af4bb3'
+sudo grub-reboot "$void" && sudo reboot
