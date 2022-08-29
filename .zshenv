@@ -10,6 +10,12 @@ export OPENER="xdg-open"
 export PATH="${PATH}:/home/mofasa/.local/bin"
 export PICTURES=~/Pictures
 
+# eval $(minikube docker-env)
+#export DOCKER_TLS_VERIFY="1"
+#export DOCKER_HOST="tcp://192.168.49.2:2376"
+#export DOCKER_CERT_PATH="/home/mofasa/.minikube/certs"
+#export MINIKUBE_ACTIVE_DOCKERD="minikube"
+
 #for idea
 export _JAVA_AWT_WM_NONREPARENTING=1
 

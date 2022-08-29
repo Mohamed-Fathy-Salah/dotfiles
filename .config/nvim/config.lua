@@ -2,7 +2,7 @@ require("bufferline").setup{}
 --require("colorizer").setup{}
 require("gitsigns").setup{}
 
-require("nvim-cheat").detectFileTypes = {'cpp', 'python', 'typescript', 'javascript'}
+--require("nvim-cheat").detectFileTypes = {'cpp', 'python', 'typescript', 'javascript'}
 
 ---- snippy
 require('snippy').setup({

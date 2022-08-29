@@ -1,4 +1,4 @@
-setxkbmap -layout "us,ar" -option "grp:win_space_toggle,grp_led:scroll,caps:super" & 
+#setxkbmap -layout "us,ar" -option "grp:win_space_toggle,grp_led:scroll,caps:super" & 
 xwallpaper --zoom ~/.config/wall.jpg &
 numlockx &
 sudo ntpdate pool.ntp.org &

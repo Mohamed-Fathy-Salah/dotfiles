@@ -1,8 +1,10 @@
-options="RA2\npes"
+options="RA2\npes\nlimbo\ntypoman"
 chosen=$(printf $options | dmenu -i -p "Choose game: ")
 #chosen=RA2
 
 case $chosen in
     RA2) wine ~/games/Red\ Alert\ 2/RA2MD.exe ;;
     pes) cd ~/games/PES-6-DownloadComputerGames.net && wine pes6.exe ;;
+    limbo) ~/games/Limbo/limbo ;;
+    typoman) ~/games/Typoman/start ;;
 esac

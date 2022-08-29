@@ -19,28 +19,7 @@ HISTSIZE=10000
 HISTFILESIZE=10000
 HISTFILE=~/.cache/zsh/history
 
-# some more ls aliases
-alias ll='ls --color=auto -alF'
-alias la='ls --color=auto -A'
-alias l='ls --color=auto -CF'
-# alias less='less -R'
-####
-alias q='exit'
-alias sz='du -ah --max-depth=1'
-####
-alias arem='sudo pacman -Rns $(pacman -Qdtq)'
-alias ins='sudo pacman -Sy'
-alias upg='sudo pacman -Syu'
-alias rem='sudo pacman -Rns'
-####
-alias config='/usr/bin/git --git-dir=$HOME/dotfiles/ --work-tree=$HOME'
-####
-alias d="sudo systemctl start docker && minikube start && minikube addons enable ingress"
-alias k="minikube kubectl --"
-alias curl="curl -s"
-####
-alias dn="herbe done"
-####
+source ~/.config/zsh/aliases
 
 function hlp(){curl cheat.sh/$1}
 # vim keybindings 

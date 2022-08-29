@@ -5,7 +5,7 @@ set fenc=utf-8
 set termencoding=utf-8
 set nocompatible
 set autoindent
-set linebreak tw=80
+"set linebreak tw=80
 set smartindent
 set noerrorbells
 set expandtab tabstop=4 softtabstop=4
@@ -48,3 +48,5 @@ let g:vrc_curl_opts = {
   \ '--ipv4': '',
   \ '-k': '',
 \}
+let g:vrc_output_buffer_name = '__VRC_OUTPUT.json'
+"let g:vrc_split_request_body = 1

@@ -120,6 +120,14 @@ cmd download %{{
     [[ $LINK =~ "git" ]] && $(git clone $LINK) || $(wget $LINK)
 }}
 
+cmd execute %{{
+    case $f in 
+        #*.yaml) awk '{print $f'} | xargs kubectl apply -f ;;
+        *.yaml) echo -ne "$fx" | xargs -I % kubectl apply -f % ;;
+        *) $(sh $f) ;;
+    esac
+}}
+
 #cmd bookmark_jump ${{
     #res="$(cat $LF_BOOKMARK_PATH/$(ls $LF_BOOKMARK_PATH | fzf))"
     #lf -remote "send $id cd \"$res\""
@@ -193,7 +201,7 @@ map xr $(dragon -a -x $fx)
 map xs $(dragon -a $fx)
 map xm $(dragon -t -x $fx)
 
-map X $(sh $f)
+map X execute 
 
 map F find_file
 
@@ -203,3 +211,5 @@ map <m-up> up
 map <m-down> down
 #map <m-1> cd ..
 #map <m-2> open
+
+map <f-12> $$(npm run test:ci)
