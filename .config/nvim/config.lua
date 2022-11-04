@@ -251,8 +251,8 @@ local on_attach = function(client, bufnr)
 end
 lspconfig.tsserver.setup({
     on_attach = function(client, bufnr)
-        client.resolved_capabilities.document_formatting = false
-        client.resolved_capabilities.document_range_formatting = false
+        client.server_capabilities.documentFormattingProvider= false
+        client.server_capabilities.documentRangeFormattingProvider = false
         local ts_utils = require("nvim-lsp-ts-utils")
         ts_utils.setup({})
         ts_utils.setup_client(client)
@@ -316,9 +316,12 @@ require('lualine').setup{
         lualine_a = {
             { 'mode', right_padding = 2 },
         },
-        lualine_b = { 'filename', 'branch' },
+        lualine_b = { {
+            'filename',
+            path = 3
+        }, 'branch' },
         lualine_c = { 'fileformat' },
-        lualine_x = { },
+        lualine_x = {'diagnostics'},
         lualine_y = { 'filetype', 'progress' },
         lualine_z = {
             { 'location', left_padding = 2 },
@@ -332,7 +335,7 @@ require('nvim-autopairs').setup{ map_cr = true }
 local cmp_autopairs = require('nvim-autopairs.completion.cmp')
 local cmp = require('cmp')
 cmp.event:on( 'confirm_done', cmp_autopairs.on_confirm_done({  map_char = { tex = '' } }))
-cmp_autopairs.lisp[#cmp_autopairs.lisp+1] = "racket"
+--cmp_autopairs.lisp[#cmp_autopairs.lisp+1] = "racket"
 
 ---- nvim-tree
 -- following options are the default
@@ -388,7 +391,7 @@ nvim_tree.setup {
     },
     view = {
         width = 30,
-        height = 30,
+        --height = 30,
         hide_root_folder = false,
         side = "left",
         --auto_resize = true,
@@ -446,6 +449,7 @@ require('telescope').setup{
     }
   },
 }
+require('telescope').load_extension('harpoon');
 ---- treesitter
 require'nvim-treesitter.configs'.setup {
   ensure_installed = {"typescript", "javascript", "lua", "cpp", "c", "java", "python"},
@@ -458,6 +462,8 @@ require'nvim-treesitter.configs'.setup {
     enable = true,
     extended_mode = false,
     max_file_lines = nil,
+  },
+  autotag = {
+      enable = true,
   }
 }
-

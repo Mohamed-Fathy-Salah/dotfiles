@@ -50,3 +50,5 @@ let g:vrc_curl_opts = {
 \}
 let g:vrc_output_buffer_name = '__VRC_OUTPUT.json'
 "let g:vrc_split_request_body = 1
+"
+let g:NERDCreateDefaultMappings = 0
