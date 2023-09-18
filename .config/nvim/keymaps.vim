@@ -1,6 +1,26 @@
 " split long line in multiple lines -> visual gq
 let mapleader = " "
 
+"autocmd FileType python map <buffer> <F10> :w<CR>:exec '!python' shellescape(@%, 1)<CR>
+autocmd FileType python map <buffer> <F10> :w<CR>:!python %:t<CR>
+autocmd FileType python map <buffer> <F12> :w<CR>:terminal pytest<CR>
+"autocmd FileType cpp map <buffer> <F10> :w<CR>:!g++ -g %:t -o %:t:r.out<CR>:!./%:t:r.out<CR>
+autocmd FileType cpp map <buffer> <F10> :w<CR>:!g++ %:t -o %:t:r.out -lsqlite3<CR>:!./%:t:r.out<CR>
+autocmd FileType c map <buffer> <F10> :w<CR>:!gcc %:t -o %:t:r.out -lsqlite3<CR>:!./%:t:r.out<CR>
+autocmd FileType sh map <buffer> <F10> :w<CR>:!bash %:t<CR>
+autocmd FileType rust map <buffer> <F10> :w<CR>:!cargo run<CR>
+autocmd FileType javascript,typescript map <buffer> <F9> :w<CR>:terminal npm run dev<CR>
+autocmd FileType javascript,typescript map <buffer> <F10> :w<CR>:terminal npm run start<CR>
+"autocmd FileType * map <buffer> <F12> :w<CR>:!git add *<CR>:!git commit<CR>:!git push<CR>
+autocmd FileType javascript,typescript map <buffer> <leader><F12> :w<CR>:terminal npm run test<CR>/    ><CR>
+autocmd FileType javascript,typescript map <buffer> <F12> :w<CR>:terminal npm run test %:t:r<CR>/    ><CR>
+
+vnoremap <leader>a ctry {<Esc>p`]o} catch(e) { console.error(e); }<Esc>
+
+" move up/down funciton
+nnoremap <leader>] ]m
+nnoremap <leader>[ [m
+
 " Resize with arrows
 nnoremap <a-up> :resize +2<cr>
 nnoremap <a-down> :resize -2<cr>
@@ -42,8 +62,6 @@ nnoremap <Leader>fh :Telescope help_tags<CR>
 " Nvim Tree
 nnoremap <leader>e :NvimTreeToggle<cr>
 
-" ---------
-
 vmap <C-c> "+y
 vmap <C-x> "+d
 imap <C-v> <Esc>"+p
@@ -67,7 +85,6 @@ nnoremap <Leader>= :wincmd =<CR>
 " nnoremap <Leader>c :call popup_clear()<CR>
 "nnoremap <leader>n :noh <CR>"
 
-
 nmap <leader>/ <Plug>NERDCommenterToggle
 vmap <leader>/ <Plug>NERDCommenterToggle<CR>gv
 
@@ -79,17 +96,6 @@ nmap <leader>u :lua vim.lsp.buf.code_action({apply=true, context={only={'quickfi
 
 nmap <leader>N :lua vim.diagnostic.goto_prev()<CR>
 nmap <leader>n :lua vim.diagnostic.goto_next()<CR>
-
-"autocmd FileType python map <buffer> <F10> :w<CR>:exec '!python' shellescape(@%, 1)<CR>
-autocmd FileType python map <buffer> <F10> :w<CR>:!python %:t<CR>
-"autocmd FileType cpp map <buffer> <F10> :w<CR>:!g++ -g %:t -o %:t:r.out<CR>:!./%:t:r.out<CR>
-autocmd FileType cpp map <buffer> <F10> :w<CR>:!g++ %:t -o %:t:r.out<CR>:!./%:t:r.out<CR>
-autocmd FileType sh map <buffer> <F10> :w<CR>:!bash %:t<CR>
-autocmd FileType javascript,typescript map <buffer> <F9> :w<CR>:terminal npm run dev<CR>
-autocmd FileType javascript,typescript map <buffer> <F10> :w<CR>:terminal npm run start<CR>
-"autocmd FileType * map <buffer> <F12> :w<CR>:!git add *<CR>:!git commit<CR>:!git push<CR>
-autocmd FileType * map <buffer> <leader><F12> :w<CR>:terminal npm run test<CR>/    ><CR>
-autocmd FileType * map <buffer> <F12> :w<CR>:terminal npm run test %:t:r<CR>/    ><CR>
 
 "autocmd BufWritePre <buffer> lua vim.lsp.buf.formatting_sync()
 
@@ -174,6 +180,14 @@ function! SwitchCodeTest()
     endif
 endfunction
 
-vnoremap <leader>a ctry {<Esc>p`]o} catch(e) { console.error(e); }<Esc>
+" folding code
+nnoremap <leader><F4> :set foldmethod=indent<CR>
+inoremap <F4> <C-O>za
+nnoremap <F4> za
+onoremap <F4> <C-C>za
+vnoremap <F4> zf
+
+"vnoremap <leader>s :lua require"surround".surround()<CR>
+vnoremap <leader>a :lua surround()<CR>
 
 "leader remaining prefixes : a b y z A B C D E F G H I J K L M O P R S U V X Y Z

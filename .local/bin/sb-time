@@ -1,5 +1,5 @@
 #!/bin/sh
 
-# [[ $BLOCK_BUTTON -eq 1 ]] && sudo ntpdate pool.ntp.org
+[[ $BLOCK_BUTTON -eq 2 ]] && sudo ntpdate pool.ntp.org
 
 date "+ %I:%M %p "

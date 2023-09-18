@@ -2,13 +2,14 @@ export LC_ALL=en_US.UTF-8
 
 export VISUAL="nvim"
 export EDITOR="nvim"
-export TERMINAL="st"
+export TERMINAL="konsole"
 export PAGER="less"
 export BROWSER="chromium"
 export OPENER="xdg-open"
 #export PATH="${PATH}:/home/mofasa/.local/bin:/usr:/usr/lib/python3.10/site-packages/opencv_python-4.5.5.62-py3.10-linux-x86_64.egg/cv2"
 export PATH="${PATH}:/home/mofasa/.local/bin"
 export PICTURES=~/Pictures
+export SITES="chromium"
 
 # eval $(minikube docker-env)
 #export DOCKER_TLS_VERIFY="1"

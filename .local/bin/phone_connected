@@ -1,0 +1,7 @@
+#!/bin/bash
+
+options="file\nmirror"
+case $(printf $options | dmenu -i -p "open: ") in
+    file) nohup pcmanfm ;;
+    mirror) nohup scrcpy -m 1024;;
+esac

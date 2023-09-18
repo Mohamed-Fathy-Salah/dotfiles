@@ -11,9 +11,15 @@ set relativenumber true
 set incsearch
 set mouse
 
-set previewer stpv
-set cleaner stpvimgclr
-&stpvimg --listen $id
+#set previewer stpv
+#set cleaner stpvimgclr
+#&stpvimg --listen $id
+#cmd on-quit $stpvimg --end $id
+
+set previewer ctpv
+set cleaner ctpvclear
+&ctpv -s $id
+&ctpvquit $id
 
 #set cleaner '~/.config/lf/cleaner'
 #set previewer '~/.config/lf/scope'
@@ -212,4 +218,4 @@ map <m-down> down
 #map <m-1> cd ..
 #map <m-2> open
 
-map <f-12> $$(npm run test:ci)
+map <f-12> $$(npm run test)
