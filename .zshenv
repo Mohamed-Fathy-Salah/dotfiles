@@ -2,12 +2,12 @@ export LC_ALL=en_US.UTF-8
 
 export VISUAL="nvim"
 export EDITOR="nvim"
-export TERMINAL="konsole"
+export TERMINAL="st"
 export PAGER="less"
 export BROWSER="chromium"
 export OPENER="xdg-open"
 #export PATH="${PATH}:/home/mofasa/.local/bin:/usr:/usr/lib/python3.10/site-packages/opencv_python-4.5.5.62-py3.10-linux-x86_64.egg/cv2"
-export PATH="${PATH}:/home/mofasa/.local/bin"
+export PATH="${PATH}:/home/mofasa/.local/bin:/home/mofasa/.dotnet/tools"
 export PICTURES=~/Pictures
 export SITES="chromium"
 

@@ -1,8 +1,8 @@
-super + Return
-    $TERMINAL
+super + {Return, m}
+    {$TERMINAL, thunderbird}
 
-super + {v, f, s, m}
-    $TERMINAL -e {$EDITOR, lf, sudo htop, ncmpcpp}
+super + {v, f, s, c}
+    $TERMINAL -e {$EDITOR, lf, sudo htop, calcurse}
 
 XF86Calculator
     rofi -show calc

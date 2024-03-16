@@ -1,1 +1,0 @@
-/home/mofasa/.config/next-prayer/np_config.py

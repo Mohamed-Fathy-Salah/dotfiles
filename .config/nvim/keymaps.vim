@@ -4,11 +4,13 @@ let mapleader = " "
 "autocmd FileType python map <buffer> <F10> :w<CR>:exec '!python' shellescape(@%, 1)<CR>
 autocmd FileType python map <buffer> <F10> :w<CR>:!python %:t<CR>
 autocmd FileType python map <buffer> <F12> :w<CR>:terminal pytest<CR>
+autocmd FileType java map <buffer> <F10> :w<CR>:!java %:t<CR>
 "autocmd FileType cpp map <buffer> <F10> :w<CR>:!g++ -g %:t -o %:t:r.out<CR>:!./%:t:r.out<CR>
 autocmd FileType cpp map <buffer> <F10> :w<CR>:!g++ %:t -o %:t:r.out -lsqlite3<CR>:!./%:t:r.out<CR>
 autocmd FileType c map <buffer> <F10> :w<CR>:!gcc %:t -o %:t:r.out -lsqlite3<CR>:!./%:t:r.out<CR>
 autocmd FileType sh map <buffer> <F10> :w<CR>:!bash %:t<CR>
 autocmd FileType rust map <buffer> <F10> :w<CR>:!cargo run<CR>
+autocmd FileType cs map <buffer> <F10> :w<CR>:!dotnet run<CR>
 autocmd FileType javascript,typescript map <buffer> <F9> :w<CR>:terminal npm run dev<CR>
 autocmd FileType javascript,typescript map <buffer> <F10> :w<CR>:terminal npm run start<CR>
 "autocmd FileType * map <buffer> <F12> :w<CR>:!git add *<CR>:!git commit<CR>:!git push<CR>
@@ -189,5 +191,9 @@ vnoremap <F4> zf
 
 "vnoremap <leader>s :lua require"surround".surround()<CR>
 vnoremap <leader>a :lua surround()<CR>
+
+" chatgpt
+nnoremap <leader><F3> :ChatGPT<CR>
+nnoremap <F3> :ChatGPTEditWithInstructions<CR>
 
 "leader remaining prefixes : a b y z A B C D E F G H I J K L M O P R S U V X Y Z

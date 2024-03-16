@@ -209,10 +209,17 @@ local lspconfig = require("lspconfig")
 local capabilities = require('cmp_nvim_lsp').default_capabilities(vim.lsp.protocol.make_client_capabilities())
 
 lspconfig.clangd.setup { capabilities = capabilities }
+lspconfig.omnisharp.setup { 
+    capabilities = capabilities,
+    cmd = {"dotnet", "/usr/lib/omnisharp-roslyn/OmniSharp.dll" }
+}
 
 lspconfig.pyright.setup{ capabilities = capabilities }
 
-lspconfig.rust_analyzer.setup{ capabilities = capabilities }
+--lspconfig.rust_analyzer.setup{ capabilities = capabilities }
+
+--lspconfig.html.setup{ capabilities = capabilities }
+--lspconfig.cssls.setup{ capabilities = capabilities }
 
 
 local null_ls = require("null-ls")
@@ -466,7 +473,7 @@ nvim_tree.setup {
     view = {
         width = 30,
         --height = 30,
-        hide_root_folder = false,
+        --hide_root_folder = false,
         side = "left",
         --auto_resize = true,
         number = false,
@@ -533,3 +540,8 @@ require'nvim-treesitter.configs'.setup {
       enable = true,
   }
 }
+
+---- chatgpt
+--require("chatgpt").setup({
+    --api_key_cmd = "pass chatgpt-nvim"
+--})

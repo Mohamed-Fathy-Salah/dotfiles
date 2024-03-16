@@ -30,10 +30,12 @@ call plug#begin('/home/mofasa/.local/share/nvim/plugged')
     Plug 'jose-elias-alvarez/null-ls.nvim',
     Plug 'jose-elias-alvarez/nvim-lsp-ts-utils',
     "Plug 'diepm/vim-rest-console'
-    Plug 'windwp/nvim-ts-autotag'
-    Plug 'glacambre/firenvim', { 'do': { _ -> firenvim#install(0) } }
-    Plug 'ThePrimeagen/harpoon'
-    Plug 'RRethy/vim-illuminate'
+    Plug 'windwp/nvim-ts-autotag',
+    Plug 'glacambre/firenvim', { 'do': { _ -> firenvim#install(0) } },
+    Plug 'ThePrimeagen/harpoon',
+    Plug 'RRethy/vim-illuminate',
+    Plug 'MunifTanjim/nui.nvim'
+    Plug 'jackMort/ChatGPT.nvim',
 call plug#end()
 
 source /home/mofasa/.config/nvim/keymaps.vim

@@ -4,4 +4,5 @@ sudo ntpdate pool.ntp.org &
 # /usr/lib/kdeconnectd
 pgrep sxhkd || sxhkd &
 dwmblocks &
+dunst &
 exec dwm

@@ -195,7 +195,11 @@ map M mark-save
 #map gb cd ~/.local/bin
 
 map ml $(sudo mount /dev/sda7 /mnt)
-map zl $(sudo umount /mnt)
+map ma $(jmtpfs -o allow_other ~/mnt)
+
+map u
+map ul $(sudo umount /mnt)
+map ua $(fusermount -u ~/mnt)
 
 #map t $(git clone $(xclip -o -selection clipboard))
 map t download

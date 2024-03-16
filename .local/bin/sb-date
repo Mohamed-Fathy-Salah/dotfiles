@@ -1,3 +1,8 @@
 #!/bin/sh
 
-date "+ %a %d %b "
+case $BLOCK_BUTTON in
+    1) 
+        setsid -f bash -c 'sleep 3 && kill -35 $(pidof dwmblocks)' >/dev/null 2>&1
+        date "+%a %d %b " ;;
+    *) echo '';;
+esac

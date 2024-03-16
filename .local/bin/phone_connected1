@@ -1,0 +1,10 @@
+#!/bin/bash
+
+export DISPLAY=:0
+
+options="file\nmirror"
+
+case $(printf $options | dmenu -i -p "open: ") in
+    file) setsid -f bash -c 'jmtpfs -o allow_other ~/mnt ; $TERMINAL -e lf' > /dev/null 2>&1 ;;
+    mirror) setsid -f scrcpy -m 1024 > /dev/null 2>&1 ;;
+esac
