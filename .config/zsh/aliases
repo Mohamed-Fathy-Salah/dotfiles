@@ -1,0 +1,44 @@
+# some more ls aliases
+alias ll='ls --color=auto -alF'
+alias la='ls --color=auto -A'
+alias l='ls --color=auto -CF'
+# alias less='less -R'
+####
+alias q='exit'
+alias sz='du -ah --max-depth=1'
+####
+alias arem='sudo pacman -Rns $(pacman -Qdtq)'
+alias ins='sudo pacman -Sy'
+alias upg='sudo pacman -Syu'
+alias rem='sudo pacman -Rns'
+####
+alias config='/usr/bin/git --git-dir=$HOME/dotfiles/ --work-tree=$HOME'
+####
+alias dp="docker ps"
+alias dl='docker ps | tail -n +2 | fzf | awk '"'"'{print $1}'"'"' | xargs docker logs'
+alias dw='docker ps | tail -n +2 | fzf | awk '"'"'{print $1}'"'"' | xargs docker logs -f'
+alias dx='docker exec -it "$(docker ps | tail -n +2 | fzf | awk '"'"'{print $1}'"'"')" bash'
+####
+#alias d='sudo systemctl start docker && minikube start && minikube addons enable ingress && eval $(minikube docker-env)'
+#alias d='sudo systemctl start docker && minikube start'
+#alias dr='eval $(minikube -p minikube docker-env) && docker'
+#alias k="minikube kubectl --"
+#alias k="kubectl"
+#alias kp="kubectl get pods -w"
+#alias kd="kubectl get deployments -w"
+#alias kdelall='k delete deployments --all & k delete service --all & k delete replicaset --all & k delete pods --all --wait=false &'
+#alias kresall='k get deployments | tail -n +2 | awk '"'"'{print $1}'"'"' | xargs -I % kubectl rollout restart deployment %'
+#alias klogs='k get pods | tail -n +2 | fzf | awk '"'"'{print $1}'"'"' | xargs kubectl logs -f '
+#alias kx='kubectl exec -it "$(k get pods | tail -n +2 | fzf | awk '"'"'{print $1}'"'"')" -- sh'
+#alias kdel='k get deployments | tail -n +2 | fzf -m | awk '"'"'{print $1}'"'"' | xargs kubectl delete deployment '
+#alias kdelr='kubectl get replicaset | tail -n +2 | awk '"'"'$3==0 {print $1}'"'"' | xargs kubectl delete replicaset'
+#alias kres='k get deployments | tail -n +2 | fzf -m | awk '"'"'{print $1}'"'"' | xargs kubectl rollout restart deployment '
+#alias kscale='k get deployments | tail -n +2 | fzf -m | awk '"'"'{print $1 " " 1-$3}'"'"' |xargs bash -c '"'"'kubectl scale --replicas=$1 deployment $0'"'"''
+#alias kpf='k port-forward "$(kubectl get pods | tail -n +2 | fzf | awk '"'"'{print $1}'"'"')"'
+#alias kdes='k describe pod "$(kubectl get pods | tail -n +2 | fzf | awk '"'"'{print $1}'"'"')" | less'
+#####
+alias curl="curl -s"
+####
+alias dn="mpv --vo=null --video=no --no-video ~/.local/share/sounds/finished.mp3 & herbe done &"
+alias fn="fg && dn"
+####
