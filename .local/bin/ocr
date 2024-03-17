@@ -1,7 +1,6 @@
 #!/usr/bin/bash
 
 LANGUAGE=$(printf "eng\nara" | dmenu -i -p "Choose language: ")
-LANGUAGE="eng"
 
 maim -us ~/.cache/ocr/pic.png
 tesseract -l $LANGUAGE  ~/.cache/ocr/pic.png ~/.cache/ocr/out
