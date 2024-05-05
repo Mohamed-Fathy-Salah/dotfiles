@@ -2,7 +2,7 @@ call plug#begin('/home/mofasa/.local/share/nvim/plugged')
     Plug 'doums/darcula'
     Plug 'nvim-treesitter/nvim-treesitter', {'do': ':TSUpdate'}
     Plug 'nvim-treesitter/nvim-treesitter-context'
-    Plug 'hoob3rt/lualine.nvim',
+    Plug 'hoob3rt/lualine.nvim'
     Plug 'kyazdani42/nvim-web-devicons'
     Plug 'akinsho/bufferline.nvim', { 'tag': 'v2.*' }
     Plug 'kyazdani42/nvim-tree.lua'
@@ -17,25 +17,20 @@ call plug#begin('/home/mofasa/.local/share/nvim/plugged')
     Plug 'hrsh7th/cmp-cmdline'
     Plug 'hrsh7th/nvim-cmp'
     Plug 'preservim/nerdcommenter'
-    Plug 'nvim-lua/plenary.nvim'
-    Plug 'norcalli/nvim-colorizer.lua',
-    Plug 'lewis6991/gitsigns.nvim',
-    Plug 'mfussenegger/nvim-dap',
-    Plug 'theHamsta/nvim-dap-virtual-text',
-    "Plug 'dstein64/vim-startuptime',
-    "Plug 'RishabhRD/popfix',
-    "Plug 'Mohamed-Fathy-Salah/nvim-cheat.sh',
-    Plug 'dcampos/nvim-snippy',
-    Plug 'folke/lua-dev.nvim',
-    Plug 'jose-elias-alvarez/null-ls.nvim',
-    Plug 'jose-elias-alvarez/nvim-lsp-ts-utils',
-    "Plug 'diepm/vim-rest-console'
-    Plug 'windwp/nvim-ts-autotag',
+    Plug 'norcalli/nvim-colorizer.lua'
+    Plug 'lewis6991/gitsigns.nvim'
+    Plug 'jose-elias-alvarez/null-ls.nvim'
+    Plug 'jose-elias-alvarez/nvim-lsp-ts-utils'
+    Plug 'diepm/vim-rest-console'
+    Plug 'windwp/nvim-ts-autotag'
     Plug 'glacambre/firenvim', { 'do': { _ -> firenvim#install(0) } },
-    Plug 'ThePrimeagen/harpoon',
-    Plug 'RRethy/vim-illuminate',
-    Plug 'MunifTanjim/nui.nvim'
-    Plug 'jackMort/ChatGPT.nvim',
+    Plug 'ThePrimeagen/harpoon'
+    Plug 'RRethy/vim-illuminate'
+    Plug 'dense-analysis/ale'
+    Plug 'tkhren/vim-fake'
+    Plug 'hrsh7th/vim-vsnip'
+    Plug 'hrsh7th/vim-vsnip-integ'
+    Plug 'hrsh7th/cmp-vsnip'
 call plug#end()
 
 source /home/mofasa/.config/nvim/keymaps.vim

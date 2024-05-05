@@ -1,6 +1,5 @@
 " split long line in multiple lines -> visual gq
 let mapleader = " "
-
 "autocmd FileType python map <buffer> <F10> :w<CR>:exec '!python' shellescape(@%, 1)<CR>
 autocmd FileType python map <buffer> <F10> :w<CR>:!python %:t<CR>
 autocmd FileType python map <buffer> <F12> :w<CR>:terminal pytest<CR>
@@ -10,12 +9,15 @@ autocmd FileType cpp map <buffer> <F10> :w<CR>:!g++ %:t -o %:t:r.out -lsqlite3<C
 autocmd FileType c map <buffer> <F10> :w<CR>:!gcc %:t -o %:t:r.out -lsqlite3<CR>:!./%:t:r.out<CR>
 autocmd FileType sh map <buffer> <F10> :w<CR>:!bash %:t<CR>
 autocmd FileType rust map <buffer> <F10> :w<CR>:!cargo run<CR>
-autocmd FileType cs map <buffer> <F10> :w<CR>:!dotnet run<CR>
+"autocmd FileType cs map <buffer> <F10> :w<CR>:!dotnet run<CR>
+autocmd FileType cs map <buffer> <F10> :w<CR>:!setsid st -e dotnet run<CR><CR>
 autocmd FileType javascript,typescript map <buffer> <F9> :w<CR>:terminal npm run dev<CR>
 autocmd FileType javascript,typescript map <buffer> <F10> :w<CR>:terminal npm run start<CR>
 "autocmd FileType * map <buffer> <F12> :w<CR>:!git add *<CR>:!git commit<CR>:!git push<CR>
 autocmd FileType javascript,typescript map <buffer> <leader><F12> :w<CR>:terminal npm run test<CR>/    ><CR>
 autocmd FileType javascript,typescript map <buffer> <F12> :w<CR>:terminal npm run test %:t:r<CR>/    ><CR>
+
+autocmd BufEnter *.json :silent set modifiable | %!jq .
 
 vnoremap <leader>a ctry {<Esc>p`]o} catch(e) { console.error(e); }<Esc>
 
@@ -101,7 +103,7 @@ nmap <leader>n :lua vim.diagnostic.goto_next()<CR>
 
 "autocmd BufWritePre <buffer> lua vim.lsp.buf.formatting_sync()
 
-nmap <leader>fm :lua vim.lsp.buf.format()<CR>
+nmap <leader>fm :set modifiable<CR>:lua vim.lsp.buf.format()<CR>
 
 "nmap <C-h> :ColorizerToggle<CR> 
 
@@ -129,8 +131,8 @@ nmap [c :Gitsigns prev_hunk<CR>
 "nmap <leader>s :Cheat<CR>
 
 " postman
-"nmap <leader>m :e ~/Documents/devops/rest/test.rest<CR>
-"nmap <leader>a :call VrcQuery()<CR>
+nmap <leader>A :e ~/Documents/devops/rest/test.rest<CR>
+nmap <leader>a :call VrcQuery()<CR>
 
 nmap <leader>v :vs<CR>:bnext<CR>
 
@@ -190,10 +192,14 @@ onoremap <F4> <C-C>za
 vnoremap <F4> zf
 
 "vnoremap <leader>s :lua require"surround".surround()<CR>
-vnoremap <leader>a :lua surround()<CR>
+"vnoremap <leader>a :lua surround()<CR>
 
-" chatgpt
-nnoremap <leader><F3> :ChatGPT<CR>
-nnoremap <F3> :ChatGPTEditWithInstructions<CR>
+"vsnip
+" Expand or jump
+imap <expr> <Tab>   vsnip#available(1)  ? '<Plug>(vsnip-expand-or-jump)' : '<C-l>'
+smap <expr> <Tab>   vsnip#available(1)  ? '<Plug>(vsnip-expand-or-jump)' : '<C-l>'
+
+"fake
+nnoremap <leader>fr :%s/dummy/\=fake#
 
 "leader remaining prefixes : a b y z A B C D E F G H I J K L M O P R S U V X Y Z

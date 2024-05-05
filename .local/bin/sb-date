@@ -1,8 +1,19 @@
 #!/bin/sh
 
+cache_file=~/.cache/next_prayer
+hijri_file=~/.cache/hijri_date
+
+function init {
+    if ! [ -f "$hijri_file" ] || ! [ $(stat -c %y "$hijri_file" | cut -d' ' -f1) == $(date +%Y-%m-%d) ] || [ $(stat -c %s "$hijri_file") -lt 5 ]; then
+        response=$(curl --silent "https://api.aladhan.com/v1/timingsByAddress/$(date "+%d-%m-%Y")?address=Cairo,Egypt&method=8")
+        echo $(echo "$response" | jq -r ".data.timings | (.Fajr, .Dhuhr, .Asr, .Maghrib, .Isha)") > $cache_file
+        echo $(echo "$response" | jq -r '.data.date.hijri.day + " " + .data.date.hijri.month.en + " " + .data.date.hijri.year') > $hijri_file
+    fi
+}
+
 case $BLOCK_BUTTON in
-    1) 
-        setsid -f bash -c 'sleep 3 && kill -35 $(pidof dwmblocks)' >/dev/null 2>&1
-        date "+%a %d %b " ;;
-    *) echo '';;
+    3) init
+       setsid -f bash -c 'sleep 3 && kill -35 $(pidof dwmblocks)' >/dev/null 2>&1
+       cat $hijri_file;;
+    *) date "+ %a %d %b " ;;
 esac

@@ -3,7 +3,6 @@
 case $BLOCK_BUTTON in
     1)  
         setsid -f bash -c 'sleep 3 && kill -39 $(pidof dwmblocks)' >/dev/null 2>&1
-
         echo " $(sensors | awk '/^Core 0/ {print $3}')" ;;
     *) echo '';;
 esac

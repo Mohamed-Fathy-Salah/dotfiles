@@ -5,8 +5,7 @@ super + {v, f, s, c}
     $TERMINAL -e {$EDITOR, lf, sudo htop, calcurse}
 
 XF86Calculator
-    rofi -show calc
-    #$TERMINAL -e bc -ql
+    $TERMINAL -e qalc
 
 super + space
     kill -42 $(pidof dwmblocks)

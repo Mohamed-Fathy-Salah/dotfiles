@@ -52,3 +52,6 @@ let g:vrc_output_buffer_name = '__VRC_OUTPUT.json'
 "let g:vrc_split_request_body = 1
 "
 let g:NERDCreateDefaultMappings = 0
+
+" vim-vsnip configuration
+let g:vsnip_snippet_dir = expand('~/.config/nvim/snippets')

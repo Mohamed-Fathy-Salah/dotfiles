@@ -5,7 +5,7 @@ alias l='ls --color=auto -CF'
 # alias less='less -R'
 ####
 alias q='exit'
-alias sz='du -ah --max-depth=1'
+alias sz='du -ah --max-depth=1 | sort -hr'
 ####
 alias arem='sudo pacman -Rns $(pacman -Qdtq)'
 alias ins='sudo pacman -Sy'
