@@ -1,3 +1,0 @@
-#!/bin/bash
-
-oathtool --base32 --totp "$(pass github2FOshort)" | xclip -selection clipboard && xdotool key ctrl+v 

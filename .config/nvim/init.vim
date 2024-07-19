@@ -4,7 +4,7 @@ call plug#begin('/home/mofasa/.local/share/nvim/plugged')
     Plug 'nvim-treesitter/nvim-treesitter-context'
     Plug 'hoob3rt/lualine.nvim'
     Plug 'kyazdani42/nvim-web-devicons'
-    Plug 'akinsho/bufferline.nvim', { 'tag': 'v2.*' }
+    Plug 'akinsho/bufferline.nvim', { 'tag': '*' }
     Plug 'kyazdani42/nvim-tree.lua'
     Plug 'p00f/nvim-ts-rainbow'
     Plug 'windwp/nvim-autopairs'
@@ -23,7 +23,6 @@ call plug#begin('/home/mofasa/.local/share/nvim/plugged')
     Plug 'jose-elias-alvarez/nvim-lsp-ts-utils'
     Plug 'diepm/vim-rest-console'
     Plug 'windwp/nvim-ts-autotag'
-    Plug 'glacambre/firenvim', { 'do': { _ -> firenvim#install(0) } },
     Plug 'ThePrimeagen/harpoon'
     Plug 'RRethy/vim-illuminate'
     Plug 'dense-analysis/ale'
@@ -31,6 +30,7 @@ call plug#begin('/home/mofasa/.local/share/nvim/plugged')
     Plug 'hrsh7th/vim-vsnip'
     Plug 'hrsh7th/vim-vsnip-integ'
     Plug 'hrsh7th/cmp-vsnip'
+    Plug 'mfussenegger/nvim-dap'
 call plug#end()
 
 source /home/mofasa/.config/nvim/keymaps.vim

@@ -11,6 +11,8 @@ export PATH="${PATH}:/home/mofasa/.local/bin:/home/mofasa/.dotnet/tools"
 export PICTURES=~/Pictures
 export SITES="chromium"
 
+export ASPNETCORE_ENVIRONMENT="Production"
+
 # eval $(minikube docker-env)
 #export DOCKER_TLS_VERIFY="1"
 #export DOCKER_HOST="tcp://192.168.49.2:2376"

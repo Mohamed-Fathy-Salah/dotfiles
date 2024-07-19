@@ -6,7 +6,7 @@ autocmd FileType python map <buffer> <F12> :w<CR>:terminal pytest<CR>
 autocmd FileType java map <buffer> <F10> :w<CR>:!java %:t<CR>
 "autocmd FileType cpp map <buffer> <F10> :w<CR>:!g++ -g %:t -o %:t:r.out<CR>:!./%:t:r.out<CR>
 autocmd FileType cpp map <buffer> <F10> :w<CR>:!g++ %:t -o %:t:r.out -lsqlite3<CR>:!./%:t:r.out<CR>
-autocmd FileType c map <buffer> <F10> :w<CR>:!gcc %:t -o %:t:r.out -lsqlite3<CR>:!./%:t:r.out<CR>
+autocmd FileType c map <buffer> <F10> :w<CR>:!gcc %:t -o %:t:r.out -lm<CR>:!./%:t:r.out<CR>
 autocmd FileType sh map <buffer> <F10> :w<CR>:!bash %:t<CR>
 autocmd FileType rust map <buffer> <F10> :w<CR>:!cargo run<CR>
 "autocmd FileType cs map <buffer> <F10> :w<CR>:!dotnet run<CR>
@@ -190,6 +190,7 @@ inoremap <F4> <C-O>za
 nnoremap <F4> za
 onoremap <F4> <C-C>za
 vnoremap <F4> zf
+nnoremap <F3> zr
 
 "vnoremap <leader>s :lua require"surround".surround()<CR>
 "vnoremap <leader>a :lua surround()<CR>

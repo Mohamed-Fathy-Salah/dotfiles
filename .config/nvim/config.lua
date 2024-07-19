@@ -83,8 +83,8 @@ lspconfig.omnisharp.setup {
 lspconfig.pyright.setup{ capabilities = capabilities }
 
 --lspconfig.rust_analyzer.setup{ capabilities = capabilities }
---lspconfig.html.setup{ capabilities = capabilities }
---lspconfig.cssls.setup{ capabilities = capabilities }
+lspconfig.html.setup{ capabilities = capabilities }
+lspconfig.cssls.setup{ capabilities = capabilities }
 
 
 local null_ls = require("null-ls")
@@ -300,3 +300,11 @@ require'nvim-treesitter.configs'.setup {
 --require("chatgpt").setup({
     --api_key_cmd = "pass chatgpt-nvim"
 --})
+
+-- dap
+
+require'dap'.adapters.coreclr = {
+  type = 'executable',
+  command = '/usr/bin/netcoredbg',
+  args = {'--interpreter=vscode'}
+}
