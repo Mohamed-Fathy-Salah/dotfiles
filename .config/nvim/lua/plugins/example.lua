@@ -4,6 +4,10 @@ return {
     "hrsh7th/nvim-cmp",
     dependencies = {
       "hrsh7th/cmp-emoji",
+      "tkhren/vim-fake",
+      "hrsh7th/vim-vsnip",
+      "hrsh7th/vim-vsnip-integ",
+      "hrsh7th/cmp-vsnip",
     },
     ---@param opts cmp.ConfigSchema
     opts = function(_, opts)
@@ -14,7 +18,11 @@ return {
       end
 
       local cmp = require("cmp")
-
+      opts.snippet = {
+        expand = function(args)
+          vim.fn["vsnip#anonymous"](args.body)
+        end,
+      }
       opts.mapping = {
         ["<Tab>"] = cmp.mapping(function(fallback)
           if cmp.visible() then
@@ -82,6 +90,41 @@ return {
           end,
           cmd = { "omnisharp" },
           root_dir = require("lspconfig").util.root_pattern("*.sln", "*.csproj", ".git"),
+        },
+      },
+    },
+  },
+  {
+    "kdheepak/lazygit.nvim",
+    cmd = {
+      "LazyGit",
+      "LazyGitConfig",
+      "LazyGitCurrentFile",
+      "LazyGitFilter",
+      "LazyGitFilterCurrentFile",
+    },
+    dependencies = {
+      "nvim-lua/plenary.nvim",
+    },
+    keys = {
+      { "<leader>gg", "<cmd>LazyGit<cr>", desc = "LazyGit" },
+    },
+  },
+  {
+    {
+      "nvim-neo-tree/neo-tree.nvim",
+      opts = {
+        filesystem = {
+          window = {
+            mappings = {
+              ["-"] = "set_root",
+            },
+          },
+        },
+        window = {
+          mappings = {
+            ["h"] = "close_node",
+          },
         },
       },
     },

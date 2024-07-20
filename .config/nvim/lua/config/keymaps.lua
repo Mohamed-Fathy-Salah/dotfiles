@@ -5,6 +5,7 @@
 -- lua/config/keymaps.lua
 
 local del = vim.keymap.del
+
 del({ "n" }, "s")
 del({ "n" }, "<Space>uC")
 del({ "n" }, "<Space>un")
@@ -60,7 +61,7 @@ map({ "n" }, "<leader>j", ":wincmd j<CR>")
 map({ "n" }, "<leader>k", ":wincmd k<CR>")
 map({ "n" }, "<leader>l", ":wincmd l<CR>")
 
-map({ "n" }, "<leader>w", ":w!<CR>")
+map({ "n" }, "<leader>w", ":w!<CR><CR>")
 map({ "n" }, "<leader>W", ":w !sudo tee % <CR>")
 map({ "n" }, "<leader>q", ":q<CR>")
 map({ "n" }, "<leader>d", ":bd<CR>")
@@ -90,6 +91,7 @@ map({ "n" }, "<leader>gp", ":Gitsigns preview_hunk<CR>")
 map({ "n" }, "<leader>gb", ":Gitsigns toggle_current_line_blame<CR>")
 map({ "n" }, "<leader>gd", ":Gitsigns diffthis<CR>")
 map({ "n" }, "<leader>gn", ":Gitsigns next_hunk<CR>")
+map({ "n" }, "<leader>gN", ":Gitsigns prev_hunk<CR>")
 map({ "n" }, "<leader>gN", ":Gitsigns prev_hunk<CR>")
 
 map({ "n" }, "<s-l>", ":bnext<cr>")
@@ -134,15 +136,18 @@ map({ "v" }, "<F4>", "zf")
 map({ "n" }, "<leader><F3>", "zM")
 map({ "n" }, "<F3>", "zR")
 
---[[
-" debugger
-"nmap <F8> :lua require'dap'.toggle_breakpoint()<CR>
-"nmap <leader><F8> :lua require'dap'.set_breakpoint(vim.fn.input('Breakpoint condition: '))<CR>
-"nmap <F5> :lua require'dap'.continue()<CR>
-"nmap <F6> :lua require'dap'.step_over()<CR>
-"nmap <F7> :lua require'dap'.step_into()<CR>
-"nmap <leader><F5> :lua require'dap'.repl.open()<CR>
+map({ "n" }, "<F8>", ":lua require'dap'.toggle_breakpoint()<CR>")
+map({ "n" }, "<leader><F8>", ":lua require'dap'.set_breakpoint(vim.fn.input('Breakpoint condition: '))<CR>")
+map({ "n" }, "<F5>", ":lua require'dap'.continue()<CR>")
+map({ "n" }, "<F6>", ":lua require'dap'.step_over()<CR>")
+map({ "n" }, "<F7>", ":lua require'dap'.step_into()<CR>")
+map({ "n" }, "<leader><F5>", ":lua require'dap'.repl.open()<CR>")
 
+map({ "n" }, "<leader>fr", ":%s/dummy/\\=fake#")
+
+map({ "i", "s" }, "<expr> <Tab>", "vsnip#available(1)  ? '<Plug>(vsnip-expand-or-jump)' : '<C-l>'")
+
+--[[
 " harpoon
 nmap <leader>m :lua require("harpoon.mark").add_file()<CR>
 nmap <leader>t :lua require("harpoon.ui").toggle_quick_menu()<CR>
@@ -166,8 +171,6 @@ endfunction
 
 "vsnip
 " Expand or jump
-imap <expr> <Tab>   vsnip#available(1)  ? '<Plug>(vsnip-expand-or-jump)' : '<C-l>'
-smap <expr> <Tab>   vsnip#available(1)  ? '<Plug>(vsnip-expand-or-jump)' : '<C-l>'
 
 "fake
 nnoremap <leader>fr :%s/dummy/\=fake#
