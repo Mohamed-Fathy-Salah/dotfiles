@@ -1,0 +1,5 @@
+#!/bin/bash
+
+PRIVATE_IP=$(ip -4 addr show | grep -oP '(?<=inet\s)\d+(\.\d+){3}' | sed -n 2p)
+URL="http://${PRIVATE_IP}:3000"
+qrencode -t ANSIUTF8 "$URL"

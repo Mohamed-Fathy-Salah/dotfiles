@@ -1,0 +1,2 @@
+pg_dump "$(pass BrokerBackupConnectionString)" -n public -F c -b -v -f ~/.cache/BrokerBackup/$(date +\%F).dump
+notify-send "done"

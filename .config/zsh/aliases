@@ -38,5 +38,5 @@ alias dx='docker exec -it $(docker ps | tail -n +2 | fzf | awk "{print \$1}") sh
 #alias kpf='k port-forward "$(kubectl get pods | tail -n +2 | fzf | awk "{print \$1}")"'
 #alias kdes='k describe pod "$(kubectl get pods | tail -n +2 | fzf | awk "{print \$1}")" | less'
 #####
-alias curl="curl -s"
+#alias curl="curl -s"
 ####

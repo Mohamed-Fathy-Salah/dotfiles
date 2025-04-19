@@ -10,14 +10,14 @@ autocmd FileType c map <buffer> <F10> :w<CR>:!gcc %:t -o %:t:r.out -lm<CR>:!./%:
 autocmd FileType sh map <buffer> <F10> :w<CR>:!bash %:t<CR>
 autocmd FileType rust map <buffer> <F10> :w<CR>:!cargo run<CR>
 "autocmd FileType cs map <buffer> <F10> :w<CR>:!dotnet run<CR>
-autocmd FileType cs map <buffer> <F10> :w<CR>:!setsid st -e dotnet run<CR><CR>
+"autocmd FileType cs map <buffer> <F10> :w<CR>:!setsid st -e dotnet run<CR><CR>
 autocmd FileType javascript,typescript map <buffer> <F9> :w<CR>:terminal npm run dev<CR>
 autocmd FileType javascript,typescript map <buffer> <F10> :w<CR>:terminal npm run start<CR>
 "autocmd FileType * map <buffer> <F12> :w<CR>:!git add *<CR>:!git commit<CR>:!git push<CR>
 autocmd FileType javascript,typescript map <buffer> <leader><F12> :w<CR>:terminal npm run test<CR>/    ><CR>
 autocmd FileType javascript,typescript map <buffer> <F12> :w<CR>:terminal npm run test %:t:r<CR>/    ><CR>
 
-autocmd BufEnter *.json :silent set modifiable | %!jq .
+"autocmd BufEnter *.json :silent set modifiable | %!jq .
 
 vnoremap <leader>a ctry {<Esc>p`]o} catch(e) { console.error(e); }<Esc>
 
@@ -59,6 +59,7 @@ vnoremap <a-k> :m '<-2<cr>gv=gv
 " nnoremap <leader>f <cmd>lua require'telescope.builtin'.find_files(require('telescope.themes').get_dropdown({ previewer = false }))<cr>
 " nnoremap <c-t> <cmd>Telescope live_grep<cr>
 nnoremap <Leader>ff :Telescope find_files<CR>
+nnoremap <Leader>fp :Telescope projects<CR>
 nnoremap <Leader>fg :Telescope live_grep<CR>
 nnoremap <Leader>fb :Telescope buffers<CR>
 nnoremap <Leader>fh :Telescope help_tags<CR>
@@ -96,7 +97,8 @@ nmap <leader>i :lua vim.lsp.buf.definition()<CR>
 nmap <leader>r :lua vim.lsp.buf.rename()<CR>
 nmap <leader>p :lua vim.lsp.buf.hover()<CR>
 nmap <leader>o :lua vim.lsp.buf.references()<CR>
-nmap <leader>u :lua vim.lsp.buf.code_action({apply=true, context={only={'quickfix'}}})<CR>
+"nmap <leader>u :lua vim.lsp.buf.code_action({apply=true, context={only={'quickfix'}}})<CR>
+nmap <leader>u :lua vim.lsp.buf.code_action({apply=true})<CR>
 
 nmap <leader>N :lua vim.diagnostic.goto_prev()<CR>
 nmap <leader>n :lua vim.diagnostic.goto_next()<CR>
@@ -120,12 +122,12 @@ nmap ]c :Gitsigns next_hunk<CR>
 nmap [c :Gitsigns prev_hunk<CR>
 
 " debugger
-"nmap <F8> :lua require'dap'.toggle_breakpoint()<CR>
-"nmap <leader><F8> :lua require'dap'.set_breakpoint(vim.fn.input('Breakpoint condition: '))<CR>
-"nmap <F5> :lua require'dap'.continue()<CR>
-"nmap <F6> :lua require'dap'.step_over()<CR>
-"nmap <F7> :lua require'dap'.step_into()<CR>
-"nmap <leader><F5> :lua require'dap'.repl.open()<CR>
+nnoremap <F10> :lua require('dap').step_over()<CR>
+nnoremap <F11> :lua require('dap').step_into()<CR>
+nnoremap <F12> :lua require('dap').step_out()<CR>
+nnoremap <Leader><F5> :lua require('dap').run_to_cursor()<CR>
+nnoremap <Leader>b :lua require('dap').toggle_breakpoint()<CR>
+nnoremap <Leader>B :lua require('dap').set_breakpoint(vim.fn.input('Breakpoint condition: '))<CR>
 
 " term
 "nmap <leader>s :Cheat<CR>
@@ -194,13 +196,9 @@ nnoremap <F3> zr
 
 "vnoremap <leader>s :lua require"surround".surround()<CR>
 "vnoremap <leader>a :lua surround()<CR>
-
 "vsnip
 " Expand or jump
 imap <expr> <Tab>   vsnip#available(1)  ? '<Plug>(vsnip-expand-or-jump)' : '<C-l>'
 smap <expr> <Tab>   vsnip#available(1)  ? '<Plug>(vsnip-expand-or-jump)' : '<C-l>'
 
-"fake
-nnoremap <leader>fr :%s/dummy/\=fake#
-
-"leader remaining prefixes : a b y z A B C D E F G H I J K L M O P R S U V X Y Z
+nnoremap <Leader>z :lua require('dbee').toggle()<CR>

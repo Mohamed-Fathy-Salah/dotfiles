@@ -1,0 +1,1 @@
+kill $(xprop | awk '/^_NET_WM_PID/ {print $3}')

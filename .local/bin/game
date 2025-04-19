@@ -1,10 +1,12 @@
-options="RA2\nresidual\npes\nlimbo\ntypoman"
+options="RA2\nclaw\nLAPD\nresidual\npes\nlimbo\ntypoman"
 chosen=$(printf $options | dmenu -i -p "Choose game: ")
 #chosen=RA2
 
 case $chosen in
     #cs) rfkill toggle wifi && cd ~/.wine/drive_c/Games/Condition-Zero && wine Condition-Zero.exe && rfkill toggle wifi ;;
     RA2) wine ~/games/Red\ Alert\ 2/RA2MD.exe ;;
+    claw) cd /home/mofasa/games/claw && wine CLAW.EXE ;;
+    LAPD) cd ~/games/Futurcop\ LAPD && wine FCopLAPD.exe ;;
     residual) ~/games/GOG\ Games/Residual/start.sh ;;
     pes) cd ~/games/PES-6-DownloadComputerGames.net && wine pes6.exe ;;
     limbo) ~/games/Limbo/limbo ;;

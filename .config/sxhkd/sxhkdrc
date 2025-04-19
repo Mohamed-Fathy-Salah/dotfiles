@@ -1,8 +1,18 @@
 super + {Return, m}
     {$TERMINAL, thunderbird}
 
-super + {v, f, s, c}
-    $TERMINAL -e {$EDITOR, lf, sudo htop, calcurse}
+super + {f, s}
+    $TERMINAL -e {lf, sudo htop}
+
+super + c
+    echo "$(xclip -selection primary -o)" >> ~/.cache/clipboard.txt
+
+super + alt + c
+    rm ~/.cache/clipboard.txt
+
+super + v
+    copyq show
+# cat ~/.cache/clipboard.txt | dmenu | xclip -selection clipboard && xdotool key ctrl+v
 
 XF86Calculator
     $TERMINAL -e qalc

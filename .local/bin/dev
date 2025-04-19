@@ -1,0 +1,19 @@
+#!/bin/bash
+
+setxkbmap -option caps:none
+
+xdotool key super+3
+st -e sh -c "cd /home/mofasa/RiderProjects/Broker && docker start my-postgres && dotnet run; exec sh" &
+st -e sh -c "cd /home/mofasa/Documents/devops/project/Broker/broker-admin && npm run dev; exec sh" &
+
+sleep 3
+
+xdotool key super+2
+st -e sh -c "cd /home/mofasa/Documents/devops/project/Broker/broker-admin/ && nvim README.md; exec sh" &
+
+sleep 3
+
+$BROWSER http://localhost:3000
+$BROWSER https://chatgpt.com
+$BROWSER https://trello.com/b/qFekTpcb/broker
+

@@ -9,7 +9,7 @@
 #chosen="$(echo -e $options | $rofi_command -dmenu)"
 
 #options="shutdown\nreboot\nwindows\nvoid\nsleep\nblack\nexit"
-options="shutdown\nreboot\nsleep\nblack\nexit"
+options="shutdown\nreboot\nrefresh\nsleep\nblack\nexit"
 chosen=$(printf $options | dmenu -i -p "Choose action: ")
 
 case $chosen in
@@ -20,4 +20,5 @@ case $chosen in
     sleep)systemctl suspend;;
     black)sleep .4; xset dpms force off ;;
     exit)killall dwm;;
+    refresh)killall Xorg && startx;;
 esac

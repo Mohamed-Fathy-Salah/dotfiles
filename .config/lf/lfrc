@@ -166,6 +166,7 @@ map R reload
 map mf mkfile
 map md mkdir
 map C clear
+map <c-c> cancel
 #map D $( [[ ! -d done/ ]]&&mkdir done ; mv "$f" done/ )
 map bg setwallpaper
 #map gb $(gruvbox-factory -i "$f")
