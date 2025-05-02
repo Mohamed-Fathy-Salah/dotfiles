@@ -249,7 +249,7 @@ require("lazy").setup({
 
             lspconfig.omnisharp.setup { 
                 capabilities = capabilities,
-                cmd = {"dotnet", "/usr/lib/omnisharp-roslyn/OmniSharp.dll" },
+                cmd = {"dotnet", "/opt/omnisharp/OmniSharp.dll" },
                 filetypes = {"cs", "csproj", "sln"},
                 autostart = true,
             }
@@ -257,6 +257,7 @@ require("lazy").setup({
             lspconfig.html.setup { capabilities = capabilities }
             lspconfig.cssls.setup { capabilities = capabilities }
 
+            lspconfig.gopls.setup{ capabilities = capabilities }
             --local null_ls = require("null-ls")
             --null_ls.setup({
                 --sources = {
@@ -373,7 +374,7 @@ require("lazy").setup({
 
             dap.adapters.coreclr = {
                 type = "executable",
-                command = "/usr/bin/netcoredbg",
+                command = "/usr/local/bin/netcoredbg",
                 args = { "--interpreter=vscode" },
             }
 

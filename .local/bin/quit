@@ -13,11 +13,11 @@ options="shutdown\nreboot\nrefresh\nsleep\nblack\nexit"
 chosen=$(printf $options | dmenu -i -p "Choose action: ")
 
 case $chosen in
-    shutdown)systemctl poweroff;;
-    reboot)systemctl reboot;;
+    shutdown)sudo shutdown -h now;;
+    reboot)sudo shutdown -r now;;
     #windows)rwin;;
     #void)rvoid;;
-    sleep)systemctl suspend;;
+    sleep)sudo zzz;;
     black)sleep .4; xset dpms force off ;;
     exit)killall dwm;;
     refresh)killall Xorg && startx;;

@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/zsh
 # [[ `setxkbmap -print | awk '/xkb_symbols/ {print $4}' | awk -F"+" '{print $2}'` = us ]] && (echo "؏ ⌨" ; setxkbmap ar) || (echo "E ⌨" && setxkbmap us)
 #case "$(xset -q|grep LED| awk '{ print $10 }')" in  
     #"00000000") echo -ne "E ⌨";;

@@ -4,13 +4,16 @@ alias la='ls --color=auto -A'
 alias l='ls --color=auto -CF'
 # alias less='less -R'
 ####
+alias say='piper --model ~/.local/share/piper/en-ryan/model.onnx --config ~/.local/share/piper/en-ryan/config.json --text'
+####
 alias q='exit'
 alias sz='du -ah --max-depth=1 | sort -hr'
 ####
-alias arem='sudo pacman -Rns $(pacman -Qdtq)'
-alias ins='sudo pacman -Sy'
-alias upg='sudo pacman -Syu'
-alias rem='sudo pacman -Rns'
+alias arem='sudo xbps-remove -Oo'
+alias srch='xbps-query -Rs'
+alias ins='sudo xbps-install -Sy'
+alias upg='sudo xbps-install -Syu'
+alias rem='sudo xbps-remove'
 ####
 alias config='/usr/bin/git --git-dir=$HOME/dotfiles/ --work-tree=$HOME'
 ####

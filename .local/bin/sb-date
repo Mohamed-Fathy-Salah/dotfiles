@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 
 cache_file=~/.cache/next_prayer
 hijri_file=~/.cache/hijri_date
@@ -15,5 +15,5 @@ case $BLOCK_BUTTON in
     3) init
        setsid -f bash -c 'sleep 3 && kill -35 $(pidof dwmblocks)' >/dev/null 2>&1
        cat $hijri_file;;
-    *) date "+ %a %d %b " ;;
+    *) date "+ %a %d %b " ;;
 esac

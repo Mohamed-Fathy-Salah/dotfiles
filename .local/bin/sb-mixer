@@ -1,0 +1,4 @@
+#!/bin/zsh
+
+[[ $BLOCK_BUTTON -eq 3 ]] && st -e alsamixer &
+echo " "

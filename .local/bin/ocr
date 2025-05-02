@@ -3,6 +3,6 @@
 LANGUAGE=$(printf "eng\nara" | dmenu -i -p "Choose language: ")
 
 maim -us ~/.cache/ocr/pic.png
-tesseract -l $LANGUAGE  ~/.cache/ocr/pic.png ~/.cache/ocr/out
+tesseract-ocr -l $LANGUAGE  ~/.cache/ocr/pic.png ~/.cache/ocr/out
 xclip -sel clip ~/.cache/ocr/out.txt
 herbe "text copied to clipboard"

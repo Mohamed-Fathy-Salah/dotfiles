@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/zsh
 
 case $BLOCK_BUTTON in
     1) pactl set-source-mute 0 toggle;;

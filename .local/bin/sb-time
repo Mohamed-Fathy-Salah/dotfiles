@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 
 cache_file=~/.cache/next_prayer
 hijri_file=~/.cache/hijri_date

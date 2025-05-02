@@ -10,6 +10,7 @@ set number true
 set relativenumber true
 set incsearch
 set mouse
+set sixel true
 
 #set previewer stpv
 #set cleaner stpvimgclr
@@ -82,7 +83,10 @@ cmd open ${{
         #*.obj) blender -P /home/mofasa/.local/bin/importInBlender.py -- $fx ;;
         #*.xopp) setsid -f xournalpp $f >/dev/null 2>&1 ;;
     case $(file --mime-type $f -b) in 
-        text/*) $EDITOR $fx ;; 
+        text/*|application/javascript|application/json) $EDITOR $fx ;; 
+        image/*) setsid -f sxiv "$f" >/dev/null 2>&1 ;; 
+        video/*|audio/*) setsid -f mpv "$f" >/dev/null 2>&1 ;; 
+        application/pdf) setsid -f zathura "$f" >/dev/null 2>&1 ;; 
         *) for f in $fx; do setsid -f $OPENER $f > /dev/null 2> /dev/null & done;;
     esac
 }}
@@ -90,7 +94,10 @@ cmd open ${{
 cmd find_file ${{
     FILE=$(fzf)
     case $(file --mime-type $FILE -b) in 
-        text/*) $EDITOR $FILE ;; 
+        text/*|application/javascript|application/json) $EDITOR $fx ;; 
+        image/*) setsid -f sxiv "$f" >/dev/null 2>&1 ;; 
+        video/*|audio/*) setsid -f mpv "$f" >/dev/null 2>&1 ;; 
+        application/pdf) setsid -f zathura "$f" >/dev/null 2>&1 ;; 
         *) setsid -f $OPENER $FILE > /dev/null 2> /dev/null & ;;
     esac
 }}
@@ -122,8 +129,10 @@ cmd link %{{
 
 cmd download %{{
     LINK=$(xclip -o -selection clipboard)
-    #[[ $LINK =~ "git" ]] && ( [[ $LINK =~ "clone" ]] && $LINK || $(git clone $LINK) ) || $(wget $LINK)
-    [[ $LINK =~ "git" ]] && $(git clone $LINK) || $(wget $LINK)
+    case "$LINK" in
+        *git*) git clone "$LINK";;
+        *) wget "$LINK";;
+    esac
 }}
 
 cmd execute %{{
@@ -154,20 +163,16 @@ map Z extract
 
 # Basic Functions
 map . set hidden!
-#map D trash
 map p paste
 map x cut
 map y copy
 map Y $(echo "$fx" | xclip -selection clipboard)
-#map <enter> open
-#map l open
 map <delete> trash
 map R reload
 map mf mkfile
 map md mkdir
 map C clear
 map <c-c> cancel
-#map D $( [[ ! -d done/ ]]&&mkdir done ; mv "$f" done/ )
 map bg setwallpaper
 #map gb $(gruvbox-factory -i "$f")
 map A rename # at the very end
@@ -180,21 +185,6 @@ map P :link
 map f mark-load
 map M mark-save
 
-# Movement
-#map gd cd ~/Documents
-#map gD cd ~/Downloads
-#map gp cd ~/Pictures
-#map gm cd ~/Music
-#map gc cd ~/.config/lf
-#map gn cd ~/.config/nvim
-#map gk cd /mnt/data/Graduation\ project
-#map gl cd /mnt/data/Graduation\ project/GP-Demo/src
-#map gj cd /mnt/data/4-2
-#map gs cd ~/apps/Arch-Setup/dwm
-#map ga cd ~/apps
-#map gr cd /
-#map gb cd ~/.local/bin
-
 map ml $(sudo mount /dev/sda7 /mnt)
 map ma $(jmtpfs -o allow_other ~/mnt)
 
@@ -202,9 +192,7 @@ map u
 map ul $(sudo umount /mnt)
 map ua $(fusermount -u ~/mnt)
 
-#map t $(git clone $(xclip -o -selection clipboard))
 map t download
-# map gt $([[ "$(xclip -o -selection clipboard)" =~ ^git\sclone ]] && {$(xclip -o -selection clipboard)} || git clone $(xclip -o -selection clipboard))
 
 # dragon
 map x

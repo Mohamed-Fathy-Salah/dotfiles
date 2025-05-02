@@ -1,8 +1,7 @@
-#!/bin/sh
+#!/bin/zsh
 
 case $BLOCK_BUTTON in
     1) rfkill toggle wifi;;
-    2) sudo systemctl restart iwd;;
 esac
 
-[[  "$(rfkill list 1 | awk '/Soft/ {print $3}')" = 'yes' ]] && echo "睊" || awk '/wlan0/ {i++; recv[i]=$2; trans[i]=$10}; END{printf "▼ %.1f KB 直 %.1f KB ▲", (recv[2]-recv[1])/1024,(trans[2]-trans[1])/1024}' <(cat /proc/net/dev ; sleep 1; cat /proc/net/dev)
+[[  "$(rfkill list 1 | awk '/Soft/ {print $3}')" = 'yes' ]] && echo "睊" || awk '/wlp3s0/ {i++; recv[i]=$2; trans[i]=$10}; END{printf "▼ %.1f KB 直 %.1f KB ▲", (recv[2]-recv[1])/1024,(trans[2]-trans[1])/1024}' <(cat /proc/net/dev ; sleep 1; cat /proc/net/dev)
