@@ -1,0 +1,27 @@
+#!/usr/bin/env bash
+
+MAC="fc:2a:46:a7:ac:78"     # your phone's MAC
+USER="u0_a235"              # Termux SSH user
+PORT=8022
+SOCKET="$HOME/.ssh/android_mux"
+KEY="$HOME/.ssh/android_key"
+CACHE="$HOME/.cache/android_ip"
+
+# resolve IP and save it
+IP=$(arp-scan --localnet | awk -v m="$MAC" 'BEGIN{IGNORECASE=1} $0 ~ m {print $1; exit}')
+
+if [ -z "$IP" ]; then
+  echo "Phone not found on network."
+  exit 1
+fi
+
+echo "$IP" > "$CACHE"
+echo "Saved phone IP $IP to $CACHE"
+
+# start master connection
+ssh -i "$KEY" -p "$PORT" -MNf \
+  -o ControlMaster=yes \
+  -o ControlPath="$SOCKET" \
+  -o ControlPersist=yes \
+  -o StrictHostKeyChecking=accept-new \
+  "$USER@$IP"

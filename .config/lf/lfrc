@@ -29,7 +29,7 @@ set cleaner ctpvclear
 cmd mkdir ${{
   printf "Directory Name: "
   read ans
-  mkdir "$ans" 
+  mkdir -p "$ans" 
   lf -remote "send $id cd \"$ans\""
 }}
 
@@ -85,7 +85,7 @@ cmd open ${{
     case $(file --mime-type $f -b) in 
         text/*|application/javascript|application/json) $EDITOR $fx ;; 
         image/*) setsid -f sxiv "$f" >/dev/null 2>&1 ;; 
-        video/*|audio/*) setsid -f mpv "$f" >/dev/null 2>&1 ;; 
+        video/*|audio/*) setsid -f mpv --force-window=yes "$f"  >/dev/null 2>&1 ;; 
         application/pdf) setsid -f zathura "$f" >/dev/null 2>&1 ;; 
         *) for f in $fx; do setsid -f $OPENER $f > /dev/null 2> /dev/null & done;;
     esac
@@ -102,11 +102,29 @@ cmd find_file ${{
     esac
 }}
 
+cmd find_in_file ${{
+    res="$(rg --hidden --no-ignore --line-number --color=always . | fzf --ansi --delimiter : --nth 3..)"
+    [ -n "$res" ] || exit
+    file="$(echo "$res" | cut -d: -f1)"
+    line="$(echo "$res" | cut -d: -f2)"
+    lf -remote "send $id select \"$file\""
+    lf -remote "send $id open"
+    lf -remote "send $id jump $line"
+}}
+
 cmd git_branch ${{
     git branch | fzf | xargs git checkout
     pwd_shell=$(pwd)
     lf -remote "send $id updir"
     lf -remote "send $id cd \"$pwd_shell\""
+}}
+
+cmd zipselected ${{
+    echo "$fx" | xargs -I{} realpath --relative-to="$PWD" "{}" | xargs zip -r archive.zip
+}}
+
+cmd zipignore ${{
+    zip -r archive.zip $(git ls-files --cached --others --exclude-standard)
 }}
 
 cmd link %{{
@@ -131,6 +149,7 @@ cmd download %{{
     LINK=$(xclip -o -selection clipboard)
     case "$LINK" in
         *git*) git clone "$LINK";;
+        *youtu*) yt-dlp -x --audio-format mp3 "$LINK";;
         *) wget "$LINK";;
     esac
 }}
@@ -160,6 +179,8 @@ map o $code "$f"
 map E $(sudo $EDITOR "$f")
 
 map Z extract
+map zis zipselected
+map zii zipignore
 
 # Basic Functions
 map . set hidden!
@@ -168,7 +189,7 @@ map x cut
 map y copy
 map Y $(echo "$fx" | xclip -selection clipboard)
 map <delete> trash
-map R reload
+map <f-5> reload
 map mf mkfile
 map md mkdir
 map C clear
@@ -199,16 +220,22 @@ map x
 map xr $(dragon -a -x $fx)
 map xs $(dragon -a $fx)
 map xm $(dragon -t -x $fx)
+map xc ${{
+    echo "$fx" | xargs -I{} sh -c 'echo "------- $(realpath --relative-to="$PWD" "{}") -------"; cat "{}"' | xclip -selection clipboard
+}}
+
+map gl ${{ lazygit }}
 
 map X execute 
 
 map F find_file
+map R :find_in_file
 
-map br git_branch
+# map br git_branch
 
 map <m-up> up
 map <m-down> down
 #map <m-1> cd ..
 #map <m-2> open
 
-map <f-12> $$(npm run test)
+# map <f-12> $$(npm run test)

@@ -1,7 +1,11 @@
 #!/bin/zsh
 
 case $BLOCK_BUTTON in
-    1) rfkill toggle wifi;;
+    1) ssid=$(wpa_cli list_networks | tail -n +3 | awk -F'\t' '{print $2}' | dmenu -p 'Select Wi-Fi:')
+       id=$(wpa_cli list_networks | awk -v ssid="$ssid" -F'\t' '$2 == ssid {print $1}')
+       wpa_cli select_network "$id";;
+    3) wpa_cli status | awk -F= '/^ssid=/ {print $2}'
+       exit 0;;
 esac
 
 [[  "$(rfkill list 1 | awk '/Soft/ {print $3}')" = 'yes' ]] && echo "睊" || awk '/wlp3s0/ {i++; recv[i]=$2; trans[i]=$10}; END{printf "▼ %.1f KB 直 %.1f KB ▲", (recv[2]-recv[1])/1024,(trans[2]-trans[1])/1024}' <(cat /proc/net/dev ; sleep 1; cat /proc/net/dev)

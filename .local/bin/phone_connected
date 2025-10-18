@@ -1,3 +1,11 @@
 #!/bin/bash
 
-sudo systemctl start phone-connected.service
+export DISPLAY=:0
+export XDG_VTNR=1
+
+options="mirror\nfile"
+
+case $(printf $options | dmenu -i -p "open: ") in
+    mirror) setsid -f scrcpy -m 1024 > /dev/null 2>&1 ;;
+    file) setsid -f bash -c 'jmtpfs -o allow_other ~/mnt ; $TERMINAL -e lf' > /dev/null 2>&1 ;;
+esac

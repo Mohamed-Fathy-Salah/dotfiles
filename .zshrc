@@ -22,6 +22,8 @@ HISTFILE=~/.cache/zsh/history
 source ~/.config/zsh/aliases
 
 function hlp(){curl cheat.sh/$1}
+
+function dins() { fzf --print-query --bind "change:reload(dotnet package search --take 5 --format json --verbosity minimal {q} | jq -r '.searchResult[].packages[].id')" --bind "enter:become(dotnet add package {})" --header "Type to search packages, Enter to install"; }
 # vim keybindings 
 bindkey -v
 bindkey jk vi-cmd-mode
@@ -51,3 +53,9 @@ _comp_options+=(globdots)
 #fi
 #unset __conda_setup
 ## <<< conda initialize <<<
+
+# The next line updates PATH for the Google Cloud SDK.
+if [ -f '/home/mofasa/Downloads/google-cloud-sdk/path.zsh.inc' ]; then . '/home/mofasa/Downloads/google-cloud-sdk/path.zsh.inc'; fi
+
+# The next line enables shell command completion for gcloud.
+if [ -f '/home/mofasa/Downloads/google-cloud-sdk/completion.zsh.inc' ]; then . '/home/mofasa/Downloads/google-cloud-sdk/completion.zsh.inc'; fi

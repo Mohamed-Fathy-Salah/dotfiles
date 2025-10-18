@@ -1,0 +1,6 @@
+if xclip -selection clipboard -t TARGETS -o | grep -q 'text/plain'; then
+    xclip -selection clipboard -o | ssh -i ~/.ssh/android_key -p 8022 u0_a235@$(cat ~/.cache/android_ip) termux-clipboard-set
+else
+    xclip -selection clipboard -t image/png -o | ssh -i ~/.ssh/android_key -p 8022 u0_a235@$(cat ~/.cache/android_ip) "cat > ~/storage/shared/Download/clip.png" # adjust path and name of the file 
+fi
+herbe clipboard sent

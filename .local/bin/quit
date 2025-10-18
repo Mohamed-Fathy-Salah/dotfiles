@@ -1,22 +1,9 @@
-# Options
-#shutdown=""
-#reboot=""
-#windows="⊞"
-#sleep=""
-#exit=""
-#options="$shutdown\n$reboot\n$windows\n$sleep\n$exit"
-#rofi_command="rofi -theme ~/.config/rofi/powermenu.rasi"
-#chosen="$(echo -e $options | $rofi_command -dmenu)"
-
-#options="shutdown\nreboot\nwindows\nvoid\nsleep\nblack\nexit"
 options="shutdown\nreboot\nrefresh\nsleep\nblack\nexit"
 chosen=$(printf $options | dmenu -i -p "Choose action: ")
 
 case $chosen in
     shutdown)sudo shutdown -h now;;
     reboot)sudo shutdown -r now;;
-    #windows)rwin;;
-    #void)rvoid;;
     sleep)sudo zzz;;
     black)sleep .4; xset dpms force off ;;
     exit)killall dwm;;

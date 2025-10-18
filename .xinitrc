@@ -4,4 +4,4 @@ copyq --start-server &
 pgrep sxhkd || sxhkd &
 kdeconnectd &
 dwmblocks &
-exec dwm
+exec dbus-launch --exit-with-session dwm

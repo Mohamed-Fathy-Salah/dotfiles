@@ -4,18 +4,11 @@ super + {Return, m}
 super + {f, s}
     $TERMINAL -e {lf, sudo htop}
 
-super + c
-    echo "$(xclip -selection primary -o)" >> ~/.cache/clipboard.txt
-
-super + alt + c
-    rm ~/.cache/clipboard.txt
-
 super + v
     copyq show
-# cat ~/.cache/clipboard.txt | dmenu | xclip -selection clipboard && xdotool key ctrl+v
 
-XF86Calculator
-    $TERMINAL -e qalc
+XF86HomePage
+    st -e qalc
 
 super + space
     kill -42 $(pidof dwmblocks)
@@ -46,7 +39,8 @@ ctrl + { ,shift,alt} Print
     maim -{u,us,i $(xdotool getactivewindow)} | xclip -selection clipboard -t image/png
 
 {XF86AudioMute,XF86AudioRaiseVolume,XF86AudioLowerVolume}
-    pactl set-sink-{mute 0 toggle,volume 0 +5%,volume 0 -5%} ; kill -40 $(pidof dwmblocks)
+    amixer -q set Master {toggle,5%+,5%-} ; kill -44 $(pidof dwmblocks)
+#pactl set-sink-{mute 0 toggle,volume 0 +5%,volume 0 -5%} ; kill -44 $(pidof dwmblocks)
 
 super + {XF86AudioMute,XF86AudioRaiseVolume,XF86AudioLowerVolume}
     pactl set-source-{mute 0 toggle,volume 0 +5%,volume 0 -5%};kill -41 $(pidof dwmblocks)
@@ -59,3 +53,4 @@ super + {bracketleft,bracketright}
 
 {XF86MonBrightnessUp, XF86MonBrightnessDown}
     xbacklight -{inc,dec} 5
+

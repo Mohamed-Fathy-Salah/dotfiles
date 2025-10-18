@@ -5,18 +5,21 @@ export DOTNET_ROOT=/opt/dotnet
 
 export VISUAL="nvim"
 export EDITOR="nvim"
-export TERMINAL="st"
+export TERMINAL="alacritty"
 export PAGER="less"
 export BROWSER="chromium"
 export OPENER="xdg-open"
 #export PATH="${PATH}:/home/mofasa/.local/bin:/usr:/usr/lib/python3.10/site-packages/opencv_python-4.5.5.62-py3.10-linux-x86_64.egg/cv2"
-export PATH="${PATH}:/home/mofasa/.local/bin:/opt/dotnet:$HOME/Android/Sdk/cmdline-tools/latest/bin:$HOME/Android/Sdk/platform-tools"
+#export PATH="${PATH}:/home/mofasa/.local/bin:/opt/dotnet:$HOME/Android/Sdk/cmdline-tools/latest/bin:$HOME/Android/Sdk/platform-tools"
+export PATH="${PATH}:/home/mofasa/.local/bin:/opt/dotnet:/home/mofasa/.deno/bin:/home/mofasa/.dotnet/tools:/home/mofasa/go/bin:/home/mofasa/Downloads/flutter/flutter/bin:/opt/VSCode-linux-x64/bin"
+
 export PICTURES=~/Pictures
 export SITES="chromium"
 
 export ASPNETCORE_ENVIRONMENT="Development"
 
-function OPENAI_API_KEY(){pass OpenAI_key}
+#copilot
+export OPENAI_API_KEY="$(pass copilot_api_key)"
 
 export PKG_CONFIG_PATH=/usr/lib/pkgconfig:/usr/share/pkgconfig:/usr/lib64/pkgconfig
 
@@ -48,6 +51,7 @@ ex=:\
 *.gitignore=:\
 *.c=:\
 *.cc=:\
+*.cs=󰌛:\
 *.clj=:\
 *.coffee=:\
 *.cpp=:\

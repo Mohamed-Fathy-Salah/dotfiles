@@ -164,8 +164,8 @@ require("lazy").setup({
         },
         config = function()
             local has_words_before = function()
-                local line, col = unpack(vim.api.nvim_win_get_cursor(0))
-                return col ~= 0 and vim.api.nvim_buf_get_lines(0, line - 1, line, true)[1]:sub(col, col):match("%s") == nil
+                local line = vim.api.nvim_get_current_line()
+                return col ~= 0 and line:sub(col, col):match("%s") == nil
             end
 
             local feedkey = function(key, mode)
@@ -235,187 +235,228 @@ require("lazy").setup({
     {
         "neovim/nvim-lspconfig",
         dependencies = {
+            "mason-org/mason.nvim",
+            "williamboman/mason-lspconfig.nvim",
             "hrsh7th/nvim-cmp",
             "hrsh7th/cmp-nvim-lsp",
             "hrsh7th/cmp-buffer",
             "hrsh7th/cmp-path",
             "hrsh7th/cmp-cmdline",
             "hrsh7th/vim-vsnip",
-            --"jose-elias-alvarez/null-ls.nvim"
         },
         config = function()
             local lspconfig = require("lspconfig")
-            local capabilities = require('cmp_nvim_lsp').default_capabilities(vim.lsp.protocol.make_client_capabilities())
+            local capabilities = require("cmp_nvim_lsp").default_capabilities()
 
-            lspconfig.omnisharp.setup { 
-                capabilities = capabilities,
-                cmd = {"dotnet", "/opt/omnisharp/OmniSharp.dll" },
-                filetypes = {"cs", "csproj", "sln"},
-                autostart = true,
-            }
-
-            lspconfig.html.setup { capabilities = capabilities }
-            lspconfig.cssls.setup { capabilities = capabilities }
-
-            lspconfig.gopls.setup{ capabilities = capabilities }
-            --local null_ls = require("null-ls")
-            --null_ls.setup({
-                --sources = {
-                    --null_ls.builtins.diagnostics.eslint,
-                    --null_ls.builtins.code_actions.eslint,
-                    --null_ls.builtins.formatting.prettier,
-                --},
-            --})
-
-            --lspconfig.clangd.setup { capabilities = capabilities }
-            --lspconfig.pyright.setup{ capabilities = capabilities }
-            --lspconfig.rust_analyzer.setup{ capabilities = capabilities }
-
-            lspconfig.ts_ls.setup{
-                capabilities = capabilities,
-                filetypes = {
-                    "javascript",
-                    "javascriptreact",
-                    "javascript.jsx",
-                    "typescript",
-                    "typescriptreact",
-                    "typescript.tsx",
-                    "vue",
-                },
-                root_dir = require('lspconfig.util').root_pattern('tsconfig.json', 'jsconfig.json', 'package.json', '.git'),
-                single_file_support = true,
-            }
-        end,
-    },
-    {
-        "windwp/nvim-autopairs",
-        config = function()
-            require('nvim-autopairs').setup { map_cr = true }
-            local cmp_autopairs = require('nvim-autopairs.completion.cmp')
-            local cmp = require('cmp')
-            cmp.event:on('confirm_done', cmp_autopairs.on_confirm_done({ map_char = { tex = '' } }))
-        end,
-    },
-    {
-        "nvim-treesitter/nvim-treesitter",
-        build = ":TSUpdate",
-        config = function()
-            require'nvim-treesitter.configs'.setup {
-                ensure_installed = {"typescript", "javascript", "lua", "cpp", "c", "java", "python", "c_sharp", "sql"},
-                highlight = {
-                    enable = true,
-                    additional_vim_regex_highlighting = false,
-                },
-                rainbow = {
-                    enable = true,
-                    extended_mode = false,
-                    max_file_lines = nil,
-                },
-                autotag = {
-                    enable = true,
-                },
-            }
-        end,
-    },
-    {
-        "akinsho/bufferline.nvim",
-        config = function()
-            require("bufferline").setup{}
-        end,
-    },
-    {
-        "lewis6991/gitsigns.nvim",
-        config = function()
-            require("gitsigns").setup{}
-        end,
-    },
-    {
-        "preservim/nerdcommenter",
-    },
-    {
-        "RRethy/vim-illuminate",
-        config = function()
-            require("illuminate").configure{
-                under_cursor = true, -- Underline the word under the cursor
-            }
-            vim.cmd([[highlight IlluminatedWordText gui=underline]]) -- Set underline color
-            vim.cmd([[highlight IlluminatedWordRead gui=underline]]) -- Set underline color for read
-            vim.cmd([[highlight IlluminatedWordWrite gui=underline]]) -- Set underline color for write
-        end,
-    },
-    {
-        "github/copilot.vim",
-        enabled = false,
-        config = function()
-            vim.g.copilot_no_tab_map = true
-            vim.api.nvim_set_keymap("i", "<C-J>", 'copilot#Accept()', { expr = true, silent = true })
-        end,
-    },
-    {
-        "mfussenegger/nvim-dap",
-        dependencies = {
-            "rcarriga/nvim-dap-ui",
-            "nvim-neotest/nvim-nio"
-        },
-        config = function()
-            local dap = require("dap")
-            local dapui = require("dapui")
-
-            dapui.setup()
-            dap.listeners.after.event_initialized["dapui_config"] = function()
-                dapui.open()
-            end
-            dap.listeners.before.event_terminated["dapui_config"] = function()
-                dapui.close()
-            end
-            dap.listeners.before.event_exited["dapui_config"] = function()
-                dapui.close()
-            end
-
-            dap.adapters.coreclr = {
-                type = "executable",
-                command = "/usr/local/bin/netcoredbg",
-                args = { "--interpreter=vscode" },
-            }
-
-            dap.configurations.cs = {
-                {
-                    type = "coreclr",
-                    name = "Launch",
-                    request = "launch",
-                    program = function()
-                        return vim.fn.input("Path to executable: ", vim.fn.getcwd() .. "/bin/Debug/net9.0/", "file")
+            require("mason").setup()
+            require("mason-lspconfig").setup({
+                ensure_installed = { "omnisharp", "html", "cssls", "gopls", "ts_ls" },
+                handlers = {
+                    function(server_name)
+                        lspconfig[server_name].setup { capabilities = capabilities }
                     end,
-                    env = {
-                        ASPNETCORE_ENVIRONMENT = "Development",
-                    },
-                },
-            }
-        end,
-    },
-    {
-        "ahmedkhalf/project.nvim",
-        config = function()
-            require("project_nvim").setup {}
-        end,
-    },
-    {
-        "kndndrj/nvim-dbee",
-        dependencies = {
-            "MunifTanjim/nui.nvim",
+                    ["omnisharp"] = function()
+                        lspconfig.omnisharp.setup {
+                            capabilities = capabilities,
+                            filetypes = { "cs", "vb" },
+                            autostart = true,
+                            root_dir = lspconfig.util.root_pattern("*.sln", "*.csproj", ".git"),
+                        }
+                    end,
+                    ["ts_ls"] = function()
+                        lspconfig.ts_ls.setup {
+                            capabilities = capabilities,
+                            filetypes = {
+                                "javascript", "javascriptreact", "typescript",
+                                "typescriptreact", "typescript.tsx", "vue",
+                            },
+                            root_dir = require('lspconfig.util').root_pattern('tsconfig.json', 'package.json', '.git'),
+                            single_file_support = true,
+                        }
+                    end,
+                }})
+            end,
         },
-        build = function()
-            require("dbee").install()
-        end,
-        config = function()
-            require("dbee").setup()
-        end,
-    },
-    {
-        'VidocqH/lsp-lens.nvim',
-        event = 'BufReadPre',
-        config = function()
-            require('lsp-lens').setup({})
-        end
-    }
-})
+        {
+            "windwp/nvim-autopairs",
+            config = function()
+                require('nvim-autopairs').setup { map_cr = true }
+                local cmp_autopairs = require('nvim-autopairs.completion.cmp')
+                local cmp = require('cmp')
+                cmp.event:on('confirm_done', cmp_autopairs.on_confirm_done({ map_char = { tex = '' } }))
+            end,
+        },
+        {
+            "nvim-treesitter/nvim-treesitter",
+            build = ":TSUpdate",
+            config = function()
+                require'nvim-treesitter.configs'.setup {
+                    ensure_installed = {"typescript", "javascript", "lua", "cpp", "c", "java", "python", "c_sharp", "sql"},
+                    highlight = {
+                        enable = true,
+                        additional_vim_regex_highlighting = false,
+                    },
+                    rainbow = {
+                        enable = true,
+                        extended_mode = false,
+                        max_file_lines = nil,
+                    },
+                    autotag = {
+                        enable = true,
+                    },
+                }
+            end,
+        },
+        {
+            "akinsho/bufferline.nvim",
+            config = function()
+                require("bufferline").setup{}
+            end,
+        },
+        {
+            "lewis6991/gitsigns.nvim",
+            config = function()
+                require("gitsigns").setup{}
+            end,
+        },
+        {
+            "preservim/nerdcommenter",
+        },
+        {
+            "RRethy/vim-illuminate",
+            config = function()
+                require("illuminate").configure{
+                    under_cursor = true, -- Underline the word under the cursor
+                }
+                vim.cmd([[highlight IlluminatedWordText gui=underline]]) -- Set underline color
+                vim.cmd([[highlight IlluminatedWordRead gui=underline]]) -- Set underline color for read
+                vim.cmd([[highlight IlluminatedWordWrite gui=underline]]) -- Set underline color for write
+            end,
+        },
+        {
+            "github/copilot.vim",
+            enabled = false,
+            config = function()
+                vim.g.copilot_no_tab_map = true
+                vim.api.nvim_set_keymap("i", "<C-J>", 'copilot#Accept()', { expr = true, silent = true })
+            end,
+        },
+        {
+            "mfussenegger/nvim-dap",
+            dependencies = {
+                "rcarriga/nvim-dap-ui",
+                "nvim-neotest/nvim-nio",
+                "williamboman/mason.nvim",
+                "jay-babu/mason-nvim-dap.nvim", -- optional helper
+            },
+            config = function()
+                local dap = require("dap")
+                local dapui = require("dapui")
+                local mason_path = vim.fn.stdpath("data") .. "/mason/bin/netcoredbg"
+
+                -- DAP UI setup
+                dapui.setup()
+                dap.listeners.after.event_initialized["dapui_config"] = dapui.open
+                dap.listeners.before.event_terminated["dapui_config"] = dapui.close
+                dap.listeners.before.event_exited["dapui_config"] = dapui.close
+
+                -- Adapter config
+                dap.adapters.coreclr = {
+                    type = "executable",
+                    command = mason_path,
+                    args = { "--interpreter=vscode" },
+                }
+
+                dap.configurations.cs = {
+                    {
+                        type = "coreclr",
+                        name = "Launch",
+                        request = "launch",
+                        program = function()
+                            return vim.fn.input("Path to executable: ", vim.fn.getcwd() .. "/bin/Debug/net9.0/", "file")
+                        end,
+                        env = { ASPNETCORE_ENVIRONMENT = "Development" },
+                    },
+                }
+            end,
+        },
+        {
+            "ahmedkhalf/project.nvim",
+            config = function()
+                require("project_nvim").setup {}
+            end,
+        },
+        {
+            "kndndrj/nvim-dbee",
+            dependencies = {
+                "MunifTanjim/nui.nvim",
+            },
+            build = function()
+                require("dbee").install()
+            end,
+            config = function()
+                require("dbee").setup()
+            end,
+        },
+        {
+            'VidocqH/lsp-lens.nvim',
+            event = 'BufReadPre',
+            config = function()
+                require('lsp-lens').setup({})
+            end
+        },
+        {
+            "toppair/peek.nvim",
+            event = { "VeryLazy" },
+            build = "deno task --quiet build:fast",
+            config = function()
+                require("peek").setup({
+                    app = "chromium",
+                    filetype = { "markdown" },
+                })
+                vim.api.nvim_create_user_command("PeekOpen", require("peek").open, {})
+                vim.api.nvim_create_user_command("PeekClose", require("peek").close, {})
+            end,
+        },
+        {'kdheepak/lazygit.nvim', dependencies = { 'nvim-lua/plenary.nvim' } },
+        {
+            "olimorris/codecompanion.nvim",
+            dependencies = {
+                { "nvim-treesitter/nvim-treesitter", build = ":TSUpdate" },
+                { "nvim-lua/plenary.nvim" },
+            },
+            opts = {
+                strategies = {
+                    chat = { adapter = "copilot" },
+                    inline = { adapter = "copilot" },
+                    --chat = { adapter = "openai" },
+                    --inline = { adapter = "openai" },
+                    --chat = {
+                        --adapter = "groq",
+                        --model = "llama3-70b-8192",
+                        --},
+                        --inline = {
+                            --adapter = "groq",
+                            --model = "llama3-70b-8192",
+                            --},
+                },
+                opts = {
+                    log_level = "DEBUG",
+                },
+            },
+        },
+        {
+            "vim-test/vim-test",
+            config = function()
+                -- run tests in a Neovim terminal
+                vim.g["test#strategy"] = "neovim"
+                -- force dotnet test runner
+                vim.g["test#dotnet#runner"] = "dotnet"
+
+                -- optional keymaps
+                vim.keymap.set("n", "<leader>tn", ":TestNearest --no-build<CR>", { desc = "Run nearest test" })
+                --vim.keymap.set("n", "<leader>tf", ":TestFile --no-build<CR>", { desc = "Run test file" })
+                --vim.keymap.set("n", "<leader>ts", ":TestSuite --no-build<CR>", { desc = "Run all tests" })
+            end,
+        }
+    })

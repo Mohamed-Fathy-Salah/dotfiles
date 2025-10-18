@@ -1,4 +1,10 @@
 #!/bin/zsh
 
-[[ $BLOCK_BUTTON -eq 3 ]] && st -e alsamixer &
-echo " "
+case $BLOCK_BUTTON in
+    1) amixer -q set Master toggle;;
+    3) st -e alsamixer;;
+    4) amixer -q set Master 1%+;;
+    5) amixer -q set Master 1%-;;
+esac
+
+amixer get Master | grep -q '\[off\]' && echo " " || echo "  $(amixer get Master | grep -oP '\[\d+%]' | head -1 | tr -d '[]')"

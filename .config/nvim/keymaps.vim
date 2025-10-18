@@ -2,20 +2,21 @@
 let mapleader = " "
 "autocmd FileType python map <buffer> <F10> :w<CR>:exec '!python' shellescape(@%, 1)<CR>
 autocmd FileType python map <buffer> <F10> :w<CR>:!python %:t<CR>
-autocmd FileType python map <buffer> <F12> :w<CR>:terminal pytest<CR>
-autocmd FileType java map <buffer> <F10> :w<CR>:!java %:t<CR>
+"autocmd FileType python map <buffer> <F12> :w<CR>:terminal pytest<CR>
+"autocmd FileType java map <buffer> <F10> :w<CR>:!java %:t<CR>
 "autocmd FileType cpp map <buffer> <F10> :w<CR>:!g++ -g %:t -o %:t:r.out<CR>:!./%:t:r.out<CR>
 autocmd FileType cpp map <buffer> <F10> :w<CR>:!g++ %:t -o %:t:r.out -lsqlite3<CR>:!./%:t:r.out<CR>
 autocmd FileType c map <buffer> <F10> :w<CR>:!gcc %:t -o %:t:r.out -lm<CR>:!./%:t:r.out<CR>
 autocmd FileType sh map <buffer> <F10> :w<CR>:!bash %:t<CR>
 autocmd FileType rust map <buffer> <F10> :w<CR>:!cargo run<CR>
+autocmd FileType cs nnoremap <buffer> <F9> :w<CR>:!dotnet build -c Debug<CR>
 "autocmd FileType cs map <buffer> <F10> :w<CR>:!dotnet run<CR>
 "autocmd FileType cs map <buffer> <F10> :w<CR>:!setsid st -e dotnet run<CR><CR>
 autocmd FileType javascript,typescript map <buffer> <F9> :w<CR>:terminal npm run dev<CR>
-autocmd FileType javascript,typescript map <buffer> <F10> :w<CR>:terminal npm run start<CR>
+"autocmd FileType javascript,typescript map <buffer> <F10> :w<CR>:terminal npm run start<CR>
 "autocmd FileType * map <buffer> <F12> :w<CR>:!git add *<CR>:!git commit<CR>:!git push<CR>
-autocmd FileType javascript,typescript map <buffer> <leader><F12> :w<CR>:terminal npm run test<CR>/    ><CR>
-autocmd FileType javascript,typescript map <buffer> <F12> :w<CR>:terminal npm run test %:t:r<CR>/    ><CR>
+"autocmd FileType javascript,typescript map <buffer> <leader><F12> :w<CR>:terminal npm run test<CR>/    ><CR>
+"autocmd FileType javascript,typescript map <buffer> <F12> :w<CR>:terminal npm run test %:t:r<CR>/    ><CR>
 
 "autocmd BufEnter *.json :silent set modifiable | %!jq .
 
@@ -61,6 +62,7 @@ vnoremap <a-k> :m '<-2<cr>gv=gv
 nnoremap <Leader>ff :Telescope find_files<CR>
 nnoremap <Leader>fp :Telescope projects<CR>
 nnoremap <Leader>fg :Telescope live_grep<CR>
+nnoremap <Leader>fr :Telescope resume<CR>
 nnoremap <Leader>fb :Telescope buffers<CR>
 nnoremap <Leader>fh :Telescope help_tags<CR>
 
@@ -120,6 +122,7 @@ nmap <leader>gb :Gitsigns toggle_current_line_blame<CR>
 nmap <leader>gd :Gitsigns diffthis<CR>
 nmap ]c :Gitsigns next_hunk<CR>
 nmap [c :Gitsigns prev_hunk<CR>
+nnoremap <leader>gl :LazyGit<CR>
 
 " debugger
 nnoremap <F10> :lua require('dap').step_over()<CR>
@@ -178,11 +181,27 @@ nnoremap <leader>x :. !bash<CR>
 vnoremap <leader>c yO<Esc>p:. !bc<CR>0Dgvpkdd
 
 nnoremap <leader>s :call SwitchCodeTest()<CR>
+"function! SwitchCodeTest()
+    "if expand('%:e:e:r') == 'test'
+        ":exe 'e ' . expand('%:p:h:h') . '/' . expand('%:t:r:r') . '.' . expand('%:e')
+    "else
+        ":exe 'e ' . expand('%:p:h') . '/__test__/' . expand('%:t:r') . '.test.' . expand('%:e')
+    "endif
+"endfunction
 function! SwitchCodeTest()
-    if expand('%:e:e:r') == 'test'
-        :exe 'e ' . expand('%:p:h:h') . '/' . expand('%:t:r:r') . '.' . expand('%:e')
+    let l:fname = expand('%:t:r')
+    let l:dir = expand('%:p:h')
+
+    if l:dir =~# 'Controllers'
+        " From Controller -> Test
+        let l:root = substitute(l:dir, '\v/Controllers.*$', '', '')
+        let l:testname = substitute(l:fname, 'Controller$', 'Tests', '')
+        exe 'e ' . l:root . '.Tests/' . l:testname . '.cs'
     else
-        :exe 'e ' . expand('%:p:h') . '/__test__/' . expand('%:t:r') . '.test.' . expand('%:e')
+        " From Test -> Controller
+        let l:root = substitute(l:dir, '\v(\.Tests).*$', '', '')
+        let l:ctrlname = substitute(l:fname, 'Tests$', 'Controller', '')
+        exe 'e ' . l:root . '/Controllers/' . l:ctrlname . '.cs'
     endif
 endfunction
 
@@ -194,6 +213,10 @@ onoremap <F4> <C-C>za
 vnoremap <F4> zf
 nnoremap <F3> zr
 
+inoremap <F2> :CodeCompanionChat<CR>
+nnoremap <F2> :CodeCompanionChat<CR>
+nnoremap <leader><F2> :CodeCompanionActions<CR>
+vnoremap <F2> :CodeCompanionChat<CR>
 "vnoremap <leader>s :lua require"surround".surround()<CR>
 "vnoremap <leader>a :lua surround()<CR>
 "vsnip
@@ -202,3 +225,6 @@ imap <expr> <Tab>   vsnip#available(1)  ? '<Plug>(vsnip-expand-or-jump)' : '<C-l
 smap <expr> <Tab>   vsnip#available(1)  ? '<Plug>(vsnip-expand-or-jump)' : '<C-l>'
 
 nnoremap <Leader>z :lua require('dbee').toggle()<CR>
+
+command! Bonly execute '%bd|e#|bd#'
+command! BWonly execute 'wall|%bd!|e#|bd#'

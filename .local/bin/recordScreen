@@ -1,0 +1,3 @@
+#!/bin/bash
+#ffmpeg -video_size 1920x1080 -framerate 15 -f x11grab -i :0.0 -preset ultrafast ~/Videos/output.mkv
+ffmpeg -video_size 1920x1080 -framerate 15 -f x11grab -i :0.0+1920,0 -preset ultrafast ~/Videos/output.mkv

@@ -19,7 +19,7 @@ set hlsearch
 set number relativenumber cursorline
 set nohlsearch
 set hidden
-set clipboard=unnamed
+set clipboard=
 "set pastetoggle=<F3>
 set background=dark
 set splitbelow splitright
