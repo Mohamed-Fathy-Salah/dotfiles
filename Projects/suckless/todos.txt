@@ -1,0 +1,81 @@
+------[todo]------
+[] performance
+    [] fork cheat.sh-vim and modify it for my needs (detect file, remove unwanted scripts, remove popix dependency and use telescope)
+    [] disable nvidia card
+    [] reduce framerate
+    [] reduce temprature
+    [x] replace vscode with neovim
+    [x] prevent android daemon from startup
+    [x] reduce power consumption
+
+[] features
+    [] make .nvim folder and add run, debug scripts to it..
+        map <F9>, <F10> to search this folder exists first
+        if not run default actions
+    [] contribue to xournalpp (change color with shortcuts)
+    [] enable hibernation (make swap file first)
+    [] toggle lang in status bar
+    [] remove pcmanfm & use lf only
+        [] usb connect 
+        [] phone connect
+    [] connect to internet via usb tethering & ethernet cable
+    [x] tesseract (ocr) with screenshots
+    [x] remaining time for the next prayer
+    [x] dragon in lf file manager
+    [x] dmenu theme system wide
+    [x] mount usb
+
+[] fix
+    [] arabic for dwm & st ( write from  right to left ) ( apply bidi patch)
+    [] open links in browser (super + p)
+    [] fix window lf screenshot
+    [] calcurse-caldav sync with google calendar
+        https://calcurse.org/files/calcurse-caldav.html
+    [x] zsh slow loading
+    [x] open function in lfrc 
+    [x] wifi indicator not working 
+    [x] register shortcuts in arabic lang
+    [x] fix reboot windows in ~/.local/bin
+    [x] fucking piece of shit mic 
+    [x] clickable status bar ( wheel up & down on sound , toggle language , )
+    [x] autologin in user(mofasa)
+
+[] apps
+    [] syncthing
+    [] neomutt
+    [] terminal translate
+    [] suckless browser
+    [] rofi (quit, calc, wifi, ...)
+    [x] notifications
+    [x] teams
+    [x] kde connect 
+    [x] todo 
+    [x] draw on screen  
+
+[] clean
+    [] init.sh apps is for void linux
+    [x] use & config xdg-open instead of open func in lfrc
+    [x] dotfiles with hard links
+    [x] show mic & volume in dwmblocks on startup
+
+------[done]------
+[x] font & lang
+    [] better font for english ( dejavu )
+
+[x] theme & colors 
+    [] arc-dark theme for terminal - dwm - dmenu
+    [x] or gruvbox-dark 
+
+------[routine]------
+
+fast monday + thurusday 
+start at fajr 
+
+morning stretch 
+afternon HIIT
+night cardio ( pushup , situp , pullup , leg )
+
+minimalist clothes
+minimalist computer
+minimalist food
+

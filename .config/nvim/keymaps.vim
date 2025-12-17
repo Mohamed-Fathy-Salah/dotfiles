@@ -5,7 +5,8 @@ autocmd FileType python map <buffer> <F10> :w<CR>:!python %:t<CR>
 "autocmd FileType python map <buffer> <F12> :w<CR>:terminal pytest<CR>
 "autocmd FileType java map <buffer> <F10> :w<CR>:!java %:t<CR>
 "autocmd FileType cpp map <buffer> <F10> :w<CR>:!g++ -g %:t -o %:t:r.out<CR>:!./%:t:r.out<CR>
-autocmd FileType cpp map <buffer> <F10> :w<CR>:!g++ %:t -o %:t:r.out -lsqlite3<CR>:!./%:t:r.out<CR>
+"autocmd FileType cpp map <buffer> <F10> :w<CR>:!g++ %:t -o %:t:r.out -lsqlite3<CR>:!./%:t:r.out<CR>
+autocmd FileType cpp map <buffer> <F10> :w<CR>:!g++ %:t -o %:t:r.out<CR>:!./%:t:r.out<CR>
 autocmd FileType c map <buffer> <F10> :w<CR>:!gcc %:t -o %:t:r.out -lm<CR>:!./%:t:r.out<CR>
 autocmd FileType sh map <buffer> <F10> :w<CR>:!bash %:t<CR>
 autocmd FileType rust map <buffer> <F10> :w<CR>:!cargo run<CR>
@@ -228,3 +229,5 @@ nnoremap <Leader>z :lua require('dbee').toggle()<CR>
 
 command! Bonly execute '%bd|e#|bd#'
 command! BWonly execute 'wall|%bd!|e#|bd#'
+
+vnoremap <leader>PS :s/\%#\w\+/\=tolower(substitute(submatch(0), '\C\(\l\)\([A-Z]\)', '\1_\l\2', 'g'))/<CR>

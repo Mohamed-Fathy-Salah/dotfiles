@@ -274,6 +274,16 @@ require("lazy").setup({
                             single_file_support = true,
                         }
                     end,
+                    ["pyright"] = function()
+                        lspconfig.pyright.setup {
+                            settings = {
+                                python = {
+                                    venvPath = ".",
+                                    venv = "venv"
+                                }
+                            }
+                        }
+                    end,
                 }})
             end,
         },
@@ -363,7 +373,7 @@ require("lazy").setup({
                 -- Adapter config
                 dap.adapters.coreclr = {
                     type = "executable",
-                    command = mason_path,
+                    command = '/home/mofasa/.vscode/extensions/ms-dotnettools.csharp-2.93.22-linux-x64/.debugger/vsdbg',
                     args = { "--interpreter=vscode" },
                 }
 
@@ -372,9 +382,11 @@ require("lazy").setup({
                         type = "coreclr",
                         name = "Launch",
                         request = "launch",
+                        --processId = require('dap.utils').pick_process,
                         program = function()
-                            return vim.fn.input("Path to executable: ", vim.fn.getcwd() .. "/bin/Debug/net9.0/", "file")
+                            return vim.fn.input("Path to executable: ", vim.fn.getcwd() .. "/Broker/bin/Debug/net9.0/", "file")
                         end,
+                        cwd = vim.fn.getcwd(),
                         env = { ASPNETCORE_ENVIRONMENT = "Development" },
                     },
                 }
@@ -439,24 +451,34 @@ require("lazy").setup({
                             --adapter = "groq",
                             --model = "llama3-70b-8192",
                             --},
+                        },
+                        opts = {
+                            log_level = "DEBUG",
+                        },
+                    },
                 },
-                opts = {
-                    log_level = "DEBUG",
-                },
-            },
-        },
-        {
-            "vim-test/vim-test",
-            config = function()
-                -- run tests in a Neovim terminal
-                vim.g["test#strategy"] = "neovim"
-                -- force dotnet test runner
-                vim.g["test#dotnet#runner"] = "dotnet"
+                {
+                    "vim-test/vim-test",
+                    config = function()
+                        -- run tests in a Neovim terminal
+                        vim.g["test#strategy"] = "neovim"
+                        -- force dotnet test runner
+                        vim.g["test#dotnet#runner"] = "dotnet"
 
-                -- optional keymaps
-                vim.keymap.set("n", "<leader>tn", ":TestNearest --no-build<CR>", { desc = "Run nearest test" })
-                --vim.keymap.set("n", "<leader>tf", ":TestFile --no-build<CR>", { desc = "Run test file" })
-                --vim.keymap.set("n", "<leader>ts", ":TestSuite --no-build<CR>", { desc = "Run all tests" })
-            end,
-        }
-    })
+                        -- optional keymaps
+                        vim.keymap.set("n", "<leader>tn", ":TestNearest --no-build<CR>", { desc = "Run nearest test" })
+                        --vim.keymap.set("n", "<leader>tf", ":TestFile --no-build<CR>", { desc = "Run test file" })
+                        --vim.keymap.set("n", "<leader>ts", ":TestSuite --no-build<CR>", { desc = "Run all tests" })
+                    end,
+                },
+                {
+                    "mistweaverco/kulala.nvim",
+                    ft = {"http", "rest"},
+                    keys = {
+                        { "<leader>;", "<cmd>lua require('kulala').run()<cr>", desc = "Run request" },
+                    },
+                    opts = {
+                        global_keymaps = false,
+                    },
+                }
+            })

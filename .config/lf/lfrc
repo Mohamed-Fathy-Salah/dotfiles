@@ -10,20 +10,19 @@ set number true
 set relativenumber true
 set incsearch
 set mouse
-set sixel true
 
 #set previewer stpv
 #set cleaner stpvimgclr
 #&stpvimg --listen $id
 #cmd on-quit $stpvimg --end $id
 
-set previewer ctpv
-set cleaner ctpvclear
-&ctpv -s $id
-&ctpvquit $id
+#set previewer ctpv
+#set cleaner ctpvclear
+#&ctpv -s $id
+#&ctpvquit $id
 
 #set cleaner '~/.config/lf/cleaner'
-#set previewer '~/.config/lf/scope'
+set previewer '~/.config/lf/scope'
 
 # Custom Functions
 cmd mkdir ${{
@@ -83,6 +82,7 @@ cmd open ${{
         #*.obj) blender -P /home/mofasa/.local/bin/importInBlender.py -- $fx ;;
         #*.xopp) setsid -f xournalpp $f >/dev/null 2>&1 ;;
     case $(file --mime-type $f -b) in 
+        text/html) $BROWSER $fx ;; 
         text/*|application/javascript|application/json) $EDITOR $fx ;; 
         image/*) setsid -f sxiv "$f" >/dev/null 2>&1 ;; 
         video/*|audio/*) setsid -f mpv --force-window=yes "$f"  >/dev/null 2>&1 ;; 
@@ -94,6 +94,7 @@ cmd open ${{
 cmd find_file ${{
     FILE=$(fzf)
     case $(file --mime-type $FILE -b) in 
+        text/html) $BROWSER $fx ;; 
         text/*|application/javascript|application/json) $EDITOR $fx ;; 
         image/*) setsid -f sxiv "$f" >/dev/null 2>&1 ;; 
         video/*|audio/*) setsid -f mpv "$f" >/dev/null 2>&1 ;; 
@@ -174,7 +175,7 @@ cmd execute %{{
 
 # Bindings
 map m
-map w $$SHELL -c scroll
+# map w $$SHELL -c scroll
 map o $code "$f"
 map E $(sudo $EDITOR "$f")
 
@@ -206,12 +207,14 @@ map P :link
 map f mark-load
 map M mark-save
 
-map ml $(sudo mount /dev/sda7 /mnt)
-map ma $(jmtpfs -o allow_other ~/mnt)
+map m1 $(sudo mount /dev/sdb5 /mnt/hdd/root && sudo chown "mofasa:mofasa" /mnt/hdd/root)
+map m2 $(sudo mount /dev/sdb6 /mnt/hdd/home && sudo chown "mofasa:mofasa" /mnt/hdd/home)
+map m3 $(sudo mount /dev/sdb7 /mnt/hdd/tmp && sudo chown "mofasa:mofasa" /mnt/hdd/tmp)
 
 map u
-map ul $(sudo umount /mnt)
-map ua $(fusermount -u ~/mnt)
+map u1 $(sudo umount /mnt/hdd/root)
+map u2 $(sudo umount /mnt/hdd/home)
+map u3 $(sudo umount /mnt/hdd/tmp)
 
 map t download
 
@@ -222,6 +225,9 @@ map xs $(dragon -a $fx)
 map xm $(dragon -t -x $fx)
 map xc ${{
     echo "$fx" | xargs -I{} sh -c 'echo "------- $(realpath --relative-to="$PWD" "{}") -------"; cat "{}"' | xclip -selection clipboard
+}}
+map xp ${{
+    for f in $fx; do kdeconnect-cli -d "$(kdeconnect-cli -a --id-only)" --share "$f"; done
 }}
 
 map gl ${{ lazygit }}
