@@ -1,9 +1,60 @@
 #!/bin/bash
-#ffmpeg -video_size 1920x1080 -framerate 15 -f x11grab -i :0.0 -preset ultrafast ~/Videos/output.mkv
-#ffmpeg -video_size 1920x1080 -framerate 15 -f x11grab -i :0.0+1920,0 -preset ultrafast ~/Videos/output.mkv
 
-st -e sh -c '
-read X Y W H < <(slop -f "%x %y %w %h")
+# Select audio option
+# todo: ask for system audio / external audio; and ask for camera
+AUDIO=$(printf "yes\nno" | dmenu -p "Record audio?")
+if [[ "$AUDIO" == "yes" ]]; then
+    AUDIO_FFMPEG="-f pulse -i default"
+else
+    AUDIO_FFMPEG=""
+fi
+
+# Select area option
+AREA=$(printf "window\nscreen\narea" | dmenu -p "Record area?")
+if [[ "$AREA" == "window" ]]; then
+    read X Y W H < <(
+        xwininfo | awk '
+            /Absolute upper-left X:/ {x=$4}
+            /Absolute upper-left Y:/ {y=$4}
+            /Width:/ {w=$2}
+            /Height:/ {h=$2}
+            END {print x, y, w, h}
+        '
+    )
+elif [[ "$AREA" == "screen" ]]; then
+    SCREEN=$(printf "0\n1\nall" | dmenu -p "Screen?")
+    if [[ "$SCREEN" == "all" ]]; then
+        # Record all screens (fallback to :0.0)
+        X=0; Y=0
+        read W H < <(xdpyinfo | awk '/dimensions:/ {split($2,a,"x"); print a[1], a[2]}')
+    else
+        # Get geometry for selected screen
+        MONITOR_INFO=$(xrandr | awk -v s="$SCREEN" '
+            / connected/ {i++}
+            i-1==s && $0 ~ / connected/ {
+                match($0, /([0-9]+x[0-9]+\+[0-9]+\+[0-9]+)/, arr)
+                print arr[1]
+            }
+        ')
+        if [[ -z "$MONITOR_INFO" ]]; then
+            echo "Could not get monitor info"; exit 1
+        fi
+        # Parse geometry: WxH+X+Y
+        if [[ "$MONITOR_INFO" =~ ([0-9]+)x([0-9]+)\+([0-9]+)\+([0-9]+) ]]; then
+            W="${BASH_REMATCH[1]}"
+            H="${BASH_REMATCH[2]}"
+            X="${BASH_REMATCH[3]}"
+            Y="${BASH_REMATCH[4]}"
+        else
+            echo "Could not parse monitor geometry"; exit 1
+        fi
+    fi
+elif [[ "$AREA" == "area" ]]; then
+    read X Y W H < <(slop -f "%x %y %w %h")
+else
+    exit 1
+fi
+
 FILE=~/Videos/$(date +%Y-%m-%d_%H-%M-%S).mp4
-ffmpeg -video_size "${W}x${H}" -framerate 15 -f x11grab -i ":0.0+$X,$Y" -c:v libx264 -preset ultrafast "$FILE"
-'
+
+st -e sh -c "ffmpeg -video_size '${W}x${H}' -framerate 15 -f x11grab -i ':0.0+$X,$Y' $AUDIO_FFMPEG -c:v libx264 -preset ultrafast '$FILE'; read -n 1 -s -r -p 'Press any key to close...'"

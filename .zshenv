@@ -19,7 +19,6 @@ export SITES="chromium"
 
 export ASPNETCORE_ENVIRONMENT="Development"
 
-
 export PKG_CONFIG_PATH=/usr/lib/pkgconfig:/usr/share/pkgconfig:/usr/lib64/pkgconfig
 
 export BUNDLE_GEMFILE=
