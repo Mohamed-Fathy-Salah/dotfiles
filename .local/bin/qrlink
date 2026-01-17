@@ -1,5 +1,8 @@
 #!/bin/bash
 
-PRIVATE_IP=$(ip -4 addr show | grep -oP '(?<=inet\s)\d+(\.\d+){3}' | sed -n 2p)
-URL="http://${PRIVATE_IP}:5173"
-qrencode -t ANSIUTF8 "$URL"
+st -e sh -c "
+PRIVATE_IP=\$(ip -4 addr show | grep -oP '(?<=inet\s)\d+(\.\d+){3}' | sed -n 2p)
+URL=\"http://\${PRIVATE_IP}:5173\"
+qrencode -t ANSIUTF8 \"\$URL\"
+read
+"

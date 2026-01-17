@@ -1,0 +1,59 @@
+[mgr]
+show_hidden = true
+linemode = "size"
+scrolloff = 10
+mouse_events = ["click", "scroll", "drag"]
+ratio = [1,2,3]
+
+[preview]
+max_width = 1920
+max_height = 1080
+image_backend = "sixel"
+
+[opener]
+wineexe = [
+  { run = 'wine "$@"', desc = "Wine .exe", orphan = true},
+]
+
+html = [
+  { run = '$BROWSER "$@"', desc = "Browser", orphan = true },
+]
+
+edit = [
+  { run = '$EDITOR "$@"', desc = "Editor", block = true },
+]
+
+img = [
+  { run = 'sxiv "$@"', desc = "Image", orphan = true },
+]
+
+media = [
+  { run = 'mpv --force-window=yes "$@"', desc = "Media", orphan = true },
+]
+
+pdf = [
+  { run = 'zathura "$@"', desc = "PDF", orphan = true },
+]
+
+fallback = [
+  { run = '$OPENER "$@"', desc = "Fallback", orphan = true },
+]
+
+[open]
+rules = [
+  { name = "*.exe", use = "wineexe" },
+  { mime = "text/html", use = "html" },
+  { mime = "text/*", use = "edit" },
+  { mime = "application/javascript", use = "edit" },
+  { mime = "application/json", use = "edit" },
+  { mime = "image/*", use = "img" },
+  { mime = "video/*", use = "media" },
+  { mime = "audio/*", use = "media" },
+  { mime = "application/pdf", use = "pdf" },
+  { name = "*", use = "fallback" },
+]
+
+[[input.prepend_keymap]]
+on   = "<Esc>"
+run  = "close"
+desc = "Cancel input"

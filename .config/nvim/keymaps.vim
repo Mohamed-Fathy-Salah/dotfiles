@@ -127,11 +127,12 @@ nnoremap <leader>gl :LazyGit<CR>
 
 " debugger
 nnoremap <F10> :lua require('dap').step_over()<CR>
-nnoremap <F11> :lua require('dap').step_into()<CR>
+nnoremap <leader><F10> :lua require('dap').step_into()<CR>
 nnoremap <F12> :lua require('dap').step_out()<CR>
 nnoremap <Leader><F5> :lua require('dap').run_to_cursor()<CR>
 nnoremap <Leader>b :lua require('dap').toggle_breakpoint()<CR>
 nnoremap <Leader>B :lua require('dap').set_breakpoint(vim.fn.input('Breakpoint condition: '))<CR>
+nnoremap <Leader>0 :lua require('dapui').eval()<CR>
 
 " term
 "nmap <leader>s :Cheat<CR>
@@ -214,7 +215,6 @@ onoremap <F4> <C-C>za
 vnoremap <F4> zf
 nnoremap <F3> zr
 
-inoremap <F2> :CodeCompanionChat<CR>
 nnoremap <F2> :CodeCompanionChat<CR>
 nnoremap <leader><F2> :CodeCompanionActions<CR>
 vnoremap <F2> :CodeCompanionChat<CR>

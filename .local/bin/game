@@ -1,14 +1,15 @@
-options="RA2\nclaw\nLAPD\nresidual\npes\nlimbo\ntypoman"
+options="css\nRA2\nclaw\nLAPD\nresidual\npes\nlimbo\ntypoman"
 chosen=$(printf $options | dmenu -i -p "Choose game: ")
 #chosen=RA2
 
 case $chosen in
     #cs) rfkill toggle wifi && cd /mnt/hdd/home/.wine/drive_c/Games/Condition-Zero && wine Condition-Zero.exe && rfkill toggle wifi ;;
+    css) cd /home/mofasa/Games/CSS/ && ./start.sh ;;
     RA2) WINEPREFIX="/mnt/hdd/home/mofasa/.wine" WINEDLLOVERRIDES="ddraw.dll=n,b" wine /mnt/hdd/home/mofasa/games/Red\ Alert\ 2/RA2MD.exe ;;
-    claw) cd /home/mofasa/games/claw && wine CLAW.EXE ;;
-    LAPD) cd /mnt/hdd/home/games/Futurcop\ LAPD && wine FCopLAPD.exe ;;
-    residual) /mnt/hdd/home/games/GOG\ Games/Residual/start.sh ;;
-    pes) cd /mnt/hdd/home/games/PES-6-DownloadComputerGames.net && wine pes6.exe ;;
-    limbo) /mnt/hdd/home/games/Limbo/limbo ;;
-    typoman) /mnt/hdd/home/games/Typoman/start ;;
+    claw) cd /mnt/hdd/home/mofasa/games/claw && wine CLAW.EXE ;;
+    LAPD) cd /mnt/hdd/home/mofasa/games/Futurcop\ LAPD && wine FCopLAPD.exe ;;
+    residual) /mnt/hdd/home/mofasa/games/GOG\ Games/Residual/start.sh ;;
+    pes) cd /mnt/hdd/home/mofasa/games/PES-6-DownloadComputerGames.net && wine pes6.exe ;;
+    limbo) /mnt/hdd/home/mofasa/games/Limbo/limbo ;;
+    typoman) /mnt/hdd/home/mofasa/games/Typoman/start ;;
 esac

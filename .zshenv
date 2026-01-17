@@ -1,6 +1,7 @@
 export LC_ALL=en_US.UTF-8
 
-export AndroidSdkDirectory=$HOME/Android
+export ANDROID_HOME=$HOME/Android/Sdk
+export AndroidSdkDirectory=$ANDROID_HOME
 export DOTNET_ROOT=/opt/dotnet
 
 export VISUAL="nvim"
@@ -17,6 +18,7 @@ export PICTURES=~/Pictures
 export SITES="chromium"
 
 export ASPNETCORE_ENVIRONMENT="Development"
+
 
 export PKG_CONFIG_PATH=/usr/lib/pkgconfig:/usr/share/pkgconfig:/usr/lib64/pkgconfig
 

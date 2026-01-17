@@ -1,0 +1,92 @@
+[mgr]
+prepend_keymap = [
+# mount
+    { on = ["m", "0"], run = 'shell --orphan -- simple-mtpfs /mnt/phone ', desc = "mnt phone" },
+    { on = ["m", "1"], run = 'shell --orphan -- sudo mount UUID=f96a6eba-c952-432e-90f8-f26de0adaf88 /mnt/hdd/root && sudo chown "mofasa:mofasa" /mnt/hdd/root', desc = "mnt old root" },
+    { on = ["m", "2"], run = 'shell --orphan -- sudo mount UUID=700a772a-56dc-41ea-8845-e4c5e05b8c86 /mnt/hdd/home && sudo chown "mofasa:mofasa" /mnt/hdd/home', desc = "mnt old home" },
+    { on = ["m", "3"], run = 'shell --orphan -- sudo mount UUID=d07e3dd1-01a3-4654-a9e9-10d6fe2392d8 /mnt/hdd/tmp && sudo chown "mofasa:mofasa" /mnt/hdd/tmp', desc = "mnt old tmp" },
+
+    { on = ["u", "0"], run = 'shell --orphan -- sudo umount /mnt/phone', desc = "umnt phone" },
+    { on = ["u", "1"], run = 'shell --orphan -- sudo umount /mnt/hdd/root', desc = "umnt old root" },
+    { on = ["u", "2"], run = 'shell --orphan -- sudo umount /mnt/hdd/home', desc = "umnt old home" },
+    { on = ["u", "3"], run = 'shell --orphan -- sudo umount /mnt/hdd/tmp', desc = "umnt old tmp" },
+
+# lazy
+    { on = ["g", "l"], run = "shell --block -- lazygit", desc = "lazygit" },
+
+# editor
+    { on = ["e"], run = 'shell --block -- $EDITOR "$0"', desc = "edit" },
+    { on = ["E"], run = 'shell --block -- sudo $EDITOR "$0"', desc = "sudo edit" },
+
+# download
+    { on = ["i"], run = """shell --orphan -- 
+                        LINK=$(xclip -o -selection clipboard);
+                        case "$LINK" in
+                            *git*) git clone "$LINK" ;;
+                            *youtu*|*youtu.be*) yt-dlp -x --audio-format mp3 "$LINK" ;;
+                            *) wget "$LINK" ;; 
+                        esac
+                    """, desc = "download clipboard link" },
+
+# zip
+    { on = ["z","s"], run = "shell --orphan -- printf '%s\n' \"$@\" | xargs -I{} realpath --relative-to=\"$PWD\" \"{}\" | xargs zip -r archive.zip ", desc = "zip selected" },
+    { on = ["z", "i"], run = "shell --orphan -- zip -r archive.zip $(git ls-files --cached --others --exclude-standard)", desc = "zip ignore" },
+    { on = ["Z"], run = """shell --orphan -- 
+                                case $0 in
+                                    *.tar.bz|*.tar.bz2|*.tbz|*.tbz2) tar xjvf "$0";;
+                                    *.tar.gz|*.tgz) tar xzvf "$0";;
+                                    *.tar.xz|*.txz) tar xJvf "$0";;
+                                    *.zip) unzip "$0";;
+                                    *.rar) unrar x "$0";;
+                                    *.7z) 7z x "$0";;
+                                esac
+                            """, desc = "unzip" },
+
+# background
+    { on = ["b", "g"], run='shell --orphan -- cp "$0" ~/.config/wall.jpg && xwallpaper --zoom "$0"', desc = "set wallpaper"},
+
+# dragon
+    { on = ["o", "r"], run = 'shell --block -- dragon -a -x "$@"', desc = "dragon open (no hold)" },
+    { on = ["o", "s"], run = 'shell --block -- dragon -a "$@"',     desc = "dragon open" },
+    { on = ["o", "m"], run = 'shell --block -- dragon -t -x "$@"',  desc = "dragon move" },
+    { on = ["o", "c"], run = "shell --orphan -- printf '%s\n' \"$@\" | xargs -I{} sh -c 'echo \"------- $(realpath --relative-to=\"$PWD\" \"{}\") -------\"; cat \"{}\"' | xclip -selection clipboard",  desc = "copy files content" },
+    { on = ["o", "p"], run = "shell --orphan -- for f in \"$@\"; do kdeconnect-cli -d \"$(kdeconnect-cli -a --id-only)\" --share \"$f\"; done",  desc = "send to phone" },
+
+# terminal
+    { on = "W", run = "tasks:show", desc = "Show task manager" },
+    { on = "w", run = 'shell --block -- scroll "$SHELL"', desc = "terminal" },
+    { on = "<F5>", run = """shell --block --
+        if ls *.js *.ts *.tsx 2>/dev/null | grep -q .; then
+            npm run dev
+        elif ls *.csproj *.cs *.sln 2>/dev/null | grep -q .; then
+            dotnet run
+        else
+            echo 'No recognized project files found.'
+        fi
+    """, desc = "run project" },
+    { on = ["<F2>","c"], run  = 'shell --block -- scroll copilot' , desc = "Copilot CLI" },
+    { on = ["<F2>","g"], run  = 'shell --block -- scroll gemini' , desc = "Gemini CLI" },
+    { on = ["<F2>","d"], run  = 'shell --block -- scroll claude' , desc = "Claude CLI" },
+    { on = ["<F2>","a"], run  = 'shell --orphan antigravity ./' , desc = "Antigravity" },
+
+# execute
+    { on = "<c-x>", run = 'shell --block -- "$0"', desc = "execute" },
+
+# plugins
+    { on = "l", run = 'plugin smart-enter', desc = "open directory/file" },
+
+# bookmarks
+    {on = "M", run = "plugin bookmarks save", desc = "save bookmark"},
+    {on = "f", run = "plugin bookmarks jump", desc = "jump to bookmark"},
+    {on = '"', run = "plugin bookmarks delete", desc = "delete a bookmark"},
+
+    {on = [ "1" ], run = "plugin relative-motions 1", desc = "Move in relative steps"},
+    {on = [ "2" ], run = "plugin relative-motions 2", desc = "Move in relative steps"},
+    {on = [ "3" ], run = "plugin relative-motions 3", desc = "Move in relative steps"},
+    {on = [ "4" ], run = "plugin relative-motions 4", desc = "Move in relative steps"},
+    {on = [ "5" ], run = "plugin relative-motions 5", desc = "Move in relative steps"},
+    {on = [ "6" ], run = "plugin relative-motions 6", desc = "Move in relative steps"},
+    {on = [ "7" ], run = "plugin relative-motions 7", desc = "Move in relative steps"},
+    {on = [ "8" ], run = "plugin relative-motions 8", desc = "Move in relative steps"},
+    {on = [ "9" ], run = "plugin relative-motions 9", desc = "Move in relative steps"}
+]

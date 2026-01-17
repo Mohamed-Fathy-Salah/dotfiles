@@ -153,6 +153,7 @@ cmd download %{{
         *youtu*) yt-dlp -x --audio-format mp3 "$LINK";;
         *) wget "$LINK";;
     esac
+    echo "Download finished: $LINK"
 }}
 
 cmd execute %{{
@@ -175,7 +176,7 @@ cmd execute %{{
 
 # Bindings
 map m
-# map w $$SHELL -c scroll
+map w $$SHELL -c scroll
 map o $code "$f"
 map E $(sudo $EDITOR "$f")
 
@@ -200,16 +201,18 @@ map bg setwallpaper
 map A rename # at the very end
 map c push A<c-u> # new rename
 map I push A<c-a> # at the very beginning
-map i push A<a-b><a-b><a-f> # before extention
-map a push A<a-b> # after extention
-map B $printf '%s\n' $fx | vidir -
+#map i push A<a-b><a-b><a-f> # before extention
+map i push A<a-b> # after extention
+
+
+map B $(printf '%s\n' $fx | vidir -p '')
 map P :link
 map f mark-load
 map M mark-save
 
-map m1 $(sudo mount /dev/sdb5 /mnt/hdd/root && sudo chown "mofasa:mofasa" /mnt/hdd/root)
-map m2 $(sudo mount /dev/sdb6 /mnt/hdd/home && sudo chown "mofasa:mofasa" /mnt/hdd/home)
-map m3 $(sudo mount /dev/sdb7 /mnt/hdd/tmp && sudo chown "mofasa:mofasa" /mnt/hdd/tmp)
+map m1 $(sudo mount UUID=f96a6eba-c952-432e-90f8-f26de0adaf88 /mnt/hdd/root && sudo chown "mofasa:mofasa" /mnt/hdd/root)
+map m2 $(sudo mount UUID=700a772a-56dc-41ea-8845-e4c5e05b8c86 /mnt/hdd/home && sudo chown "mofasa:mofasa" /mnt/hdd/home)
+map m3 $(sudo mount UUID=d07e3dd1-01a3-4654-a9e9-10d6fe2392d8 /mnt/hdd/tmp && sudo chown "mofasa:mofasa" /mnt/hdd/tmp)
 
 map u
 map u1 $(sudo umount /mnt/hdd/root)

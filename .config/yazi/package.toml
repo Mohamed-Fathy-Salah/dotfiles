@@ -1,0 +1,24 @@
+[[plugin.deps]]
+use = "yazi-rs/plugins:smart-enter"
+rev = "1612f00"
+hash = "56fdabc96fc1f4d53c96eb884b02a5be"
+
+[[plugin.deps]]
+use = "dedukun/bookmarks"
+rev = "9ef1254"
+hash = "92fbb5483657fa7976cdf4e0104e18e0"
+
+[[plugin.deps]]
+use = "dedukun/relative-motions"
+rev = "a603d9e"
+hash = "e02a788e5b8ae0fb47fd0193dda589cc"
+
+[[flavor.deps]]
+use = "bennyyip/gruvbox-dark"
+rev = "2c61c90"
+hash = "d19603f80eba19ae01c42cb6a565283a"
+
+[[flavor.deps]]
+use = "dangooddd/kanagawa"
+rev = "04985d1"
+hash = "c69a63981e254a3a06a11c2bf0e6af1d"

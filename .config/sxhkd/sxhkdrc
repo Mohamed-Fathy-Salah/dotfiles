@@ -2,7 +2,7 @@ super + {Return, m}
     {$TERMINAL, thunderbird}
 
 super + {f, s}
-    $TERMINAL -e {lf, sudo htop}
+    $TERMINAL -e {yazi, sudo htop}
 
 super + v
     copyq show
@@ -29,8 +29,8 @@ super + p
 # super + {equal, minus, BackSpace}
 #    vol.sh {up, down, toggle}
 
-alt + {F4, F2}
-    {quit, killall sxhkd; sxhkd &}
+alt + {F4, F2, F5}
+    {quit, killall sxhkd; sxhkd &, sudo sync && echo 3 | sudo tee /proc/sys/vm/drop_caches }
 
 { ,shift,alt} Print
     maim -{u,us,i $(xdotool getactivewindow)} "$PICTURES/pic-full-$(date '+%y%m%d-%H%M-%S').png"

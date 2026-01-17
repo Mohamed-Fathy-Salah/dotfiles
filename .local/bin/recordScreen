@@ -1,3 +1,9 @@
 #!/bin/bash
 #ffmpeg -video_size 1920x1080 -framerate 15 -f x11grab -i :0.0 -preset ultrafast ~/Videos/output.mkv
-ffmpeg -video_size 1920x1080 -framerate 15 -f x11grab -i :0.0+1920,0 -preset ultrafast ~/Videos/output.mkv
+#ffmpeg -video_size 1920x1080 -framerate 15 -f x11grab -i :0.0+1920,0 -preset ultrafast ~/Videos/output.mkv
+
+st -e sh -c '
+read X Y W H < <(slop -f "%x %y %w %h")
+FILE=~/Videos/$(date +%Y-%m-%d_%H-%M-%S).mp4
+ffmpeg -video_size "${W}x${H}" -framerate 15 -f x11grab -i ":0.0+$X,$Y" -c:v libx264 -preset ultrafast "$FILE"
+'

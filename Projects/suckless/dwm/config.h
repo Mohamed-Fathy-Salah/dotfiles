@@ -40,6 +40,7 @@ static const Rule rules[] = {
     {"Java", NULL, "Dbeaver", 1 << 2, 1, 0, 1},
     {"st-256color", NULL, "qalc", 0, 1, 1, -1},
     {"st-256color", NULL, "alsamixer", 0, 1, 1, -1},
+    //{"st-256color", NULL, "clipse", 0, 1, 1, -1},
 };
 
 /* layout(s) */
