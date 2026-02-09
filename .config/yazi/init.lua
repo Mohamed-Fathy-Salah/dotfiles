@@ -13,4 +13,4 @@ Status:children_add(function()
 end, 500, Status.RIGHT)
 
 require("bookmarks"):setup({ persist = "all" })
-require("relative-motions"):setup({ show_numbers="relative_absolute", show_motion = true, enter_mode ="first" })
+require("git"):setup()

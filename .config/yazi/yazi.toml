@@ -35,14 +35,20 @@ pdf = [
   { run = 'zathura "$@"', desc = "PDF", orphan = true },
 ]
 
+libreoffice = [
+  { run = 'libreoffice "$@"', desc = "LibreOffice", orphan = true},
+]
+
 fallback = [
   { run = '$OPENER "$@"', desc = "Fallback", orphan = true },
 ]
 
 [open]
 rules = [
+  { mime = "application/*opendocument*", use = "libreoffice" },
+  { mime = "application/*openxmlformats-officedocument*", use = "libreoffice" },
   { name = "*.exe", use = "wineexe" },
-  { mime = "text/html", use = "html" },
+  { mime = "text/html", use = ["html", "edit"] },
   { mime = "text/*", use = "edit" },
   { mime = "application/javascript", use = "edit" },
   { mime = "application/json", use = "edit" },
@@ -57,3 +63,32 @@ rules = [
 on   = "<Esc>"
 run  = "close"
 desc = "Cancel input"
+
+[[plugin.prepend_fetchers]]
+id  = "git"
+url = "*"
+run = "git"
+
+[[plugin.prepend_fetchers]]
+id  = "git"
+url = "*/"
+run = "git"
+
+[plugin]
+prepend_preloaders = [
+    # Office Documents
+    { mime = "application/openxmlformats-officedocument.*", run = "office" },
+    { mime = "application/oasis.opendocument.*", run = "office" },
+    { mime = "application/ms-*", run = "office" },
+    { mime = "application/msword", run = "office" },
+    { name = "*.docx", run = "office" },
+]
+
+prepend_previewers = [
+    # Office Documents
+    { mime = "application/openxmlformats-officedocument.*", run = "office" },
+    { mime = "application/oasis.opendocument.*", run = "office" },
+    { mime = "application/ms-*", run = "office" },
+    { mime = "application/msword", run = "office" },
+    { name = "*.docx", run = "office" },
+]

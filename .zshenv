@@ -12,12 +12,13 @@ export BROWSER="chromium"
 export OPENER="xdg-open"
 #export PATH="${PATH}:/home/mofasa/.local/bin:/usr:/usr/lib/python3.10/site-packages/opencv_python-4.5.5.62-py3.10-linux-x86_64.egg/cv2"
 #export PATH="${PATH}:/home/mofasa/.local/bin:/opt/dotnet:$HOME/Android/Sdk/cmdline-tools/latest/bin:$HOME/Android/Sdk/platform-tools"
-export PATH="${PATH}:/home/mofasa/.local/bin:/opt/dotnet:/home/mofasa/.deno/bin:/home/mofasa/.dotnet/tools:/home/mofasa/go/bin:/opt/flutter/bin:/opt/VSCode-linux-x64/bin:$HOME/.rbenv/shims:$HOME/.rbenv/bin:/opt/Antigravity/bin:/home/mofasa/.cargo/bin"
+export PATH="${PATH}:/home/mofasa/.local/bin:/opt/dotnet:/home/mofasa/.deno/bin:/home/mofasa/.dotnet/tools:/home/mofasa/go/bin:/opt/flutter/bin:/opt/VSCode-linux-x64/bin:$HOME/.rbenv/shims:$HOME/.rbenv/bin:/opt/Antigravity/bin:/home/mofasa/.cargo/bin:/opt/audiorelay/bin"
 
 export PICTURES=~/Pictures
 export SITES="chromium"
 
 export ASPNETCORE_ENVIRONMENT="Development"
+
 
 export PKG_CONFIG_PATH=/usr/lib/pkgconfig:/usr/share/pkgconfig:/usr/lib64/pkgconfig
 

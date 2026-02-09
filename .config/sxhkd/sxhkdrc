@@ -1,5 +1,5 @@
-super + {Return, m}
-    {$TERMINAL, thunderbird}
+super + {Return}
+    {$TERMINAL}
 
 super + {f, s}
     $TERMINAL -e {yazi, sudo htop}
@@ -17,8 +17,8 @@ super + d
     dmenu_run
 
 # TODO:fix
-super + {w, t}
-    $BROWSER { ,'https://translate.google.com.eg/?hl=ar'}
+super + {w, t, o, m}
+    $BROWSER { ,'https://translate.google.com.eg/?hl=ar', 'https://calendar.google.com/calendar/u/1/r', 'https://mail.google.com/mail/u/1/?tab=rm&ogbl#inbox'}
 
 super + p
     passmenu && xdotool key ctrl+v

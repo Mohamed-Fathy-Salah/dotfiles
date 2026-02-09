@@ -284,6 +284,13 @@ require("lazy").setup({
                             }
                         }
                     end,
+                    ["gopls"] = function()
+                      lspconfig.gopls.setup {
+                        capabilities = capabilities,
+                        root_dir = lspconfig.util.root_pattern("go.work", "go.mod", ".git"),
+                        single_file_support = false,
+                      }
+                    end,
                 }
             })
         end,
@@ -374,6 +381,11 @@ require("lazy").setup({
                 type = "executable",
                 command = vim.fn.stdpath("data") .. "/mason/bin/netcoredbg",
                 args = { "--interpreter=vscode" },
+            }
+
+            dap.adapters.cppdbg = {
+                type = "executable",
+                command = vim.fn.stdpath("data") .. "/mason/bin/codelldb",
             }
 
             local dapui = require("dapui")
@@ -469,12 +481,21 @@ require("lazy").setup({
         end,
     },
     {
-      "lervag/vimtex",
-      lazy = false,     -- we don't want to lazy load VimTeX
-      -- tag = "v2.15", -- uncomment to pin to a specific release
-      init = function()
-        -- VimTeX configuration goes here, e.g.
-        vim.g.vimtex_view_method = "zathura"
-      end
-    }
+        "lervag/vimtex",
+        lazy = false, -- we don't want to lazy load VimTeX
+        -- tag = "v2.15", -- uncomment to pin to a specific release
+        init = function()
+            -- VimTeX configuration goes here, e.g.
+            vim.g.vimtex_view_method = "zathura"
+        end
+    },
+    {
+        "ThePrimeagen/refactoring.nvim",
+        dependencies = {
+            "nvim-lua/plenary.nvim",
+            "nvim-treesitter/nvim-treesitter",
+        },
+        lazy = false,
+        opts = {},
+    },
 })
