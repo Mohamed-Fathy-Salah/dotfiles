@@ -17,14 +17,11 @@ super + d
     dmenu_run
 
 # TODO:fix
-super + {w, t, o, m}
-    $BROWSER { ,'https://translate.google.com.eg/?hl=ar', 'https://calendar.google.com/calendar/u/1/r', 'https://mail.google.com/mail/u/1/?tab=rm&ogbl#inbox'}
+super + {w, t, o, m, c}
+    $BROWSER { ,'https://translate.google.com.eg/?hl=ar', 'https://calendar.google.com/calendar/u/1/r', 'https://mail.google.com/mail/u/1/?tab=rm&ogbl#inbox', 'https://chatgpt.com/'}
 
 super + p
     passmenu && xdotool key ctrl+v
-
-#super + p
-#    $BROWSER "$(xclip -o -selection clipboard)"
 
 # super + {equal, minus, BackSpace}
 #    vol.sh {up, down, toggle}

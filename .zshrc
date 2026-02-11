@@ -11,8 +11,6 @@ source ~/.config/zsh/powerlevel10k/powerlevel10k.zsh-theme
 [[ ! -f ~/.config/zsh/.p10k.zsh ]] || source ~/.config/zsh/.p10k.zsh
 source ~/.config/zsh/powerlevel10k/powerlevel10k.zsh-theme
 
-# GITSTATUS_LOG_LEVEL=DEBUG
-
 # for setting history length see HISTSIZE and HISTFILESIZE in bash(1)
 SAVEHIST=10000
 HISTSIZE=10000
@@ -20,6 +18,7 @@ HISTFILESIZE=10000
 HISTFILE=~/.cache/zsh/history
 
 source ~/.config/zsh/aliases
+source ~/.config/zsh/keys
 
 function hlp(){curl cheat.sh/$1}
 
@@ -38,21 +37,6 @@ zstyle ':completion:*' menu select
 zmodload zsh/complist
 compinit
 _comp_options+=(globdots)
-
-# >>> conda initialize >>>
-# !! Contents within this block are managed by 'conda init' !!
-#__conda_setup="$('/home/mofasa/miniconda3/bin/conda' 'shell.zsh' 'hook' 2> /dev/null)"
-#if [ $? -eq 0 ]; then
-    #eval "$__conda_setup"
-#else
-    #if [ -f "/home/mofasa/miniconda3/etc/profile.d/conda.sh" ]; then
-        #. "/home/mofasa/miniconda3/etc/profile.d/conda.sh"
-    #else
-        #export PATH="/home/mofasa/miniconda3/bin:$PATH"
-    #fi
-#fi
-#unset __conda_setup
-## <<< conda initialize <<<
 
 # The next line updates PATH for the Google Cloud SDK.
 if [ -f '/home/mofasa/Downloads/google-cloud-sdk/path.zsh.inc' ]; then . '/home/mofasa/Downloads/google-cloud-sdk/path.zsh.inc'; fi
