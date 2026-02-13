@@ -22,7 +22,7 @@ prepend_keymap = [
     { on = ["i"], run = """shell --orphan -- 
                         LINK=$(xclip -o -selection clipboard);
                         case "$LINK" in
-                            *git*) git clone "$LINK" ;;
+                            *git*) git clone "$LINK" && cd $(basename "$LINK" .git);;
                             *youtu*|*youtu.be*) yt-dlp -x --audio-format mp3 "$LINK" ;;
                             *) wget "$LINK" ;; 
                         esac
@@ -60,6 +60,8 @@ prepend_keymap = [
             npm run dev
         elif ls *.csproj *.cs *.sln 2>/dev/null | grep -q .; then
             dotnet run
+        elif ls go.mod 2>/dev/null | grep -q .; then
+            go run .
         else
             echo 'No recognized project files found.'
         fi

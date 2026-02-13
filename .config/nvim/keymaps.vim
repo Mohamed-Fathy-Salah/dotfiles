@@ -19,6 +19,13 @@ autocmd FileType javascript,typescript map <buffer> <F9> :w<CR>:terminal npm run
 "autocmd FileType javascript,typescript map <buffer> <leader><F12> :w<CR>:terminal npm run test<CR>/    ><CR>
 "autocmd FileType javascript,typescript map <buffer> <F12> :w<CR>:terminal npm run test %:t:r<CR>/    ><CR>
 
+augroup tex_autocompile
+  autocmd!
+  autocmd BufWritePost *.tex silent !bash -c 'tectonic "%"' 
+augroup END
+
+command! OpenPDF silent !zathura %:r.pdf &
+
 "autocmd BufEnter *.json :silent set modifiable | %!jq .
 
 vnoremap <leader>a ctry {<Esc>p`]o} catch(e) { console.error(e); }<Esc>

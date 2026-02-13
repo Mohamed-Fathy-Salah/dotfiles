@@ -480,15 +480,24 @@ require("lazy").setup({
             --vim.keymap.set("n", "<leader>ts", ":TestSuite --no-build<CR>", { desc = "Run all tests" })
         end,
     },
-    {
-        "lervag/vimtex",
-        lazy = false, -- we don't want to lazy load VimTeX
-        -- tag = "v2.15", -- uncomment to pin to a specific release
-        init = function()
-            -- VimTeX configuration goes here, e.g.
-            vim.g.vimtex_view_method = "zathura"
-        end
-    },
+    --{
+        --"lervag/vimtex",
+        --lazy = false,
+        --init = function()
+            --vim.g.vimtex_compiler_method = 'tectonic'
+            --vim.g.vimtex_view_method = 'zathura'
+            --vim.g.vimtex_compiler_tectonic = {
+              --options = { '--synctex', '--keep-logs', '--keep-intermediates' },
+            --}
+            --vim.g.vimtex_view_forward_search_on_start = 0
+            --vim.cmd([[
+            --augroup vimtex_auto
+              --autocmd!
+              --autocmd BufWritePost *.tex VimtexCompile
+            --augroup END
+            --]])
+        --end
+    --},
     {
         "ThePrimeagen/refactoring.nvim",
         dependencies = {
