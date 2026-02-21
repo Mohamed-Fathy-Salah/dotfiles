@@ -10,7 +10,8 @@ export TERMINAL="st"
 export PAGER="less"
 export BROWSER="chromium"
 export OPENER="xdg-open"
-export PATH="${PATH}:/home/mofasa/.local/bin:/opt/dotnet:/home/mofasa/.deno/bin:/home/mofasa/.dotnet/tools:/home/mofasa/go/bin:/opt/flutter/bin:/opt/VSCode-linux-x64/bin:$HOME/.rbenv/shims:$HOME/.rbenv/bin:/opt/Antigravity/bin:/home/mofasa/.cargo/bin:/opt/audiorelay/bin"
+export PATH="${PATH}:/home/mofasa/.local/bin:/opt/dotnet:/home/mofasa/.deno/bin:/home/mofasa/.dotnet/tools:/home/mofasa/go/bin:/opt/flutter/bin:/opt/VSCode-linux-x64/bin:$HOME/.rbenv/shims:$HOME/.rbenv/bin:/opt/Antigravity/bin:/home/mofasa/.cargo/bin:/opt/audiorelay/bin:/home/mofasa/.local/share/gem/ruby/3.4.0/bin:/home/mofasa/.local/share/bundle/ruby/3.4.0/bin"
+
 
 export PICTURES=~/Pictures
 export SITES="chromium"

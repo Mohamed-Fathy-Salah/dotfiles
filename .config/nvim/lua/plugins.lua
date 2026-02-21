@@ -14,7 +14,7 @@ require("lazy").setup({
     },
     {
         "nvim-tree/nvim-tree.lua",
-        dependencies = { "nvim-tree/nvim-web-devicons", "miversen33/nvim-nio" },
+        dependencies = { "nvim-tree/nvim-web-devicons", "nvim-neotest/nvim-nio" },
         config = function()
             local status_ok, nvim_tree = pcall(require, "nvim-tree")
 
@@ -164,8 +164,12 @@ require("lazy").setup({
         },
         config = function()
             local has_words_before = function()
-                local line = vim.api.nvim_get_current_line()
-                return col ~= 0 and line:sub(col, col):match("%s") == nil
+                local line, col = unpack(vim.api.nvim_win_get_cursor(0))
+                if col == 0 then
+                    return false
+                end
+                local current_line = vim.api.nvim_get_current_line()
+                return current_line:sub(col, col):match("%s") == nil
             end
 
             local feedkey = function(key, mode)
@@ -213,6 +217,7 @@ require("lazy").setup({
             }
 
             cmp.setup.cmdline(':', {
+                mapping = cmp.mapping.preset.cmdline(),
                 sources = cmp.config.sources({
                     { name = 'cmdline' },
                     { name = 'path' },
@@ -285,11 +290,11 @@ require("lazy").setup({
                         }
                     end,
                     ["gopls"] = function()
-                      lspconfig.gopls.setup {
-                        capabilities = capabilities,
-                        root_dir = lspconfig.util.root_pattern("go.work", "go.mod", ".git"),
-                        single_file_support = false,
-                      }
+                        lspconfig.gopls.setup {
+                            capabilities = capabilities,
+                            root_dir = lspconfig.util.root_pattern("go.work", "go.mod", ".git"),
+                            single_file_support = false,
+                        }
                     end,
                 }
             })
@@ -450,16 +455,6 @@ require("lazy").setup({
             strategies = {
                 chat = { adapter = "copilot" },
                 inline = { adapter = "copilot" },
-                --chat = { adapter = "openai" },
-                --inline = { adapter = "openai" },
-                --chat = {
-                --adapter = "groq",
-                --model = "llama3-70b-8192",
-                --},
-                --inline = {
-                --adapter = "groq",
-                --model = "llama3-70b-8192",
-                --},
             },
             opts = {
                 log_level = "DEBUG",
@@ -468,6 +463,7 @@ require("lazy").setup({
     },
     {
         "vim-test/vim-test",
+        enabled = false,
         config = function()
             -- run tests in a Neovim terminal
             vim.g["test#strategy"] = "neovim"
@@ -480,24 +476,6 @@ require("lazy").setup({
             --vim.keymap.set("n", "<leader>ts", ":TestSuite --no-build<CR>", { desc = "Run all tests" })
         end,
     },
-    --{
-        --"lervag/vimtex",
-        --lazy = false,
-        --init = function()
-            --vim.g.vimtex_compiler_method = 'tectonic'
-            --vim.g.vimtex_view_method = 'zathura'
-            --vim.g.vimtex_compiler_tectonic = {
-              --options = { '--synctex', '--keep-logs', '--keep-intermediates' },
-            --}
-            --vim.g.vimtex_view_forward_search_on_start = 0
-            --vim.cmd([[
-            --augroup vimtex_auto
-              --autocmd!
-              --autocmd BufWritePost *.tex VimtexCompile
-            --augroup END
-            --]])
-        --end
-    --},
     {
         "ThePrimeagen/refactoring.nvim",
         dependencies = {
@@ -507,4 +485,50 @@ require("lazy").setup({
         lazy = false,
         opts = {},
     },
+    {
+        "folke/which-key.nvim",
+        enabled = false,
+        event = "VeryLazy",
+        opts = {}
+    },
+    {
+        "folke/trouble.nvim",
+        opts = {
+            auto_jump = false
+        }, -- for default options, refer to the configuration section for custom setup.
+        cmd = "Trouble",
+        enabled = true,
+        keys = {
+            {
+                "<leader>tt",
+                "<cmd>Trouble diagnostics toggle<cr>",
+                desc = "Diagnostics (Trouble)",
+            },
+            {
+                "<leader>tq",
+                "<cmd>Trouble qflist toggle<cr>",
+                desc = "Quickfix List (Trouble)",
+            },
+            {
+                "<leader>te",
+                "<cmd>Trouble diagnostics filter.severity=vim.diagnostic.severity.ERROR<cr>",
+                desc = "Show Error Diagnostics (Trouble)",
+            },
+            {
+                "<leader>tw",
+                "<cmd>Trouble diagnostics filter.severity=vim.diagnostic.severity.WARN<cr>",
+                desc = "Show Warning Diagnostics (Trouble)",
+            },
+            {
+                "<leader>ti",
+                "<cmd>Trouble diagnostics filter.severity=vim.diagnostic.severity.INFO<cr>",
+                desc = "Show Info Diagnostics (Trouble)",
+            },
+            {
+                "<leader>th",
+                "<cmd>Trouble diagnostics filter.severity=vim.diagnostic.severity.HINT<cr>",
+                desc = "Show Hint Diagnostics (Trouble)",
+            },
+        },
+    }
 })

@@ -21,6 +21,7 @@ autocmd FileType javascript,typescript map <buffer> <F9> :w<CR>:terminal npm run
 
 augroup tex_autocompile
   autocmd!
+  autocmd BufWritePre *.tex lua require("conform").format({ bufnr = 0 })
   autocmd BufWritePost *.tex silent !bash -c 'tectonic "%"' 
 augroup END
 
@@ -150,14 +151,6 @@ nmap <leader>a :call VrcQuery()<CR>
 
 nmap <leader>v :vs<CR>:bnext<CR>
 
-" harpoon
-nmap <leader>m :lua require("harpoon.mark").add_file()<CR>
-nmap <leader>t :lua require("harpoon.ui").toggle_quick_menu()<CR>
-nmap <leader>1 :lua require("harpoon.ui").nav_file(1)<CR>
-nmap <leader>2 :lua require("harpoon.ui").nav_file(2)<CR>
-nmap <leader>3 :lua require("harpoon.ui").nav_file(3)<CR>
-nmap <leader>4 :lua require("harpoon.ui").nav_file(4)<CR>
-
 "nmap <a-t> :lua require("harpoon.term").gotoTerminal(1)<CR>
 "nmap <leader>t :exec '10sp \| terminal'<CR>
 
@@ -229,8 +222,8 @@ vnoremap <F2> :CodeCompanionChat<CR>
 "vnoremap <leader>a :lua surround()<CR>
 "vsnip
 " Expand or jump
-imap <expr> <Tab>   vsnip#available(1)  ? '<Plug>(vsnip-expand-or-jump)' : '<C-l>'
-smap <expr> <Tab>   vsnip#available(1)  ? '<Plug>(vsnip-expand-or-jump)' : '<C-l>'
+"imap <expr> <Tab>   vsnip#available(1)  ? '<Plug>(vsnip-expand-or-jump)' : '<C-l>'
+"smap <expr> <Tab>   vsnip#available(1)  ? '<Plug>(vsnip-expand-or-jump)' : '<C-l>'
 
 nnoremap <Leader>z :lua require('dbee').toggle()<CR>
 

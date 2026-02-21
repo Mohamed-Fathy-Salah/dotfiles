@@ -30,6 +30,11 @@ set noshowmode
 set termguicolors
 set signcolumn=yes
 set ignorecase
+set wildmode=longest:full,full
+set wildmenu
+set pumheight=10
+set cmdheight=0
+set laststatus=3
 
 hi LineNr guifg=light
 hi CursorLineNr guifg=gold

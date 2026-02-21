@@ -11,7 +11,7 @@ if not vim.loop.fs_stat(lazypath) then
 end
 vim.opt.rtp:prepend(lazypath)
 
-vim.cmd("source /home/mofasa/.config/nvim/sets.vim")
-vim.cmd("source /home/mofasa/.config/nvim/keymaps.vim")
+vim.cmd("source " .. vim.fn.stdpath("config") .. "/sets.vim")
+vim.cmd("source " .. vim.fn.stdpath("config") .. "/keymaps.vim")
 
 require("plugins")
