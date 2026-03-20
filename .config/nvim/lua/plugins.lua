@@ -161,6 +161,7 @@ require("lazy").setup({
                 ft = "sql", -- optional but good to have
                 opts = {},  -- needed
             },
+            { "hrsh7th/cmp-cmdline", lazy = false }
         },
         config = function()
             local has_words_before = function()
@@ -296,6 +297,20 @@ require("lazy").setup({
                             single_file_support = false,
                         }
                     end,
+                    ["ruby_lsp"] = function()
+                        lspconfig.ruby_lsp.setup {
+                            capabilities = capabilities,
+                            cmd = {
+                                "/home/mofasa/.rbenv/versions/3.3.5/bin/ruby",
+                                "/home/mofasa/.rbenv/versions/3.3.5/bin/ruby-lsp",
+                            },
+                            cmd_env = {
+                                GEM_HOME = "/home/mofasa/.rbenv/versions/3.3.5/lib/ruby/gems/3.3.0",
+                                GEM_PATH = "/home/mofasa/.rbenv/versions/3.3.5/lib/ruby/gems/3.3.0",
+                                PATH = "/home/mofasa/.rbenv/versions/3.3.5/bin:/usr/bin:/bin",
+                            },
+                        }
+                    end,
                 }
             })
         end,
@@ -318,11 +333,6 @@ require("lazy").setup({
                 highlight = {
                     enable = true,
                     additional_vim_regex_highlighting = false,
-                },
-                rainbow = {
-                    enable = true,
-                    extended_mode = false,
-                    max_file_lines = nil,
                 },
                 autotag = {
                     enable = true,
@@ -446,20 +456,48 @@ require("lazy").setup({
     },
     { 'kdheepak/lazygit.nvim', dependencies = { 'nvim-lua/plenary.nvim' } },
     {
-        "olimorris/codecompanion.nvim",
-        dependencies = {
-            { "nvim-treesitter/nvim-treesitter", build = ":TSUpdate" },
-            { "nvim-lua/plenary.nvim" },
-        },
+        "carlos-algms/agentic.nvim",
+        dependencies = { "hakonharnes/img-clip.nvim" },
+
         opts = {
-            strategies = {
-                chat = { adapter = "copilot" },
-                inline = { adapter = "copilot" },
+            -- Available by default: "claude-acp" | "gemini-acp" | "codex-acp" | "opencode-acp" | "cursor-acp" | "auggie-acp" | "mistral-vibe-acp"
+            provider = "claude-acp", -- setting the name here is all you need to get started
+        },
+
+        -- these are just suggested keymaps; customize as desired
+        keys = {
+            {
+                "<F2>",
+                function() require("agentic").toggle() end,
+                mode = { "n", "i" },
+                desc = "Toggle Agentic Chat"
             },
-            opts = {
-                log_level = "DEBUG",
+            {
+                "<F2>",
+                function() require("agentic").add_selection() end,
+                mode = { "v" },
+                desc = "Add file or selection to Agentic to Context"
+            },
+            {
+                "<leader><F2>",
+                function() require("agentic").new_session() end,
+                mode = { "n" },
+                desc = "New Agentic Session"
+            },
+            {
+                "<F14>",
+                function()
+                    require("agentic").restore_session()
+                end,
+                desc = "Agentic Restore session",
+                silent = true,
+                mode = { "n", "v", "i" },
             },
         },
+
+        config = function(_, opts)
+            require("agentic").setup(opts)
+        end,
     },
     {
         "vim-test/vim-test",
@@ -530,5 +568,18 @@ require("lazy").setup({
                 desc = "Show Hint Diagnostics (Trouble)",
             },
         },
+    },
+    { 'stevearc/conform.nvim', opts = {}, },
+    {
+        'MeanderingProgrammer/render-markdown.nvim',
+        dependencies = { 'nvim-treesitter/nvim-treesitter', 'nvim-mini/mini.nvim' }, -- if you use the mini.nvim suite
+        -- dependencies = { 'nvim-treesitter/nvim-treesitter', 'nvim-mini/mini.icons' },        -- if you use standalone mini plugins
+        -- dependencies = { 'nvim-treesitter/nvim-treesitter', 'nvim-tree/nvim-web-devicons' }, -- if you prefer nvim-web-devicons
+        ---@module 'render-markdown'
+        ---@type render.md.UserConfig
+        opts = {
+            file_types = {"markdown", "Avante", "AgenticChat"}
+        },
+        ft = {"markdown", "Avante", "AgenticChat"}
     }
 })

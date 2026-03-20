@@ -18,6 +18,11 @@ use = "macydnah/office"
 rev = "41ebef8"
 hash = "5805affd3ae8adcb3c72b6997d21c0a6"
 
+[[plugin.deps]]
+use = "Mohamed-Fathy-Salah/relative-motions"
+rev = "7b5ef7c"
+hash = "86426872a9c7dda5fac6e41cb0a5d942"
+
 [[flavor.deps]]
 use = "bennyyip/gruvbox-dark"
 rev = "2c61c90"

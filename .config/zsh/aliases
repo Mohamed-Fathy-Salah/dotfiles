@@ -43,3 +43,5 @@ alias config='/usr/bin/git --git-dir=$HOME/dotfiles/ --work-tree=$HOME'
 #####
 #alias curl="curl -s"
 ####
+
+alias luciq='eval $(ssh-agent -s) && ssh-add ~/.ssh/id_ed25519_luciq'

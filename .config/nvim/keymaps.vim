@@ -19,6 +19,8 @@ autocmd FileType javascript,typescript map <buffer> <F9> :w<CR>:terminal npm run
 "autocmd FileType javascript,typescript map <buffer> <leader><F12> :w<CR>:terminal npm run test<CR>/    ><CR>
 "autocmd FileType javascript,typescript map <buffer> <F12> :w<CR>:terminal npm run test %:t:r<CR>/    ><CR>
 
+autocmd TermOpen * if &filetype ==# 'lazygit' | startinsert | endif
+
 augroup tex_autocompile
   autocmd!
   autocmd BufWritePre *.tex lua require("conform").format({ bufnr = 0 })
@@ -26,6 +28,10 @@ augroup tex_autocompile
 augroup END
 
 command! OpenPDF silent !zathura %:r.pdf &
+
+" Stop Agentic agent with Ctrl-C in AgenticChat buffers
+autocmd FileType AgenticChat,AgenticInput nnoremap <buffer> <silent> <C-c> :lua require("agentic").stop_generation()<CR>
+autocmd FileType AgenticChat,AgenticInput inoremap <buffer> <silent> <C-c> <Esc>:lua require("agentic").stop_generation()<CR>
 
 "autocmd BufEnter *.json :silent set modifiable | %!jq .
 
@@ -69,8 +75,10 @@ vnoremap <a-k> :m '<-2<cr>gv=gv
 " nnoremap <leader>f <cmd>lua require'telescope.builtin'.find_files(require('telescope.themes').get_dropdown({ previewer = false }))<cr>
 " nnoremap <c-t> <cmd>Telescope live_grep<cr>
 nnoremap <Leader>ff :Telescope find_files<CR>
+vnoremap <Leader>ff "zy:Telescope find_files default_text=<C-r>z<CR>
 nnoremap <Leader>fp :Telescope projects<CR>
 nnoremap <Leader>fg :Telescope live_grep<CR>
+vnoremap <Leader>fg "zy:Telescope live_grep default_text=<C-r>z<CR>
 nnoremap <Leader>fr :Telescope resume<CR>
 nnoremap <Leader>fb :Telescope buffers<CR>
 nnoremap <Leader>fh :Telescope help_tags<CR>
@@ -93,7 +101,7 @@ nnoremap <leader>q :q <CR>
 nnoremap <leader>d :bd <CR>
 nnoremap <leader>Q :q! <CR>
 nnoremap <leader>w :w <CR>
-nnoremap <leader>W :w !sudo tee % <CR>
+nnoremap <leader>W :w !sudo tee % <CR>l<CR>
 "nnoremap <leader>s :bw <CR>
 "nnoremap <Leader>+ :vertical resize +5<CR>
 "nnoremap <Leader>- :vertical resize -5<CR>
@@ -132,6 +140,7 @@ nmap <leader>gd :Gitsigns diffthis<CR>
 nmap ]c :Gitsigns next_hunk<CR>
 nmap [c :Gitsigns prev_hunk<CR>
 nnoremap <leader>gl :LazyGit<CR>
+nnoremap <leader>gf :LazyGitFilterCurrentFile<CR>
 
 " debugger
 nnoremap <F10> :lua require('dap').step_over()<CR>

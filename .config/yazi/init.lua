@@ -14,3 +14,4 @@ end, 500, Status.RIGHT)
 
 require("bookmarks"):setup({ persist = "all" })
 require("git"):setup()
+require("relative-motions"):setup({ show_numbers="relative_absolute", show_motion = true, enter_mode ="first" })

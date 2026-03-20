@@ -38,9 +38,14 @@ zmodload zsh/complist
 compinit
 _comp_options+=(globdots)
 
+compinit -d "$XDG_CACHE_HOME/zsh/zcompdump"
+
 # The next line updates PATH for the Google Cloud SDK.
 if [ -f '/home/mofasa/Downloads/google-cloud-sdk/path.zsh.inc' ]; then . '/home/mofasa/Downloads/google-cloud-sdk/path.zsh.inc'; fi
 
 # The next line enables shell command completion for gcloud.
-if [ -f '/home/mofasa/Downloads/google-cloud-sdk/completion.zsh.inc' ]; then . '/home/mofasa/Downloads/google-cloud-sdk/completion.zsh.inc'; fi
-. "/home/mofasa/.deno/env"
+#if [ -f '/home/mofasa/Downloads/google-cloud-sdk/completion.zsh.inc' ]; then . '/home/mofasa/Downloads/google-cloud-sdk/completion.zsh.inc'; fi
+. "/home/mofasa/.local/share/deno/env"
+export PATH=$PATH:$HOME/.maestro/bin
+
+#eval "$(rbenv init - --no-rehash zsh)"

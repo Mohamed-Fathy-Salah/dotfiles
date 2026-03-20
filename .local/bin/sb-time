@@ -5,7 +5,7 @@ hijri_file=~/.cache/hijri_date
 
 function init {
     if ! [ -f "$cache_file" ] || ! [ $(stat -c %y "$cache_file" | cut -d' ' -f1) == $(date +%Y-%m-%d) ] || [ $(stat -c %s "$cache_file") -lt 5 ]; then
-        response=$(curl --silent "https://api.aladhan.com/v1/timingsByAddress/$(date "+%d-%m-%Y")?address=Cairo,Egypt&method=8")
+        response=$(curl --silent "https://api.aladhan.com/v1/timingsByAddress/$(date "+%d-%m-%Y")?address=Cairo,Egypt&method=5")
         echo $(echo "$response" | jq -r ".data.timings | (.Fajr, .Dhuhr, .Asr, .Maghrib, .Isha)") > $cache_file
         echo $(echo "$response" | jq -r '.data.date.hijri.day + " " + .data.date.hijri.month.en + " " + .data.date.hijri.year') > $hijri_file
     fi

@@ -14,14 +14,14 @@ super + space
     kill -42 $(pidof dwmblocks)
 
 super + d
-    dmenu_run
+    dmenu_run -i
 
-# TODO:fix
 super + {w, t, o, m, c}
     $BROWSER { ,'https://translate.google.com.eg/?hl=ar', 'https://calendar.google.com/calendar/u/1/r', 'https://mail.google.com/mail/u/1/?tab=rm&ogbl#inbox', 'https://chatgpt.com/'}
 
 super + p
-    passmenu && xdotool key ctrl+v
+    secrets
+    # passmenu && xdotool key ctrl+v
 
 # super + {equal, minus, BackSpace}
 #    vol.sh {up, down, toggle}

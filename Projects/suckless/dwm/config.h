@@ -37,10 +37,10 @@ static const Rule rules[] = {
     {"mpv", NULL, NULL, 1 << 1, 0, 0, 0},
     {"copyq", NULL, NULL, 0, 1, 1, -1},
     {"DBeaver", NULL, NULL, 1 << 2, 0, 0, 1},
+    {"Antigravity", NULL, NULL, 1 << 0, 0, 0, 1},
     {"Java", NULL, "Dbeaver", 1 << 2, 1, 0, 1},
     {"st-256color", NULL, "qalc", 0, 1, 1, -1},
     {"st-256color", NULL, "alsamixer", 0, 1, 1, -1},
-    //{"st-256color", NULL, "clipse", 0, 1, 1, -1},
 };
 
 /* layout(s) */
