@@ -578,8 +578,15 @@ require("lazy").setup({
         ---@module 'render-markdown'
         ---@type render.md.UserConfig
         opts = {
-            file_types = {"markdown", "Avante", "AgenticChat"}
+            file_types = { "markdown", "Avante", "AgenticChat" }
         },
-        ft = {"markdown", "Avante", "AgenticChat"}
+        ft = { "markdown", "Avante", "AgenticChat" }
+    },
+    {
+        "lukas-reineke/indent-blankline.nvim",
+        main = "ibl",
+        ---@module "ibl"
+        ---@type ibl.config
+        opts = {},
     }
 })

@@ -1,5 +1,14 @@
 #!/bin/bash
 
+# If a recording is already running, stop it and exit
+EXISTING_PID=$(pgrep -f 'ffmpeg.*x11grab')
+if [[ -n "$EXISTING_PID" ]]; then
+    kill -INT "$EXISTING_PID" 
+    sleep 1 
+    kill -42 $(pidof dwmblocks)
+    exit 0
+fi
+
 # Select audio option
 # todo: ask for system audio / external audio; and ask for camera
 AUDIO=$(printf "yes\nno" | dmenu -p "Record audio?")
@@ -57,4 +66,5 @@ fi
 
 FILE=~/Videos/$(date +%Y-%m-%d_%H-%M-%S).mp4
 
-st -e sh -c "ffmpeg -video_size '${W}x${H}' -framerate 15 -f x11grab -i ':0.0+$X,$Y' $AUDIO_FFMPEG -c:v libx264 -preset ultrafast '$FILE'; read -n 1 -s -r -p 'Press any key to close...'"
+ffmpeg -video_size "${W}x${H}" -framerate 15 -f x11grab -i ":0.0+$X,$Y" $AUDIO_FFMPEG -c:v libx264 -preset ultrafast "$FILE" &
+kill -42 $(pidof dwmblocks)

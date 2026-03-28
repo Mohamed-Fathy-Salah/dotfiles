@@ -1,3 +1,5 @@
+// add 34 to the signal number 
+// kill -34+i $(pidof dwmblocks)
 #define CMDLENGTH 100
 #define DELIMITER " ┃ "
 #define CLICKABLE_BLOCKS

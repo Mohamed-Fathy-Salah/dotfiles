@@ -5,4 +5,7 @@
     #"00001000") echo -ne "؏ ⌨";;
 #esac
 
-[[ "$(xset -q|awk '/LED/ { print substr($10,5,1)}')" -eq "0" ]] && echo "E " || echo "؏ "
+#[[ "$(xset -q|awk '/LED/ { print substr($10,5,1)}')" -eq "0" ]] && echo "E " || echo "؏ "
+REC=""
+pgrep -f 'ffmpeg.*x11grab' >/dev/null && REC="⏺ ┃"
+[[ "$(xset -q|awk '/LED/ { print substr($10,5,1)}')" -eq "0" ]] && echo "${REC}E " || echo "${REC}؏ "

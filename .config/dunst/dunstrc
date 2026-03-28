@@ -1,0 +1,66 @@
+[global]
+    follow = none
+    width = 350
+    height = (0, 300)
+    origin = top-right
+    offset = (30, 60)
+    notification_limit = 20
+
+    font = SauceCodePro Nerd Font 12
+    line_height = 5
+    markup = full
+    format = "<b>%s</b>\n%b"
+    alignment = left
+    vertical_alignment = center
+    ellipsize = middle
+    show_age_threshold = 60
+    ignore_newline = no
+    stack_duplicates = true
+    show_indicators = yes
+
+    padding = 15
+    horizontal_padding = 15
+    text_icon_padding = 0
+    frame_width = 2
+    separator_height = 2
+    separator_color = frame
+    corner_radius = 10
+    gap_size = 10
+    transparency = 1
+
+    icon_position = left
+    enable_recursive_icon_lookup = true
+    icon_theme = Tela
+    min_icon_size = 32
+    max_icon_size = 128
+
+    dmenu = /usr/bin/dmenu -p dunst:
+    browser = /usr/bin/xdg-open
+    always_run_script = true
+
+    mouse_left_click = close_current
+    mouse_middle_click = do_action, close_current
+    mouse_right_click = close_all
+
+[urgency_low]
+    background = "#212121"
+    foreground = "#ececec"
+    frame_color = "#212121"
+    default_icon = dialog-information
+    timeout = 3
+
+[urgency_normal]
+    background = "#212121"
+    foreground = "#ececec"
+    frame_color = "#3281ea"
+    default_icon = dialog-warning
+    timeout = 5
+
+[urgency_critical]
+    background = "#212121"
+    foreground = "#ececec"
+    frame_color = "#F44336"
+    default_icon = dialog-error
+    timeout = 10
+
+# vim: ft=cfg

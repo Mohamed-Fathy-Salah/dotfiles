@@ -94,7 +94,22 @@ prepend_keymap = [
     { on = ["<F2>","a"], run  = 'shell --orphan antigravity' , desc = "Antigravity" },
 
 # execute
-    { on = "<c-x>", run = 'shell --block -- "$0"', desc = "execute" },
+    { on = "<F10>", run = '''shell --block --
+      choice=$(printf "none\nerrors\ninfo\nall" | dmenu -p "Log output:") || exit 0;
+      logfile="$(dirname "$0")/$(basename "$0").log";
+      start=$(date +%s%N);
+      case "$choice" in
+        errors) "$0" 2> >(tee "$logfile" >&2);;
+        info)   "$0" > >(tee "$logfile");;
+        all)    "$0" > >(tee "$logfile") 2>&1;;
+        none)   "$0";;
+        *)      exit 0;;
+      esac;
+      end=$(date +%s%N);
+      elapsed=$(( (end - start) / 1000000 ));
+      printf "\n--- Finished in %d.%03ds ---\n" $((elapsed/1000)) $((elapsed%1000));
+      [ ! -s "$logfile" ] && rm -f "$logfile"
+    ''', desc = "execute" },
 
 # plugins
     { on = "l", run = 'plugin smart-enter', desc = "open directory/file" },

@@ -4,8 +4,8 @@ super + {Return}
 super + {f, s}
     $TERMINAL -e {yazi, sudo htop}
 
-super + v
-    copyq show
+super + {v, r}
+    {copyq show, recordScreen}
 
 XF86HomePage
     st -e qalc
@@ -36,11 +36,11 @@ ctrl + { ,shift,alt} Print
     maim -{u,us,i $(xdotool getactivewindow)} | xclip -selection clipboard -t image/png
 
 {XF86AudioMute,XF86AudioRaiseVolume,XF86AudioLowerVolume}
-    amixer -q set Master {toggle,5%+,5%-} ; kill -44 $(pidof dwmblocks)
+    amixer -q set Master {toggle,5%+,5%-} ; kill -40 $(pidof dwmblocks)
 #pactl set-sink-{mute 0 toggle,volume 0 +5%,volume 0 -5%} ; kill -44 $(pidof dwmblocks)
 
 super + {XF86AudioMute,XF86AudioRaiseVolume,XF86AudioLowerVolume}
-    pactl set-source-{mute 0 toggle,volume 0 +5%,volume 0 -5%};kill -41 $(pidof dwmblocks)
+    pactl set-source-{mute 0 toggle,volume 0 +5%,volume 0 -5%};kill -40 $(pidof dwmblocks)
 
 {XF86AudioPrev,XF86AudioNext,XF86AudioPlay,XF86AudioStop}
     mpc {prev,next,toggle,stop}
