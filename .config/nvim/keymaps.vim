@@ -1,16 +1,16 @@
 " split long line in multiple lines -> visual gq
 let mapleader = " "
 "autocmd FileType python map <buffer> <F10> :w<CR>:exec '!python' shellescape(@%, 1)<CR>
-autocmd FileType python map <buffer> <F10> :w<CR>:!python %:t<CR>
+autocmd FileType python map <buffer> <F10> :w<CR>:terminal if [ -d venv ]; then source venv/bin/activate; fi && python %:t<CR>
 "autocmd FileType python map <buffer> <F12> :w<CR>:terminal pytest<CR>
 "autocmd FileType java map <buffer> <F10> :w<CR>:!java %:t<CR>
 "autocmd FileType cpp map <buffer> <F10> :w<CR>:!g++ -g %:t -o %:t:r.out<CR>:!./%:t:r.out<CR>
 "autocmd FileType cpp map <buffer> <F10> :w<CR>:!g++ %:t -o %:t:r.out -lsqlite3<CR>:!./%:t:r.out<CR>
-autocmd FileType cpp map <buffer> <F10> :w<CR>:!g++ %:t -g -o %:t:r.out<CR>:!./%:t:r.out<CR>
-autocmd FileType c map <buffer> <F10> :w<CR>:!gcc %:t -o %:t:r.out -lm<CR>:!./%:t:r.out<CR>
-autocmd FileType sh map <buffer> <F10> :w<CR>:!bash %:t<CR>
-autocmd FileType rust map <buffer> <F10> :w<CR>:!cargo run<CR>
-autocmd FileType cs nnoremap <buffer> <F9> :w<CR>:!dotnet build -c Debug<CR>
+autocmd FileType cpp map <buffer> <F10> :w<CR>:terminal g++ %:t -g -o %:t:r.out && ./%:t:r.out<CR>
+autocmd FileType c map <buffer> <F10> :w<CR>:terminal gcc %:t -o %:t:r.out -lm && ./%:t:r.out<CR>
+autocmd FileType sh map <buffer> <F10> :w<CR>:terminal bash %:t<CR>
+autocmd FileType rust map <buffer> <F10> :w<CR>:terminal cargo run<CR>
+autocmd FileType cs nnoremap <buffer> <F9> :w<CR>:terminal dotnet build -c Debug<CR>
 "autocmd FileType cs map <buffer> <F10> :w<CR>:!dotnet run<CR>
 "autocmd FileType cs map <buffer> <F10> :w<CR>:!setsid st -e dotnet run<CR><CR>
 autocmd FileType javascript,typescript map <buffer> <F9> :w<CR>:terminal npm run dev<CR>
@@ -97,7 +97,7 @@ nnoremap <leader>k :wincmd k<CR>
 nnoremap <leader>l :wincmd l<CR>
 "nnoremap <leader>c :wincmd c<CR>
 
-nnoremap <leader>q :q <CR>
+nnoremap <leader>q :NvimTreeClose<CR>:lua require("agentic").close()<CR>:q<CR>
 nnoremap <leader>d :bd <CR>
 nnoremap <leader>Q :q! <CR>
 nnoremap <leader>w :w <CR>
@@ -169,8 +169,6 @@ tnoremap <leader>k <C-\><C-N><C-w>k
 tnoremap <leader>l <C-\><C-N><C-w>l
 
 " Toggle 'default' terminal
-nnoremap <leader><CR> :call ChooseTerm("term")<CR>
-
 function! ChooseTerm(termname)
 	let buf = bufexists(a:termname)
     let pane = bufwinnr(a:termname)
@@ -185,20 +183,13 @@ function! ChooseTerm(termname)
 		:exe "f " a:termname
 	endif
 endfunction
+nnoremap <leader><CR> :call ChooseTerm("term")<CR>
 
 " execute current line
 nnoremap <leader>c :. !bc<CR>
 nnoremap <leader>x :. !bash<CR>
 vnoremap <leader>c yO<Esc>p:. !bc<CR>0Dgvpkdd
 
-nnoremap <leader>s :call SwitchCodeTest()<CR>
-"function! SwitchCodeTest()
-    "if expand('%:e:e:r') == 'test'
-        ":exe 'e ' . expand('%:p:h:h') . '/' . expand('%:t:r:r') . '.' . expand('%:e')
-    "else
-        ":exe 'e ' . expand('%:p:h') . '/__test__/' . expand('%:t:r') . '.test.' . expand('%:e')
-    "endif
-"endfunction
 function! SwitchCodeTest()
     let l:fname = expand('%:t:r')
     let l:dir = expand('%:p:h')
@@ -215,6 +206,7 @@ function! SwitchCodeTest()
         exe 'e ' . l:root . '/Controllers/' . l:ctrlname . '.cs'
     endif
 endfunction
+nnoremap <leader>s :call SwitchCodeTest()<CR>
 
 " folding code
 nnoremap <leader><F4> :set foldmethod=indent<CR>
@@ -240,3 +232,25 @@ command! Bonly execute '%bd|e#|bd#'
 command! BWonly execute 'wall|%bd!|e#|bd#'
 
 vnoremap <leader>PS :s/\%#\w\+/\=tolower(substitute(submatch(0), '\C\(\l\)\([A-Z]\)', '\1_\l\2', 'g'))/<CR>
+
+" Copy GitHub URL pointing to selected lines (<leader>y in visual)
+function! CopyGithubUrl()
+  let l:dir = shellescape(expand('%:p:h'))
+  let l:remote = substitute(system('git -C ' . l:dir . ' remote get-url origin'), '\n', '', 'g')
+  let l:remote = substitute(l:remote, '\.git$', '', '')
+  let l:remote = substitute(l:remote, 'git@github\.com:', 'https://github.com/', '')
+
+  let l:sha = substitute(system('git -C ' . l:dir . ' rev-parse HEAD'), '\n', '', 'g')
+  let l:root = substitute(system('git -C ' . l:dir . ' rev-parse --show-toplevel'), '\n', '', 'g')
+  let l:fpath = substitute(expand('%:p'), '^' . l:root . '/', '', '')
+
+  let l:l1 = line("'<")
+  let l:l2 = line("'>")
+  let l:lines = l:l1 == l:l2 ? '#L' . l:l1 : '#L' . l:l1 . '-L' . l:l2
+
+  let l:url = l:remote . '/blob/' . l:sha . '/' . l:fpath . l:lines
+  let @+ = l:url
+  echo l:url
+endfunction
+vnoremap <leader>y :<C-u>call CopyGithubUrl()<CR>
+

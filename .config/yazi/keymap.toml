@@ -76,7 +76,7 @@ prepend_keymap = [
 
 # terminal
     { on = "W", run = "tasks:show", desc = "Show task manager" },
-    { on = "w", run = 'shell --block -- scroll "$SHELL"', desc = "terminal" },
+    { on = "w", run = 'shell --block -- "$SHELL"', desc = "terminal" },
     { on = "<F5>", run = """shell --block --
         if ls *.js *.ts *.tsx 2>/dev/null | grep -q .; then
             npm run dev
@@ -88,27 +88,14 @@ prepend_keymap = [
             echo 'No recognized project files found.'
         fi
     """, desc = "run project" },
-    { on = ["<F2>","l"], run  = 'shell --block -- scroll claude' , desc = "Claude CLI" },
-    { on = ["<F2>","c"], run  = 'shell --block -- scroll copilot' , desc = "Copilot CLI" },
-    { on = ["<F2>","g"], run  = 'shell --block -- scroll gemini' , desc = "Gemini CLI" },
+    { on = ["<F2>","l"], run  = 'shell --block -- claude' , desc = "Claude CLI" },
+    { on = ["<F2>","c"], run  = 'shell --block -- copilot' , desc = "Copilot CLI" },
+    { on = ["<F2>","g"], run  = 'shell --block -- gemini' , desc = "Gemini CLI" },
     { on = ["<F2>","a"], run  = 'shell --orphan antigravity' , desc = "Antigravity" },
 
 # execute
     { on = "<F10>", run = '''shell --block --
-      choice=$(printf "none\nerrors\ninfo\nall" | dmenu -p "Log output:") || exit 0;
-      logfile="$(dirname "$0")/$(basename "$0").log";
-      start=$(date +%s%N);
-      case "$choice" in
-        errors) "$0" 2> >(tee "$logfile" >&2);;
-        info)   "$0" > >(tee "$logfile");;
-        all)    "$0" > >(tee "$logfile") 2>&1;;
-        none)   "$0";;
-        *)      exit 0;;
-      esac;
-      end=$(date +%s%N);
-      elapsed=$(( (end - start) / 1000000 ));
-      printf "\n--- Finished in %d.%03ds ---\n" $((elapsed/1000)) $((elapsed%1000));
-      [ ! -s "$logfile" ] && rm -f "$logfile"
+      "$0" && notify-send -u low "$0" "Finished in $SECONDS seconds" || notify-send -u critical "$0" "Failed with exit code $?"
     ''', desc = "execute" },
 
 # plugins

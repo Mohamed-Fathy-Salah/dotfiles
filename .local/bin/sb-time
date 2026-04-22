@@ -50,6 +50,6 @@ case $BLOCK_BUTTON in
             fi
         done
         ;;
-    *) date "+ %I:%M %p ";;
+    *) date "+ %I:%M %p";;
 esac
 

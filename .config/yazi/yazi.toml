@@ -55,9 +55,11 @@ rules = [
   { mime = "image/*", use = "img" },
   { mime = "video/*", use = "media" },
   { mime = "audio/*", use = "media" },
+  { mime = "application/octet-stream", use = "media" },
   { mime = "application/pdf", use = "pdf" },
-  { name = "*", use = "fallback" },
+  { name = "*", use = ["fallback", "wineexe", "html", "edit", "img", "media", "pdf", "libreoffice" ] },
 ]
+
 
 [[input.prepend_keymap]]
 on   = "<Esc>"

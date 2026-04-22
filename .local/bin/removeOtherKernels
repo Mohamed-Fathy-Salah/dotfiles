@@ -1,1 +1,33 @@
+#!/bin/bash
+set -euo pipefail
+
+current=$(uname -r)
+lts_ver=$(xbps-query -s 'linux-lts-' | grep -oP 'linux-lts-\K[0-9]+\.[0-9]+')
+echo "Current kernel: $current"
+echo "LTS series: ${lts_ver}.x"
+
+# Find kernel files to remove (excluding current and LTS)
+to_remove=()
+for f in /boot/vmlinuz-* /boot/config-* /boot/initramfs-*; do
+    [ -e "$f" ] || continue
+    [[ "$f" == *"$current"* ]] && continue
+    [[ "$f" == *"$lts_ver"* ]] && continue
+    to_remove+=("$f")
+done
+
+if [ ${#to_remove[@]} -eq 0 ]; then
+    echo "No other kernel files found."
+    exit 0
+fi
+
+echo "Will remove:"
+printf '  %s\n' "${to_remove[@]}"
+echo ""
+
+read -p "Proceed? [y/N] " answer
+[[ "$answer" =~ ^[Yy]$ ]] || { echo "Aborted."; exit 1; }
+
+sudo rm -v "${to_remove[@]}"
 sudo vkpurge rm all
+sudo grub-mkconfig -o /boot/grub/grub.cfg
+echo "Done."

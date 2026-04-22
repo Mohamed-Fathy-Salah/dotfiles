@@ -7,5 +7,10 @@
 
 #[[ "$(xset -q|awk '/LED/ { print substr($10,5,1)}')" -eq "0" ]] && echo "E " || echo "؏ "
 REC=""
-pgrep -f 'ffmpeg.*x11grab' >/dev/null && REC="⏺ ┃"
-[[ "$(xset -q|awk '/LED/ { print substr($10,5,1)}')" -eq "0" ]] && echo "${REC}E " || echo "${REC}؏ "
+pgrep -f 'ffmpeg.*x11grab' >/dev/null && REC="⏺ ┃ "
+[[ "$(xset -q|awk '/LED/ { print substr($10,5,1)}')" -eq "0" ]] && echo "${REC}E " || echo "${REC}؏ "
+
+case $BLOCK_BUTTON in
+    1) xdotool key super+q ;;
+    3) quit ;;
+esac

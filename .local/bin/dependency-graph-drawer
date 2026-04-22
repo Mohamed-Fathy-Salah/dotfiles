@@ -1,0 +1,36 @@
+#!/usr/bin/bash
+
+root="wayland"
+max_depth=2
+
+declare -A visited
+
+echo "digraph G {"
+
+walk() {
+    local pkg=$1
+    local depth=$2
+
+    [[ $depth -gt $max_depth ]] && return
+    [[ ${visited[$pkg]} ]] && return
+    visited[$pkg]=1
+
+    # Down (dependencies)
+    for dep in $(xbps-query -x "$pkg" 2>/dev/null); do
+        echo "\"$pkg\" -> \"$dep\";"
+        walk "$dep" $((depth+1))
+    done
+
+    # Up (reverse dependencies)
+    for rdep in $(xbps-query -X "$pkg" 2>/dev/null); do
+        echo "\"$rdep\" -> \"$pkg\";"
+        walk "$rdep" $((depth+1))
+    done
+}
+
+walk "$root" 0
+
+echo "}"
+# ./wayland-graph.sh > graph.dot
+# dot -Tsvg -Goverlap=false -Gsplines=true graph.dot -o graph.svg
+# sfdp -Tsvg graph.dot -o graph.svg

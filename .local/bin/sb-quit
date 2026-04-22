@@ -1,0 +1,8 @@
+#!/bin/zsh
+
+case $BLOCK_BUTTON in
+    1) xdotool key super+q ;;
+    3) quit
+esac
+
+echo 'X'

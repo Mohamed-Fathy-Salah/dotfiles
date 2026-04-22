@@ -10,4 +10,5 @@ xmodmap -e "clear lock" \
         -e "keycode 66 = Super_L" \
         -e "keycode 133 = Caps_Lock" \
         -e "add mod4 = Super_L"
+
 exec dbus-launch --exit-with-session dwm

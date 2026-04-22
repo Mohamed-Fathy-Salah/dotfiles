@@ -42,12 +42,22 @@ require("lazy").setup({
                 vim.keymap.set("n", "d", api.fs.remove, opts("Delete"))
                 vim.keymap.set("n", "e", api.fs.rename_basename, opts("Rename: Basename"))
                 vim.keymap.set("n", "r", api.fs.rename, opts("Rename"))
-                vim.keymap.set("n", "gy", api.fs.copy.absolute_path, opts("Copy Absolute Path"))
-                vim.keymap.set("n", "y", api.fs.copy.basename, opts("Copy Basename"))
+                vim.keymap.set("n", "y", function()
+                  vim.ui.select(
+                    { "Basename", "Relative Path", "Absolute Path" },
+                    { prompt = "Copy what?" },
+                    function(choice)
+                      if choice == "Basename" then api.fs.copy.basename()
+                      elseif choice == "Relative Path" then api.fs.copy.relative_path()
+                      elseif choice == "Absolute Path" then api.fs.copy.absolute_path()
+                      end
+                    end
+                  )
+                end, opts("Copy Path"))
                 vim.keymap.set("n", "p", api.fs.paste, opts("Paste"))
                 vim.keymap.set("n", "S", api.tree.search_node, opts("Search"))
                 vim.keymap.set("n", "x", api.fs.cut, opts("Cut"))
-                vim.keymap.set("n", "gh", api.tree.toggle_help, opts("Help"))
+                vim.keymap.set("n", "<leader>h", api.tree.toggle_help, opts("Help"))
             end
 
             nvim_tree.setup({
@@ -456,6 +466,14 @@ require("lazy").setup({
     },
     { 'kdheepak/lazygit.nvim', dependencies = { 'nvim-lua/plenary.nvim' } },
     {
+        "stevearc/dressing.nvim",
+        opts = {
+            select = {
+                backend = { "telescope", "builtin" },
+            },
+        },
+    },
+    {
         "carlos-algms/agentic.nvim",
         dependencies = { "hakonharnes/img-clip.nvim" },
 
@@ -486,13 +504,18 @@ require("lazy").setup({
             },
             {
                 "<F14>",
-                function()
-                    require("agentic").restore_session()
-                end,
+                function() require("agentic").restore_session() end,
                 desc = "Agentic Restore session",
                 silent = true,
                 mode = { "n", "v", "i" },
             },
+            {
+                "<c-c>",
+                function() require("agentic").stop_generation() end,
+                desc = "stop Agentic Agent",
+                ft = { "AgenticInput", "AgenticFiles", "AgenticCode", "AgenticChat" },
+                mode = { "n", "i" },
+            }
         },
 
         config = function(_, opts)
@@ -588,5 +611,26 @@ require("lazy").setup({
         ---@module "ibl"
         ---@type ibl.config
         opts = {},
+    },
+    {
+        "3rd/image.nvim",
+        opts = {
+            backend = "sixel",
+            max_width_window_percentage = 100,
+            max_height_window_percentage = 100,
+            hijack_file_patterns = { "*.png", "*.jpg", "*.jpeg", "*.gif", "*.webp", "*.avif", "*.bmp", "*.ico", "*.svg" },
+        },
+        init = function()
+            -- Clear image.nvim cache on BufEnter to force re-render changed images
+            vim.api.nvim_create_autocmd("BufEnter", {
+                pattern = { "*.png", "*.jpg", "*.jpeg", "*.gif", "*.webp", "*.avif", "*.bmp", "*.ico", "*.svg" },
+                callback = function()
+                    local ok, image = pcall(require, "image")
+                    if ok then
+                        image.clear()
+                    end
+                end,
+            })
+        end,
     }
 })

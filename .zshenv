@@ -11,7 +11,7 @@ export VISUAL="nvim"
 export EDITOR="nvim"
 export BROWSER="chromium"
 export OPENER="xdg-open"
-export PATH="${PATH}:$HOME/.local/bin:$HOME/apps/dotnet:$XDG_DATA_HOME/deno/bin:$XDG_DATA_HOME/dotnet/tools:$HOME/go/bin:$HOME/apps/flutter/bin:$HOME/apps/VSCode-linux-x64/bin:$XDG_DATA_HOME/rbenv/shims:$XDG_DATA_HOME/rbenv/bin:$XDG_DATA_HOME/cargo/bin:$XDG_DATA_HOME/gem/ruby/3.4.0/bin:$XDG_DATA_HOME/bundle/ruby/3.4.0/bin"
+export PATH="${PATH}:$HOME/.local/bin:$HOME/apps/dotnet:$XDG_DATA_HOME/deno/bin:$XDG_DATA_HOME/dotnet/tools:$XDG_DATA_HOME/dotnet/.dotnet/tools:$HOME/go/bin:$HOME/apps/flutter/bin:$HOME/apps/VSCode-linux-x64/bin:$XDG_DATA_HOME/rbenv/shims:$XDG_DATA_HOME/rbenv/bin:$XDG_DATA_HOME/cargo/bin:$XDG_DATA_HOME/gem/ruby/3.4.0/bin:$XDG_DATA_HOME/bundle/ruby/3.4.0/bin"
 
 export PICTURES=~/Pictures
 export SITES="chromium"

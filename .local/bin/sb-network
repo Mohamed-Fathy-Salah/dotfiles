@@ -11,6 +11,11 @@ case $BLOCK_BUTTON in
 
         case "$choice" in
             wifi)
+                if ! sv check wpa_supplicant >/dev/null 2>&1; then
+                    notify-send "Network" "wpa_supplicant is not running. Starting it..."
+                    sudo sv start wpa_supplicant || { notify-send "Network" "Failed to start wpa_supplicant"; exit 1; }
+                fi
+
                 sudo ip link set "$ETH_IF" down 2>/dev/null
                 sudo dhcpcd -k "$ETH_IF" 2>/dev/null
 
@@ -36,7 +41,11 @@ case $BLOCK_BUTTON in
         esac
         ;;
     3)
-        [[ "$IFACE" == wl* ]] && wpa_cli status | awk -F= '/^ssid=/ {print $2}'
+        if [[ "$IFACE" == wl* ]]; then
+            wpa_cli status | awk -F= '/^ssid=/ {print $2}'
+        else
+            ip -o link show "$IFACE" | awk -F': ' '{print $2}'
+        fi
         exit 0
         ;;
 esac
