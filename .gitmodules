@@ -1,0 +1,9 @@
+[submodule "Projects/suckless/htim"]
+	path = Projects/suckless/htim
+	url = https://gitlab.com/thelinuxguy9/htim.git
+[submodule "Projects/suckless/dwm-flexipatch"]
+	path = Projects/suckless/dwm-flexipatch
+	url = https://github.com/bakkeby/dwm-flexipatch.git
+[submodule "Projects/suckless/st-flexipatch"]
+	path = Projects/suckless/st-flexipatch
+	url = https://github.com/Mohamed-Fathy-Salah/st-flexipatch-bidi.git
