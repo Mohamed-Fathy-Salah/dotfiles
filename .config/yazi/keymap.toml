@@ -15,17 +15,24 @@ prepend_keymap = [
     { on = ["g", "l"], run = "shell --block -- lazygit", desc = "lazygit" },
 
 # editor
-    { on = ["e"], run = 'shell --block -- $EDITOR "$0"', desc = "edit" },
-    { on = ["E"], run = 'shell --block -- sudo $EDITOR "$0"', desc = "sudo edit" },
+    { on = ["e"], run = 'shell --block -- $EDITOR "$@"', desc = "edit" },
+    { on = ["E"], run = 'shell --block -- sudo $EDITOR "$@"', desc = "sudo edit" },
 
 # download
     { on = ["i"], run = """shell --orphan -- 
                         LINK="$(xclip -o -selection clipboard)"
                         case "$LINK" in
                             *git*) git clone "$LINK" && cd $(basename "$LINK" .git);;
-                            *youtu*|*youtu.be*) yt-dlp -x --audio-format mp3 "$LINK";;
+                            *youtu*|*youtu.be*)
+                                CHOICE=$(printf "audio\nvideo" | dmenu -p "Download as:")
+                                case "$CHOICE" in
+                                    audio) yt-dlp -x --audio-format mp3 "$LINK";;
+                                    video)
+                                        RES=$(printf "1080\n720\n480\n360\n240\n144" | dmenu -p "Resolution:")
+                                        [ -n "$RES" ] && yt-dlp -f "bestvideo[height<=${RES}]+bestaudio/best[height<=${RES}]" --merge-output-format mp4 "$LINK";;
+                                esac;;
                             *) wget "$LINK" ;; 
-                        esac
+                        esac && notify-send "Download complete"
                     """, desc = "download clipboard link" },
 
 # zip

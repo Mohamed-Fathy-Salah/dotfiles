@@ -1,0 +1,29 @@
+#!/bin/bash
+
+# Shared prayer time cache updater for sb-time and sb-date
+cache_file=~/.cache/next_prayer
+hijri_file=~/.cache/hijri_date
+
+if ! [ -f "$cache_file" ] || ! [ -f "$hijri_file" ] || \
+   ! [ "$(stat -c %y "$cache_file" | cut -d' ' -f1)" == "$(date +%Y-%m-%d)" ] || \
+   [ "$(stat -c %s "$cache_file")" -lt 5 ] || \
+   [ "$(stat -c %s "$hijri_file")" -lt 5 ]; then
+
+    response=$(curl --silent "https://api.aladhan.com/v1/timingsByAddress/$(date "+%d-%m-%Y")?address=Cairo,Egypt&method=5")
+    echo $(echo "$response" | jq -r ".data.timings | (.Fajr, .Dhuhr, .Asr, .Maghrib, .Isha)") > $cache_file
+    echo $(echo "$response" | jq -r '.data.date.hijri.day + " " + .data.date.hijri.month.en + " " + .data.date.hijri.year') > $hijri_file
+
+    # schedule prayer notifications
+    prayers=(Fajr Dhuhr Asr Maghrib Isha)
+    IFS=' ' read -a times <<< "$(cat $cache_file)"
+    for ((i=0; i<5; i++)); do
+        echo "notify-send -u critical '${prayers[i]}' 'Prayer time'" | at "${times[i]}" 2>/dev/null
+    done
+
+    # Friday Jummah reminder: notify 10 min before Dhuhr
+    if [ "$(date +%u)" -eq 5 ]; then
+        dhuhr_time="${times[1]}"
+        jummah_remind=$(date -d "$dhuhr_time today - 10 minutes" +%H:%M)
+        echo "notify-send -u normal 'Jummah Reminder' 'Dhuhr in 10 minutes'" | at "$jummah_remind" 2>/dev/null
+    fi
+fi

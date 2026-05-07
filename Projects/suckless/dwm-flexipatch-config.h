@@ -531,21 +531,14 @@ static const Rule rules[] = {
 	RULE(.wintype = WTYPE "SPLASH", .isfloating = 1)
 	RULE(.class = "Chromium", .tags = 1 << 0, .monitor=0)
 	RULE(.class = "mpv", .tags = 1 << 1, .monitor=0)
-	#if CENTER_PATCH
-	RULE(.class = "copyq", .isfloating = 1, .iscentered = 1)
-	#else
-	RULE(.class = "copyq", .isfloating = 1)
-	#endif // CENTER_PATCH
 	RULE(.class = "DBeaver", .tags = 1 << 2, .monitor = 1)
 	RULE(.class = "Antigravity", .tags = 1 << 0, .monitor = 1)
+	RULE(.class = "ffplay", .isfloating = 1)
 	#if CENTER_PATCH
+	RULE(.class = "copyq", .isfloating = 1, .iscentered = 1)
 	RULE(.class = "Java", .title = "Dbeaver", .tags = 1 << 2, .iscentered = 1, .monitor = 1)
 	RULE(.class = "st-256color", .title = "qalc", .isfloating = 1, .iscentered = 1)
 	RULE(.class = "st-256color", .title = "alsamixer", .isfloating = 1, .iscentered = 1)
-	#else
-	RULE(.class = "Java", .title = "Dbeaver", .tags = 1 << 2, .monitor = 1)
-	RULE(.class = "st-256color", .title = "qalc", .isfloating = 1)
-	RULE(.class = "st-256color", .title = "alsamixer", .isfloating = 1)
 	#endif // CENTER_PATCH
 	#if RENAMED_SCRATCHPADS_PATCH
 	RULE(.instance = "spterm", .scratchkey = 's', .isfloating = 1)

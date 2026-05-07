@@ -1,0 +1,32 @@
+#!/bin/sh
+exec >/dev/null 2>&1
+
+class="$1"
+cmd="$2"
+name_match="$3"   # optional substring (case-insensitive)
+
+for w in $(xdotool search --classname "$class" 2>/dev/null); do
+    info=$(dwm-msg get_dwm_client "$w" 2>/dev/null)
+
+    tag=$(echo "$info" | jq -r '.tags // empty')
+    mon=$(echo "$info" | jq -r '.monitor_number // empty')
+    name=$(echo "$info" | jq -r '.name // empty')
+
+    [ -z "$tag" ] && continue
+
+    # if name_match is provided → filter by lowercase contains
+    if [ -n "$name_match" ]; then
+        echo "$name" | awk -v pat="$name_match" '{
+            n = tolower($0)
+            p = tolower(pat)
+            exit (index(n, p) == 0)
+        }' || continue
+    fi
+    
+    dwm-msg run_command focusmon "$mon"
+    dwm-msg run_command view "$tag"
+    dwm-msg run_command focuswin "$w"
+    exit
+done
+
+exec $cmd &

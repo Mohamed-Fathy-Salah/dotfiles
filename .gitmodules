@@ -7,3 +7,6 @@
 [submodule "Projects/suckless/st-flexipatch"]
 	path = Projects/suckless/st-flexipatch
 	url = https://github.com/Mohamed-Fathy-Salah/st-flexipatch-bidi.git
+[submodule "Projects/suckless/dwmblocks-async"]
+	path = Projects/suckless/dwmblocks-async
+	url = https://github.com/Mohamed-Fathy-Salah/dwmblocks-async.git

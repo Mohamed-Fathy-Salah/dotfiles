@@ -74,11 +74,14 @@ vnoremap <a-k> :m '<-2<cr>gv=gv
 " Telescope
 " nnoremap <leader>f <cmd>lua require'telescope.builtin'.find_files(require('telescope.themes').get_dropdown({ previewer = false }))<cr>
 " nnoremap <c-t> <cmd>Telescope live_grep<cr>
+nnoremap <Leader>fG :Telescope live_grep glob_pattern=
 nnoremap <Leader>ff :Telescope find_files<CR>
-vnoremap <Leader>ff "zy:Telescope find_files default_text=<C-r>z<CR>
+vnoremap <Leader>ff "zy:Telescope find_files default_text=<C-r>=escape(@z, ' \\')<CR><CR>
 nnoremap <Leader>fp :Telescope projects<CR>
 nnoremap <Leader>fg :Telescope live_grep<CR>
-vnoremap <Leader>fg "zy:Telescope live_grep default_text=<C-r>z<CR>
+nnoremap <Leader>fG :Telescope live_grep glob_pattern=
+vnoremap <Leader>fG "zy:Telescope live_grep default_text=<C-r>=escape(@z, ' \\')<CR> glob_pattern=
+vnoremap <Leader>fg "zy:Telescope live_grep default_text=<C-r>=escape(@z, ' \\')<CR><CR>
 nnoremap <Leader>fr :Telescope resume<CR>
 nnoremap <Leader>fb :Telescope buffers<CR>
 nnoremap <Leader>fh :Telescope help_tags<CR>

@@ -1,0 +1,101 @@
+#!/bin/sh
+
+DB="$HOME/.cache/.timers_db"
+SOUND="/usr/share/sounds/freedesktop/stereo/complete.oga"
+
+ask() { printf "" | dmenu -p "$1"; }
+
+valid_hms() { printf "%s" "$1" | grep -Eq '^[0-9]{2}:[0-9]{2}:[0-9]{2}$'; }
+valid_hm()  { printf "%s" "$1" | grep -Eq '^[0-9]{2}:[0-9]{2}$'; }
+
+to_seconds() {
+    IFS=: read -r h m s <<EOF
+$1
+EOF
+    echo $((10#$h*3600 + 10#$m*60 + 10#$s))
+}
+
+add_entry() {
+    echo "$1|$2|$3|$4" >> "$DB"
+}
+
+cleanup_dead() {
+    tmp=$(mktemp)
+    while IFS='|' read -r pid type ts desc; do
+        kill -0 "$pid" 2>/dev/null && echo "$pid|$type|$ts|$desc" >> "$tmp"
+    done < "$DB" 2>/dev/null
+    mv "$tmp" "$DB"
+}
+
+run_timer() {
+    notify-send -u critical "$1" "Time's up!"
+    mpv --no-terminal "$SOUND"
+}
+
+mode=$(printf "timer\nalarm\nlist\ncancel" | dmenu -p "Mode:")
+
+case "$mode" in
+    timer)
+        name=$(ask "Timer name:")
+        [ -z "$name" ] && exit 1
+        while :; do
+            t=$(ask "Duration (hh:mm:ss):")
+            valid_hms "$t" && break
+        done
+        secs=$(to_seconds "$t")
+        end=$(( $(date +%s) + secs ))
+
+        ( sleep "$secs"; run_timer "$name" ) &
+        pid=$!
+
+        add_entry "$pid" "TIMER" "$end" "$name ($t)"
+        ;;
+
+    alarm)
+        name=$(ask "Alarm name:")
+        [ -z "$name" ] && exit 1
+        ampm=$(printf "am\npm" | dmenu -p "AM/PM:")
+        while :; do
+            t=$(ask "Time (hh:mm[:ss]):")
+            if valid_hms "$t"; then break
+            elif valid_hm "$t"; then t="$t:00"; break
+            fi
+        done
+
+        now=$(date +%s)
+        target=$(date -d "$(date +%F) $t $ampm" +%s)
+        [ "$target" -le "$now" ] && target=$((target + 86400))
+
+        secs=$((target - now))
+
+        ( sleep "$secs"; run_timer "$name" ) &
+        pid=$!
+
+        add_entry "$pid" "ALARM" "$target" "$name ($t $ampm)"
+        ;;
+
+    list)
+        cleanup_dead
+        now=$(date +%s)
+        out=""
+        while IFS='|' read -r pid type ts desc; do
+            rem=$((ts - now))
+            [ "$rem" -lt 0 ] && continue
+            out="$out$type | $desc | in ${rem}s | pid=$pid\n"
+        done < "$DB" 2>/dev/null
+
+        printf "%b" "$out" | dmenu -l 10 -p "Active:"
+        ;;
+
+    cancel)
+        cleanup_dead
+        sel=$(while IFS='|' read -r pid type ts desc; do
+            echo "$pid | $type | $desc"
+        done < "$DB" 2>/dev/null | dmenu -l 10 -p "Cancel:")
+
+        pid=$(printf "%s" "$sel" | awk '{print $1}')
+        [ -n "$pid" ] && kill "$pid"
+
+        cleanup_dead
+        ;;
+esac

@@ -1,20 +1,12 @@
 #!/bin/bash
 
 cache_file=~/.cache/next_prayer
-hijri_file=~/.cache/hijri_date
 
-function init {
-    if ! [ -f "$cache_file" ] || ! [ $(stat -c %y "$cache_file" | cut -d' ' -f1) == $(date +%Y-%m-%d) ] || [ $(stat -c %s "$cache_file") -lt 5 ]; then
-        response=$(curl --silent "https://api.aladhan.com/v1/timingsByAddress/$(date "+%d-%m-%Y")?address=Cairo,Egypt&method=5")
-        echo $(echo "$response" | jq -r ".data.timings | (.Fajr, .Dhuhr, .Asr, .Maghrib, .Isha)") > $cache_file
-        echo $(echo "$response" | jq -r '.data.date.hijri.day + " " + .data.date.hijri.month.en + " " + .data.date.hijri.year') > $hijri_file
-    fi
-}
+init() { source ~/.local/bin/sb-prayer-cache; }
 
 case $BLOCK_BUTTON in
     1)
         init
-        setsid -f bash -c 'sleep 3 && kill -36 $(pidof dwmblocks)' >/dev/null 2>&1
         # Get the current time in minutes past midnight
         current_minutes=$(date "+%s" | awk '{print int($1/60)}')
 
@@ -34,7 +26,6 @@ case $BLOCK_BUTTON in
         ;;
     3) 
         init
-        setsid -f bash -c 'sleep 3 && kill -36 $(pidof dwmblocks)' >/dev/null 2>&1
         # Fetch the prayer times
         IFS=' ' read -a prayer_times < $cache_file
         current_time=$(date "+%s")

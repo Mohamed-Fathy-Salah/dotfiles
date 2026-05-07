@@ -44,10 +44,11 @@ require("lazy").setup({
                 vim.keymap.set("n", "r", api.fs.rename, opts("Rename"))
                 vim.keymap.set("n", "y", function()
                   vim.ui.select(
-                    { "Basename", "Relative Path", "Absolute Path" },
+                    { "Filename", "Basename", "Relative Path", "Absolute Path" },
                     { prompt = "Copy what?" },
                     function(choice)
-                      if choice == "Basename" then api.fs.copy.basename()
+                      if choice == "Filename" then api.fs.copy.filename()
+                      elseif choice == "Basename" then api.fs.copy.basename()
                       elseif choice == "Relative Path" then api.fs.copy.relative_path()
                       elseif choice == "Absolute Path" then api.fs.copy.absolute_path()
                       end
@@ -539,6 +540,7 @@ require("lazy").setup({
     },
     {
         "ThePrimeagen/refactoring.nvim",
+        enabled = false,
         dependencies = {
             "nvim-lua/plenary.nvim",
             "nvim-treesitter/nvim-treesitter",
@@ -611,6 +613,19 @@ require("lazy").setup({
         ---@module "ibl"
         ---@type ibl.config
         opts = {},
+    },
+    {
+        "rcarriga/nvim-notify",
+        config = function()
+            local notify = require("notify")
+            notify.setup({
+                stages = "fade",
+                timeout = 3000,
+                max_width = 80,
+                top_down = false,
+            })
+            vim.notify = notify
+        end,
     },
     {
         "3rd/image.nvim",
