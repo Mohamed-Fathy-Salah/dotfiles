@@ -5,11 +5,11 @@ chosen=$(printf $options | dmenu -i -p "Choose game: ")
 case $chosen in
     #cs) rfkill toggle wifi && cd /mnt/hdd/home/.wine/drive_c/Games/Condition-Zero && wine Condition-Zero.exe && rfkill toggle wifi ;;
     css) cd /home/mofasa/Games/CSS/ && ./start.sh ;;
-    RA2) WINEPREFIX="/mnt/hdd/home/mofasa/.wine" WINEDLLOVERRIDES="ddraw.dll=n,b" wine /mnt/hdd/home/mofasa/games/Red\ Alert\ 2/RA2MD.exe ;;
+    RA2) sudo mount UUID=700a772a-56dc-41ea-8845-e4c5e05b8c86 /mnt/hdd/home && sudo chown "mofasa:mofasa" /mnt/hdd/home ; WINEPREFIX="/mnt/hdd/home/mofasa/.wine" WINEDLLOVERRIDES="ddraw.dll=n,b" wine /mnt/hdd/home/mofasa/games/Red\ Alert\ 2/RA2MD.exe ;;
     claw) cd /mnt/hdd/home/mofasa/games/claw && wine CLAW.EXE ;;
-    LAPD) cd /mnt/hdd/home/mofasa/games/Futurcop\ LAPD && wine FCopLAPD.exe ;;
+    LAPD) cd /mnt/hdd/home/mofasa/games/Futurcop\ LAPD && ./play.sh ;;
     residual) /mnt/hdd/home/mofasa/games/GOG\ Games/Residual/start.sh ;;
-    pes) cd /mnt/hdd/home/mofasa/games/PES-6-DownloadComputerGames.net && wine pes6.exe ;;
+    pes) sudo mount UUID=700a772a-56dc-41ea-8845-e4c5e05b8c86 /mnt/hdd/home && sudo chown "mofasa:mofasa" /mnt/hdd/home ;cd /mnt/hdd/home/mofasa/games/PES-6-DownloadComputerGames.net ; WINEPREFIX="/mnt/hdd/home/mofasa/.wine" WINEDLLOVERRIDES="ddraw.dll=n,b" wine pes6.exe  ;;
     limbo) /mnt/hdd/home/mofasa/games/Limbo/limbo ;;
     typoman) /mnt/hdd/home/mofasa/games/Typoman/start ;;
 esac

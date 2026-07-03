@@ -26,10 +26,22 @@ prepend_keymap = [
                             *youtu*|*youtu.be*)
                                 CHOICE=$(printf "audio\nvideo" | dmenu -p "Download as:")
                                 case "$CHOICE" in
-                                    audio) yt-dlp -x --audio-format mp3 "$LINK";;
+                                    audio)
+                                        BASE=$(yt-dlp --no-download --print filename -o "%(title)s [%(id)s].%(ext)s" "$LINK" 2>/dev/null | head -1)
+                                        R="$PWD/${BASE%.*}.resume"
+                                        printf '#!/bin/sh\nyt-dlp -c --embed-metadata -x --audio-format mp3 -o "%s/%%(title)s [%%(id)s].%%(ext)s" "%s" && rm -f "%s"\n' "$PWD" "$LINK" "$R" > "$R" && chmod +x "$R"
+                                        yt-dlp -c --embed-metadata -x --audio-format mp3 -o "$PWD/%(title)s [%(id)s].%(ext)s" "$LINK" && rm -f "$R";;
                                     video)
                                         RES=$(printf "1080\n720\n480\n360\n240\n144" | dmenu -p "Resolution:")
-                                        [ -n "$RES" ] && yt-dlp -f "bestvideo[height<=${RES}]+bestaudio/best[height<=${RES}]" --merge-output-format mp4 "$LINK";;
+                                        [ -n "$RES" ] || exit
+                                        FMT="bestvideo[height<=${RES}]+bestaudio/best[height<=${RES}]"
+                                        BYTES=$(yt-dlp --no-download -f "$FMT" --print "%(filesize,filesize_approx)s" "$LINK" 2>/dev/null | awk '{s+=$1} END{print s+0}')
+                                        HR=$(numfmt --to=iec --suffix=B "${BYTES:-0}" 2>/dev/null)
+                                        [ "$(printf "yes\nno" | dmenu -p "Download ~${HR}?")" = yes ] || exit
+                                        BASE=$(yt-dlp --no-download -f "$FMT" --print filename -o "%(title)s [%(id)s].%(ext)s" "$LINK" 2>/dev/null | head -1)
+                                        R="$PWD/${BASE%.*}.resume"
+                                        printf '#!/bin/sh\nyt-dlp -c --embed-metadata -f "%s" -o "%s/%%(title)s [%%(id)s].%%(ext)s" --merge-output-format mp4 "%s" && rm -f "%s"\n' "$FMT" "$PWD" "$LINK" "$R" > "$R" && chmod +x "$R"
+                                        yt-dlp -c --embed-metadata -f "$FMT" -o "$PWD/%(title)s [%(id)s].%(ext)s" --merge-output-format mp4 "$LINK" && rm -f "$R";;
                                 esac;;
                             *) wget "$LINK" ;; 
                         esac && notify-send "Download complete"
@@ -85,7 +97,9 @@ prepend_keymap = [
     { on = "W", run = "tasks:show", desc = "Show task manager" },
     { on = "w", run = 'shell --block -- "$SHELL"', desc = "terminal" },
     { on = "<F5>", run = """shell --block --
-        if ls *.js *.ts *.tsx 2>/dev/null | grep -q .; then
+        if ls docker-compose.yml 2>/dev/null | grep -q .; then
+            docker-compose up -d
+        elif ls *.js *.ts *.tsx 2>/dev/null | grep -q .; then
             npm run dev
         elif ls *.csproj *.cs *.sln 2>/dev/null | grep -q .; then
             dotnet run
@@ -97,7 +111,7 @@ prepend_keymap = [
     """, desc = "run project" },
     { on = ["<F2>","l"], run  = 'shell --block -- claude' , desc = "Claude CLI" },
     { on = ["<F2>","c"], run  = 'shell --block -- copilot' , desc = "Copilot CLI" },
-    { on = ["<F2>","g"], run  = 'shell --block -- gemini' , desc = "Gemini CLI" },
+    { on = ["<F2>","g"], run  = 'shell --block -- agy' , desc = "Antigravity CLI" },
     { on = ["<F2>","a"], run  = 'shell --orphan antigravity' , desc = "Antigravity" },
 
 # execute
@@ -107,7 +121,7 @@ prepend_keymap = [
 
 # plugins
     { on = "l", run = 'plugin smart-enter', desc = "open directory/file" },
-    { on = "L", run = 'open --interactive', desc = "open directory/file interactive" },
+    { on = "<Enter>", run = 'open --interactive', desc = "open directory/file interactive" },
     { on = [ "1" ], run = "plugin relative-motions 1", desc = "Move in relative steps" },
     { on = [ "2" ], run = "plugin relative-motions 2", desc = "Move in relative steps" },
     { on = [ "3" ], run = "plugin relative-motions 3", desc = "Move in relative steps" },
@@ -117,6 +131,9 @@ prepend_keymap = [
     { on = [ "7" ], run = "plugin relative-motions 7", desc = "Move in relative steps" },
     { on = [ "8" ], run = "plugin relative-motions 8", desc = "Move in relative steps" },
     { on = [ "9" ], run = "plugin relative-motions 9", desc = "Move in relative steps" },
+
+# yank path
+    { on = "y", run = [ """shell -- for f in "$@"; do echo "file://$f"; done | xclip -i -selection clipboard -t text/uri-list """, "yank" ], desc = "yank + copy uri to clipboard" },
 
 # bookmarks
     {on = "M", run = "plugin bookmarks save", desc = "save bookmark"},

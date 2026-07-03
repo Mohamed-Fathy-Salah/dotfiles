@@ -27,8 +27,12 @@ img = [
   { run = 'sxiv "$@"', desc = "Image", orphan = true },
 ]
 
-media = [
-  { run = 'mpv --force-window=yes "$@"', desc = "Media", orphan = true },
+video = [
+  { run = 'mpv --force-window=yes --x11-name=v "$@"', desc = "Video", orphan = true },
+]
+
+audio = [
+  { run = 'mpv --force-window=yes --x11-name=a "$@"', desc = "Audio", orphan = true },
 ]
 
 pdf = [
@@ -53,11 +57,11 @@ rules = [
   { mime = "application/javascript", use = "edit" },
   { mime = "application/json", use = "edit" },
   { mime = "image/*", use = "img" },
-  { mime = "video/*", use = "media" },
-  { mime = "audio/*", use = "media" },
-  { mime = "application/octet-stream", use = "media" },
+  { mime = "video/*", use = "video" },
+  { mime = "audio/*", use = "audio" },
+  { mime = "application/octet-stream", use = "audio" },
   { mime = "application/pdf", use = "pdf" },
-  { name = "*", use = ["fallback", "wineexe", "html", "edit", "img", "media", "pdf", "libreoffice" ] },
+  { name = "*", use = ["fallback", "wineexe", "html", "edit", "img", "video", "audio", "pdf", "libreoffice" ] },
 ]
 
 

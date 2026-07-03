@@ -1,0 +1,7 @@
+#!/bin/zsh
+
+echo '󰵚'
+case $BLOCK_BUTTON in
+    1) dunstctl history-pop ;;
+    3) dunstctl close-all ;;
+esac

@@ -5,6 +5,8 @@
     origin = top-right
     offset = (30, 60)
     notification_limit = 20
+    history_length = 30
+    sticky_history = yes
 
     font = SauceCodePro Nerd Font 12
     line_height = 5

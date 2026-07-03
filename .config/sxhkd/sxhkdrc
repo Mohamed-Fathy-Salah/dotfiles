@@ -16,12 +16,18 @@ super + space
 super + d
     dmenu_run -i
 
-super + {w, t, o, m, c}
-    $BROWSER { , 'https://translate.google.com.eg/?hl=ar', 'https://calendar.google.com/calendar/u/1/r', 'https://mail.google.com/mail/u/1/?tab=rm&ogbl#inbox', 'https://chatgpt.com/'}
+super + {w, t, o, m}
+    $BROWSER { , 'https://translate.google.com.eg/?hl=ar', 'https://calendar.google.com/calendar/u/1/r', 'https://mail.google.com/mail/u/1/?tab=rm&ogbl#inbox'}
+
+super + c
+    choice=$(printf "gemini\nchatgpt" | dmenu -p "AI:") && \
+    case "$choice" in \
+        gemini) $BROWSER 'https://gemini.google.com/' ;; \
+        chatgpt) $BROWSER 'https://chatgpt.com/' ;; \
+    esac
 
 super + p
     secrets
-    # passmenu && xdotool key ctrl+v
 
 # super + {equal, minus, BackSpace}
 #    vol.sh {up, down, toggle}

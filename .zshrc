@@ -50,3 +50,11 @@ if [ -f '/home/mofasa/Downloads/google-cloud-sdk/path.zsh.inc' ]; then . '/home/
 export PATH=$PATH:$HOME/.maestro/bin
 
 #eval "$(rbenv init - --no-rehash zsh)"
+
+# >>> railway initialize >>>
+source "$HOME/.railway/env"
+# <<< railway initialize <<<
+
+
+# Added by Antigravity CLI installer
+export PATH="/home/mofasa/.local/bin:$PATH"

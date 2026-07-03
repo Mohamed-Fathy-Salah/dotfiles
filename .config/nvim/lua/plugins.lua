@@ -344,6 +344,13 @@ require("lazy").setup({
                 highlight = {
                     enable = true,
                     additional_vim_regex_highlighting = false,
+                    disable = function(_, buf)
+                          local max_filesize = 1024 * 1024 -- 1 MB
+                          local ok, stats = pcall(vim.loop.fs_stat,
+                            vim.api.nvim_buf_get_name(buf))
+
+                          return ok and stats and stats.size > max_filesize
+                    end,
                 },
                 autotag = {
                     enable = true,
@@ -480,7 +487,7 @@ require("lazy").setup({
 
         opts = {
             -- Available by default: "claude-acp" | "gemini-acp" | "codex-acp" | "opencode-acp" | "cursor-acp" | "auggie-acp" | "mistral-vibe-acp"
-            provider = "claude-acp", -- setting the name here is all you need to get started
+            provider = "claude-agent-acp", -- setting the name here is all you need to get started
         },
 
         -- these are just suggested keymaps; customize as desired
@@ -516,6 +523,36 @@ require("lazy").setup({
                 desc = "stop Agentic Agent",
                 ft = { "AgenticInput", "AgenticFiles", "AgenticCode", "AgenticChat" },
                 mode = { "n", "i" },
+            },
+            {
+                "gf",
+                function()
+                    -- nvim's <cfile> strips :line suffix, <cWORD> has the raw text
+                    local cfile = vim.fn.expand("<cfile>")
+                    if cfile == "" then return end
+                    local line = vim.fn.expand("<cWORD>"):match(":(%d+)")
+                    local cur = vim.api.nvim_get_current_win()
+                    local target
+                    for _, w in ipairs(vim.api.nvim_tabpage_list_wins(0)) do
+                        if w ~= cur and not vim.wo[w].winfixbuf then
+                            target = w
+                            break
+                        end
+                    end
+                    if not target then
+                        vim.cmd("vsplit")
+                        target = vim.api.nvim_get_current_win()
+                    end
+                    vim.api.nvim_set_current_win(target)
+                    vim.cmd("drop " .. vim.fn.fnameescape(cfile))
+                    if line then
+                        vim.cmd(":" .. line)
+                        vim.cmd("normal! zz")
+                    end
+                end,
+                desc = "Open file:line in other window",
+                ft = { "AgenticInput", "AgenticFiles", "AgenticCode", "AgenticChat" },
+                mode = { "n" },
             }
         },
 
@@ -647,5 +684,11 @@ require("lazy").setup({
                 end,
             })
         end,
+    },
+    {
+      "folke/snacks.nvim",
+      opts = {
+        bigfile = { enabled = true },
+      },
     }
 })

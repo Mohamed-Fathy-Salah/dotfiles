@@ -42,3 +42,6 @@ export AndroidSdkDirectory=$ANDROID_HOME
 export DOTNET_ROOT=$HOME/apps/dotnet
 
 export PKG_CONFIG_PATH=/usr/lib/pkgconfig:/usr/share/pkgconfig:/usr/lib64/pkgconfig
+
+#export RAILWAY_TOKEN=9acdcacc-d005-4978-b00b-75ea7a3c5d03
+. "/home/mofasa/.local/share/cargo/env"

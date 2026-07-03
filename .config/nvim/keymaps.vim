@@ -7,6 +7,7 @@ autocmd FileType python map <buffer> <F10> :w<CR>:terminal if [ -d venv ]; then 
 "autocmd FileType cpp map <buffer> <F10> :w<CR>:!g++ -g %:t -o %:t:r.out<CR>:!./%:t:r.out<CR>
 "autocmd FileType cpp map <buffer> <F10> :w<CR>:!g++ %:t -o %:t:r.out -lsqlite3<CR>:!./%:t:r.out<CR>
 autocmd FileType cpp map <buffer> <F10> :w<CR>:terminal g++ %:t -g -o %:t:r.out && ./%:t:r.out<CR>
+autocmd FileType go map <buffer> <F10> :w<CR>:terminal go run %:t<CR>
 autocmd FileType c map <buffer> <F10> :w<CR>:terminal gcc %:t -o %:t:r.out -lm && ./%:t:r.out<CR>
 autocmd FileType sh map <buffer> <F10> :w<CR>:terminal bash %:t<CR>
 autocmd FileType rust map <buffer> <F10> :w<CR>:terminal cargo run<CR>
@@ -24,7 +25,7 @@ autocmd TermOpen * if &filetype ==# 'lazygit' | startinsert | endif
 augroup tex_autocompile
   autocmd!
   autocmd BufWritePre *.tex lua require("conform").format({ bufnr = 0 })
-  autocmd BufWritePost *.tex silent !bash -c 'tectonic "%"' 
+  autocmd BufWritePost *.tex call jobstart(['tectonic', expand('%:p')])
 augroup END
 
 command! OpenPDF silent !zathura %:r.pdf &

@@ -34,6 +34,13 @@ set wildmode=longest:full,full
 set wildmenu
 set pumheight=10
 set laststatus=3
+set spell
+set spelllang=en_us
+set updatetime=1000
+set redrawtime=10000
+set synmaxcol=200
 
 hi LineNr guifg=light
 hi CursorLineNr guifg=gold
+hi SpellBad gui=underline guisp=Red cterm=underline
+hi SpellCap gui=underline guisp=Yellow cterm=underline
