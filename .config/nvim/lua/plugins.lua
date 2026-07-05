@@ -43,17 +43,21 @@ require("lazy").setup({
                 vim.keymap.set("n", "e", api.fs.rename_basename, opts("Rename: Basename"))
                 vim.keymap.set("n", "r", api.fs.rename, opts("Rename"))
                 vim.keymap.set("n", "y", function()
-                  vim.ui.select(
-                    { "Filename", "Basename", "Relative Path", "Absolute Path" },
-                    { prompt = "Copy what?" },
-                    function(choice)
-                      if choice == "Filename" then api.fs.copy.filename()
-                      elseif choice == "Basename" then api.fs.copy.basename()
-                      elseif choice == "Relative Path" then api.fs.copy.relative_path()
-                      elseif choice == "Absolute Path" then api.fs.copy.absolute_path()
-                      end
-                    end
-                  )
+                    vim.ui.select(
+                        { "Filename", "Basename", "Relative Path", "Absolute Path" },
+                        { prompt = "Copy what?" },
+                        function(choice)
+                            if choice == "Filename" then
+                                api.fs.copy.filename()
+                            elseif choice == "Basename" then
+                                api.fs.copy.basename()
+                            elseif choice == "Relative Path" then
+                                api.fs.copy.relative_path()
+                            elseif choice == "Absolute Path" then
+                                api.fs.copy.absolute_path()
+                            end
+                        end
+                    )
                 end, opts("Copy Path"))
                 vim.keymap.set("n", "p", api.fs.paste, opts("Paste"))
                 vim.keymap.set("n", "S", api.tree.search_node, opts("Search"))
@@ -115,18 +119,56 @@ require("lazy").setup({
     },
     {
         "nvim-telescope/telescope.nvim",
-        dependencies = { "nvim-lua/plenary.nvim", "ahmedkhalf/project.nvim" },
+        dependencies = { "nvim-lua/plenary.nvim", "ahmedkhalf/project.nvim", "nvim-telescope/telescope-live-grep-args.nvim" },
         config = function()
-            require('telescope').load_extension('projects')
+            local lga_actions = require("telescope-live-grep-args.actions")
+            local action_state = require("telescope.actions.state")
+            local actions = require("telescope.actions")
+
+            -- close current picker, open the other, carry the prompt text over
+            local function to_find_files(prompt_bufnr)
+                local text = action_state.get_current_line()
+                actions.close(prompt_bufnr)
+                require("telescope.builtin").find_files({ default_text = text })
+            end
+            local function to_live_grep(prompt_bufnr)
+                local text = action_state.get_current_line()
+                actions.close(prompt_bufnr)
+                require("telescope").extensions.live_grep_args.live_grep_args({ default_text = text })
+            end
+
             require('telescope').setup {
                 defaults = {
                     mappings = {
                         i = {
-                            ["<C-h>"] = "which_key"
-                        }
+                            ["<C-h>"] = "which_key",
+                            ["<S-Tab>"] = to_live_grep,
+                        },
+                        n = {
+                            ["<S-Tab>"] = to_live_grep,
+                        },
                     }
-                }
+                },
+                extensions = {
+                    live_grep_args = {
+                        auto_quoting = true,
+                        mappings = {
+                            i = {
+                                -- quote current prompt so you can append rg flags
+                                ["<C-k>"] = lga_actions.quote_prompt(),
+                                -- prefill a glob filter: type the file pattern after --glob=
+                                ["<C-i>"] = lga_actions.quote_prompt({ postfix = " --iglob **/" }),
+                                ["<S-Tab>"] = to_find_files,
+                            },
+                            n = {
+                                ["<S-Tab>"] = to_find_files,
+                            },
+                        },
+                    },
+                },
             }
+            require('telescope').load_extension('projects')
+            require('telescope').load_extension('live_grep_args')
         end,
     },
     {
@@ -345,11 +387,11 @@ require("lazy").setup({
                     enable = true,
                     additional_vim_regex_highlighting = false,
                     disable = function(_, buf)
-                          local max_filesize = 1024 * 1024 -- 1 MB
-                          local ok, stats = pcall(vim.loop.fs_stat,
+                        local max_filesize = 1024 * 1024   -- 1 MB
+                        local ok, stats = pcall(vim.loop.fs_stat,
                             vim.api.nvim_buf_get_name(buf))
 
-                          return ok and stats and stats.size > max_filesize
+                        return ok and stats and stats.size > max_filesize
                     end,
                 },
                 autotag = {
@@ -401,25 +443,47 @@ require("lazy").setup({
             "jay-babu/mason-nvim-dap.nvim", -- optional helper
         },
         config = function()
+            require("mason").setup()
             require("mason-nvim-dap").setup({
-                ensure_installed = { "delve", "netcoredbg" },
+                ensure_installed = { "delve", "netcoredbg", "codelldb" },
                 automatic_installation = true,
+                handlers = {}, -- let mason-nvim-dap wire default adapters/configs
             })
-            require("dapui").setup()
             require("nvim-dap-virtual-text").setup()
 
             local dap = require("dap")
 
-            dap.adapters.coreclr = {
-                type = "executable",
-                command = vim.fn.stdpath("data") .. "/mason/bin/netcoredbg",
-                args = { "--interpreter=vscode" },
-            }
+            -- Adapters below are handled by mason-nvim-dap default handlers.
+            -- Uncomment only if a default misbehaves and you need to override.
+            -- dap.adapters.coreclr = {
+            --     type = "executable",
+            --     command = vim.fn.stdpath("data") .. "/mason/bin/netcoredbg",
+            --     args = { "--interpreter=vscode" },
+            -- }
 
-            dap.adapters.cppdbg = {
-                type = "executable",
-                command = vim.fn.stdpath("data") .. "/mason/bin/codelldb",
+            -- codelldb is a server-type adapter, not cppdbg
+            -- dap.adapters.codelldb = {
+            --     type = "server",
+            --     port = "${port}",
+            --     executable = {
+            --         command = vim.fn.stdpath("data") .. "/mason/bin/codelldb",
+            --         args = { "--port", "${port}" },
+            --     },
+            -- }
+
+            dap.configurations.cpp = {
+                {
+                    name = "Launch (codelldb)",
+                    type = "codelldb",
+                    request = "launch",
+                    program = function()
+                        return vim.fn.input("Path to executable: ", vim.fn.getcwd() .. "/", "file")
+                    end,
+                    cwd = "${workspaceFolder}",
+                    stopOnEntry = true, -- pause immediately so UI stays open
+                },
             }
+            dap.configurations.c = dap.configurations.cpp
 
             local dapui = require("dapui")
             dapui.setup()
@@ -631,7 +695,66 @@ require("lazy").setup({
             },
         },
     },
+    {
+        'dmtrKovalenko/fff.nvim',
+        enabled = false,
+        build = 'cargo build --release',
+        opts = {},
+        keys = {
+            {
+                '<leader>ff',
+                function() require('fff').find_files() end,
+                desc = 'FFF find files',
+            },
+            {
+                '<leader>fg',
+                function() require('fff').live_grep({
+                    grep = {
+                        modes = {'fuzzy', 'plain'}
+                    }
+                }) end,
+                desc = 'FFF live fuzzy grep word',
+            },
+            {
+                "<leader>ft",
+                function()
+                    require("fff").find_in_git_root()
+                end,
+                desc = "Find files in git root",
+            },
+            {
+                "<leader>fd",
+                function()
+                     require("fff").find_files_in_dir("~/dotfiles/nvim/.config/nvim") -- Find files in a specific directory
+                end,
+                desc = "Find files in specified path",
+            },
+        },
+    },
     { 'stevearc/conform.nvim', opts = {}, },
+    {
+        'mfussenegger/nvim-lint',
+        dependencies = {
+            'mason-org/mason.nvim',
+            'rshkarin/mason-nvim-lint',
+        },
+        event = { 'BufReadPre', 'BufNewFile' },
+        config = function()
+            local lint = require('lint')
+            lint.linters_by_ft = {
+                go = { 'golangcilint' },
+                ruby = { 'rubocop' },
+            }
+            -- auto-installs the above via Mason, then registers them
+            require('mason-nvim-lint').setup()
+
+            vim.api.nvim_create_autocmd({ 'BufWritePost', 'BufReadPost', 'InsertLeave' }, {
+                callback = function()
+                    lint.try_lint()
+                end,
+            })
+        end,
+    },
     {
         'MeanderingProgrammer/render-markdown.nvim',
         dependencies = { 'nvim-treesitter/nvim-treesitter', 'nvim-mini/mini.nvim' }, -- if you use the mini.nvim suite
@@ -686,9 +809,10 @@ require("lazy").setup({
         end,
     },
     {
-      "folke/snacks.nvim",
-      opts = {
-        bigfile = { enabled = true },
-      },
-    }
+        "folke/snacks.nvim",
+        opts = {
+            bigfile = { enabled = true },
+        },
+    },
+    { 'kevinhwang91/nvim-ufo', dependencies = 'kevinhwang91/promise-async' }
 })

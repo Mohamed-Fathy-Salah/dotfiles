@@ -1,16 +1,16 @@
 " split long line in multiple lines -> visual gq
 let mapleader = " "
 "autocmd FileType python map <buffer> <F10> :w<CR>:exec '!python' shellescape(@%, 1)<CR>
-autocmd FileType python map <buffer> <F10> :w<CR>:terminal if [ -d venv ]; then source venv/bin/activate; fi && python %:t<CR>
+autocmd FileType python map <buffer> <F8> :w<CR>:terminal cd %:p:h && if [ -d venv ]; then source venv/bin/activate; fi && python %:t<CR>
 "autocmd FileType python map <buffer> <F12> :w<CR>:terminal pytest<CR>
 "autocmd FileType java map <buffer> <F10> :w<CR>:!java %:t<CR>
 "autocmd FileType cpp map <buffer> <F10> :w<CR>:!g++ -g %:t -o %:t:r.out<CR>:!./%:t:r.out<CR>
 "autocmd FileType cpp map <buffer> <F10> :w<CR>:!g++ %:t -o %:t:r.out -lsqlite3<CR>:!./%:t:r.out<CR>
-autocmd FileType cpp map <buffer> <F10> :w<CR>:terminal g++ %:t -g -o %:t:r.out && ./%:t:r.out<CR>
-autocmd FileType go map <buffer> <F10> :w<CR>:terminal go run %:t<CR>
-autocmd FileType c map <buffer> <F10> :w<CR>:terminal gcc %:t -o %:t:r.out -lm && ./%:t:r.out<CR>
-autocmd FileType sh map <buffer> <F10> :w<CR>:terminal bash %:t<CR>
-autocmd FileType rust map <buffer> <F10> :w<CR>:terminal cargo run<CR>
+autocmd FileType cpp map <buffer> <F8> :w<CR>:terminal cd %:p:h && g++ %:t -g -o %:t:r.out && ./%:t:r.out<CR>
+autocmd FileType go map <buffer> <F8> :w<CR>:terminal cd %:p:h && go run .<CR>
+autocmd FileType c map <buffer> <F8> :w<CR>:terminal cd %:p:h && gcc %:t -o %:t:r.out -lm && ./%:t:r.out<CR>
+autocmd FileType sh map <buffer> <F8> :w<CR>:terminal cd %:p:h && bash %:t<CR>
+autocmd FileType rust map <buffer> <F8> :w<CR>:terminal cargo run<CR>
 autocmd FileType cs nnoremap <buffer> <F9> :w<CR>:terminal dotnet build -c Debug<CR>
 "autocmd FileType cs map <buffer> <F10> :w<CR>:!dotnet run<CR>
 "autocmd FileType cs map <buffer> <F10> :w<CR>:!setsid st -e dotnet run<CR><CR>
@@ -73,16 +73,13 @@ vnoremap <a-k> :m '<-2<cr>gv=gv
 " vnoremap p "_dP
 
 " Telescope
-" nnoremap <leader>f <cmd>lua require'telescope.builtin'.find_files(require('telescope.themes').get_dropdown({ previewer = false }))<cr>
-" nnoremap <c-t> <cmd>Telescope live_grep<cr>
-nnoremap <Leader>fG :Telescope live_grep glob_pattern=
-nnoremap <Leader>ff :Telescope find_files<CR>
-vnoremap <Leader>ff "zy:Telescope find_files default_text=<C-r>=escape(@z, ' \\')<CR><CR>
+ "nnoremap <leader>f <cmd>lua require'telescope.builtin'.find_files(require('telescope.themes').get_dropdown({ previewer = false }))<cr>
+ "nnoremap <c-t> <cmd>Telescope live_grep<cr>
+ nnoremap <Leader>ff :Telescope find_files<CR>
+ vnoremap <Leader>ff "zy:Telescope find_files default_text=<C-r>=escape(@z, ' \\')<CR><CR>
 nnoremap <Leader>fp :Telescope projects<CR>
-nnoremap <Leader>fg :Telescope live_grep<CR>
-nnoremap <Leader>fG :Telescope live_grep glob_pattern=
-vnoremap <Leader>fG "zy:Telescope live_grep default_text=<C-r>=escape(@z, ' \\')<CR> glob_pattern=
-vnoremap <Leader>fg "zy:Telescope live_grep default_text=<C-r>=escape(@z, ' \\')<CR><CR>
+ nnoremap <Leader>fg <cmd>lua require('telescope').extensions.live_grep_args.live_grep_args()<CR>
+ vnoremap <Leader>fg "zy:lua require('telescope').extensions.live_grep_args.live_grep_args({ default_text = vim.fn.getreg('z') })<CR>
 nnoremap <Leader>fr :Telescope resume<CR>
 nnoremap <Leader>fb :Telescope buffers<CR>
 nnoremap <Leader>fh :Telescope help_tags<CR>
