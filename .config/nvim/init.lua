@@ -15,3 +15,11 @@ vim.cmd("source " .. vim.fn.stdpath("config") .. "/sets.vim")
 vim.cmd("source " .. vim.fn.stdpath("config") .. "/keymaps.vim")
 
 require("plugins")
+
+require("vim._core.ui2").enable({})
+
+vim.api.nvim_create_autocmd("FileType", {
+    callback = function(args)
+        pcall(vim.treesitter.start, args.buf)
+    end,
+})

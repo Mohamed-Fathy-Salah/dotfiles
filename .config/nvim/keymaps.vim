@@ -98,7 +98,7 @@ nnoremap <leader>k :wincmd k<CR>
 nnoremap <leader>l :wincmd l<CR>
 "nnoremap <leader>c :wincmd c<CR>
 
-nnoremap <leader>q :NvimTreeClose<CR>:lua require("agentic").close()<CR>:q<CR>
+nnoremap <leader>q :confirm qall<CR>
 nnoremap <leader>d :bd <CR>
 nnoremap <leader>Q :q! <CR>
 nnoremap <leader>w :w <CR>
@@ -140,8 +140,7 @@ nmap <leader>gb :Gitsigns toggle_current_line_blame<CR>
 nmap <leader>gd :Gitsigns diffthis<CR>
 nmap ]c :Gitsigns next_hunk<CR>
 nmap [c :Gitsigns prev_hunk<CR>
-nnoremap <leader>gl :LazyGit<CR>
-nnoremap <leader>gf :LazyGitFilterCurrentFile<CR>
+nnoremap <leader>gl :lua Snacks.lazygit()<CR>
 
 " debugger
 nnoremap <F10> :lua require('dap').step_over()<CR>
@@ -254,4 +253,3 @@ function! CopyGithubUrl()
   echo l:url
 endfunction
 vnoremap <leader>y :<C-u>call CopyGithubUrl()<CR>
-

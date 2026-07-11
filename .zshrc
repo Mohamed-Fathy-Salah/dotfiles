@@ -49,7 +49,7 @@ if [ -f '/home/mofasa/Downloads/google-cloud-sdk/path.zsh.inc' ]; then . '/home/
 . "/home/mofasa/.local/share/deno/env"
 export PATH=$PATH:$HOME/.maestro/bin
 
-#eval "$(rbenv init - --no-rehash zsh)"
+eval "$(rbenv init - --no-rehash zsh)"
 
 # >>> railway initialize >>>
 source "$HOME/.railway/env"
@@ -58,3 +58,11 @@ source "$HOME/.railway/env"
 
 # Added by Antigravity CLI installer
 export PATH="/home/mofasa/.local/bin:$PATH"
+
+# Persistent shared ssh-agent (one passphrase entry per boot)
+export SSH_AUTH_SOCK="$HOME/.ssh/agent.sock"
+ssh-add -l &>/dev/null
+if [ $? -eq 2 ]; then
+  rm -f "$SSH_AUTH_SOCK"
+  eval "$(ssh-agent -a "$SSH_AUTH_SOCK")" &>/dev/null
+fi

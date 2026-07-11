@@ -119,7 +119,7 @@ require("lazy").setup({
     },
     {
         "nvim-telescope/telescope.nvim",
-        dependencies = { "nvim-lua/plenary.nvim", "ahmedkhalf/project.nvim", "nvim-telescope/telescope-live-grep-args.nvim" },
+        dependencies = { "nvim-lua/plenary.nvim", "nvim-telescope/telescope-live-grep-args.nvim" },
         config = function()
             local lga_actions = require("telescope-live-grep-args.actions")
             local action_state = require("telescope.actions.state")
@@ -167,7 +167,6 @@ require("lazy").setup({
                     },
                 },
             }
-            require('telescope').load_extension('projects')
             require('telescope').load_extension('live_grep_args')
         end,
     },
@@ -199,92 +198,30 @@ require("lazy").setup({
         end,
     },
     {
-        "hrsh7th/nvim-cmp",
-        dependencies = {
-            "hrsh7th/cmp-nvim-lsp",
-            "hrsh7th/cmp-buffer",
-            "hrsh7th/cmp-path",
-            "hrsh7th/cmp-cmdline",
-            "hrsh7th/vim-vsnip",
-            {
-                "MattiasMTS/cmp-dbee",
-                dependencies = {
-                    { "kndndrj/nvim-dbee" }
-                },
-                ft = "sql", -- optional but good to have
-                opts = {},  -- needed
+        "saghen/blink.cmp",
+        version = "*",
+        dependencies = { "rafamadriz/friendly-snippets" },
+        opts = {
+            keymap = {
+                preset = "super-tab",
+                ["<CR>"] = { "accept", "fallback" },
+                ["<Tab>"] = { "select_next", "snippet_forward", "fallback" },
+                ["<S-Tab>"] = { "select_prev", "snippet_backward", "fallback" },
             },
-            { "hrsh7th/cmp-cmdline", lazy = false }
+            sources = {
+                default = { "lsp", "path", "snippets", "buffer" },
+            },
+            cmdline = {
+                keymap = { preset = "cmdline" },
+                completion = { menu = { auto_show = true } },
+            },
+            fuzzy = { implementation = "prefer_rust_with_warning" },
         },
-        config = function()
-            local has_words_before = function()
-                local line, col = unpack(vim.api.nvim_win_get_cursor(0))
-                if col == 0 then
-                    return false
-                end
-                local current_line = vim.api.nvim_get_current_line()
-                return current_line:sub(col, col):match("%s") == nil
-            end
+        opts_extend = { "sources.default" },
+        config = function(_, opts)
+            require("blink.cmp").setup(opts)
 
-            local feedkey = function(key, mode)
-                vim.api.nvim_feedkeys(vim.api.nvim_replace_termcodes(key, true, true, true), mode, true)
-            end
-
-            local cmp = require('cmp')
-            cmp.setup {
-                snippet = {
-                    expand = function(args)
-                        vim.fn["vsnip#anonymous"](args.body)
-                    end,
-                },
-                mapping = {
-                    ["<Tab>"] = cmp.mapping(function(fallback)
-                        if cmp.visible() then
-                            cmp.select_next_item()
-                        elseif vim.fn["vsnip#available"](1) == 1 then
-                            feedkey("<Plug>(vsnip-expand-or-jump)", "")
-                        elseif has_words_before() then
-                            cmp.complete()
-                        else
-                            fallback()
-                        end
-                    end, { "i", "s" }),
-
-                    ["<S-Tab>"] = cmp.mapping(function()
-                        if cmp.visible() then
-                            cmp.select_prev_item()
-                        elseif vim.fn["vsnip#jumpable"](-1) == 1 then
-                            feedkey("<Plug>(vsnip-jump-prev)", "")
-                        end
-                    end, { "i", "s" }),
-                    ['<CR>'] = cmp.mapping.confirm({ select = true }),
-                },
-                sources = cmp.config.sources({
-                    { name = 'nvim_lsp' },
-                    { name = 'vsnip' },
-                    { name = 'cmp-dbee' },
-                }, {
-                    { name = 'buffer' },
-                    { name = 'path' },
-                    { name = 'cmdline' },
-                })
-            }
-
-            cmp.setup.cmdline(':', {
-                mapping = cmp.mapping.preset.cmdline(),
-                sources = cmp.config.sources({
-                    { name = 'cmdline' },
-                    { name = 'path' },
-                })
-            })
-
-            cmp.setup.cmdline('/', {
-                sources = {
-                    { name = 'buffer' }
-                }
-            })
-
-            local signs = { Error = " ", Warn = " ", Hint = " ", Info = " " }
+            local signs = { Error = " ", Warn = " ", Hint = " ", Info = " " }
             for type, icon in pairs(signs) do
                 local hl = "DiagnosticSign" .. type
                 vim.fn.sign_define(hl, { text = icon, texthl = hl, numhl = hl })
@@ -296,108 +233,80 @@ require("lazy").setup({
         dependencies = {
             "mason-org/mason.nvim",
             "williamboman/mason-lspconfig.nvim",
-            "hrsh7th/nvim-cmp",
-            "hrsh7th/cmp-nvim-lsp",
-            "hrsh7th/cmp-buffer",
-            "hrsh7th/cmp-path",
-            "hrsh7th/cmp-cmdline",
-            "hrsh7th/vim-vsnip",
+            "saghen/blink.cmp",
         },
         config = function()
             local lspconfig = require("lspconfig")
-            local capabilities = require("cmp_nvim_lsp").default_capabilities()
+            local capabilities = require("blink.cmp").get_lsp_capabilities()
 
             require("mason").setup()
-            require("mason-lspconfig").setup({
-                ensure_installed = { "omnisharp", "html", "cssls", "gopls", "ts_ls" },
-                handlers = {
-                    function(server_name)
-                        lspconfig[server_name].setup { capabilities = capabilities }
-                    end,
-                    ["omnisharp"] = function()
-                        lspconfig.omnisharp.setup {
-                            capabilities = capabilities,
-                            filetypes = { "cs", "vb" },
-                            autostart = true,
-                            root_dir = lspconfig.util.root_pattern("*.sln", "*.csproj", ".git"),
-                        }
-                    end,
-                    ["ts_ls"] = function()
-                        lspconfig.ts_ls.setup {
-                            capabilities = capabilities,
-                            filetypes = {
-                                "javascript", "javascriptreact", "typescript",
-                                "typescriptreact", "typescript.tsx", "vue",
-                            },
-                            root_dir = require('lspconfig.util').root_pattern('tsconfig.json', 'package.json', '.git'),
-                            single_file_support = true,
-                        }
-                    end,
-                    ["pyright"] = function()
-                        lspconfig.pyright.setup {
-                            settings = {
-                                python = {
-                                    venvPath = ".",
-                                    venv = "venv"
-                                }
-                            }
-                        }
-                    end,
-                    ["gopls"] = function()
-                        lspconfig.gopls.setup {
-                            capabilities = capabilities,
-                            root_dir = lspconfig.util.root_pattern("go.work", "go.mod", ".git"),
-                            single_file_support = false,
-                        }
-                    end,
-                    ["ruby_lsp"] = function()
-                        lspconfig.ruby_lsp.setup {
-                            capabilities = capabilities,
-                            cmd = {
-                                "/home/mofasa/.rbenv/versions/3.3.5/bin/ruby",
-                                "/home/mofasa/.rbenv/versions/3.3.5/bin/ruby-lsp",
-                            },
-                            cmd_env = {
-                                GEM_HOME = "/home/mofasa/.rbenv/versions/3.3.5/lib/ruby/gems/3.3.0",
-                                GEM_PATH = "/home/mofasa/.rbenv/versions/3.3.5/lib/ruby/gems/3.3.0",
-                                PATH = "/home/mofasa/.rbenv/versions/3.3.5/bin:/usr/bin:/bin",
-                            },
-                        }
-                    end,
-                }
+
+            -- global defaults applied to every server (nvim 0.11+ native config)
+            vim.lsp.config("*", { capabilities = capabilities })
+
+            vim.lsp.config("ts_ls", {
+                capabilities = capabilities,
+                filetypes = {
+                    "javascript", "javascriptreact", "typescript",
+                    "typescriptreact", "typescript.tsx", "vue",
+                },
+                root_markers = { "tsconfig.json", "package.json", ".git" },
             })
+
+            vim.lsp.config("pyright", {
+                capabilities = capabilities,
+                settings = { python = { venvPath = ".", venv = "venv" } },
+            })
+
+            vim.lsp.config("gopls", {
+                capabilities = capabilities,
+                root_markers = { "go.work", "go.mod" },
+            })
+
+            vim.lsp.config("ruby_lsp", {
+                capabilities = capabilities,
+                cmd = {
+                    "/home/mofasa/.rbenv/versions/3.3.5/bin/ruby",
+                    "/home/mofasa/.rbenv/versions/3.3.5/bin/ruby-lsp",
+                },
+                cmd_env = {
+                    GEM_HOME = "/home/mofasa/.rbenv/versions/3.3.5/lib/ruby/gems/3.3.0",
+                    GEM_PATH = "/home/mofasa/.rbenv/versions/3.3.5/lib/ruby/gems/3.3.0",
+                    PATH = "/home/mofasa/.rbenv/versions/3.3.5/bin:/usr/bin:/bin",
+                },
+            })
+
+            require("mason-lspconfig").setup({
+                ensure_installed = { "html", "cssls", "gopls", "ts_ls" },
+                -- v2 auto-enables installed servers via vim.lsp.enable,
+                -- merging the vim.lsp.config overrides above
+            })
+        end,
+    },
+    {
+        "seblyng/roslyn.nvim",
+        ft = { "cs" },
+        dependencies = { "saghen/blink.cmp" },
+        config = function()
+            local capabilities = require("blink.cmp").get_lsp_capabilities()
+            local roslyn_dll = vim.fn.expand("$HOME/.local/share/roslyn-ls/Microsoft.CodeAnalysis.LanguageServer.dll")
+            vim.lsp.config("roslyn", {
+                capabilities = capabilities,
+                cmd = {
+                    "dotnet",
+                    roslyn_dll,
+                    "--logLevel=Information",
+                    "--extensionLogDirectory=" .. vim.fn.stdpath("log") .. "/roslyn",
+                    "--stdio",
+                },
+            })
+            require("roslyn").setup({})
         end,
     },
     {
         "windwp/nvim-autopairs",
         config = function()
             require('nvim-autopairs').setup { map_cr = true }
-            local cmp_autopairs = require('nvim-autopairs.completion.cmp')
-            local cmp = require('cmp')
-            cmp.event:on('confirm_done', cmp_autopairs.on_confirm_done({ map_char = { tex = '' } }))
-        end,
-    },
-    {
-        "nvim-treesitter/nvim-treesitter",
-        build = ":TSUpdate",
-        config = function()
-            require 'nvim-treesitter.configs'.setup {
-                ensure_installed = { "typescript", "javascript", "lua", "cpp", "c", "java", "python", "c_sharp", "sql" },
-                highlight = {
-                    enable = true,
-                    additional_vim_regex_highlighting = false,
-                    disable = function(_, buf)
-                        local max_filesize = 1024 * 1024   -- 1 MB
-                        local ok, stats = pcall(vim.loop.fs_stat,
-                            vim.api.nvim_buf_get_name(buf))
-
-                        return ok and stats and stats.size > max_filesize
-                    end,
-                },
-                autotag = {
-                    enable = true,
-                },
-            }
         end,
     },
     {
@@ -424,14 +333,6 @@ require("lazy").setup({
             vim.cmd([[highlight IlluminatedWordText gui=underline]])  -- Set underline color
             vim.cmd([[highlight IlluminatedWordRead gui=underline]])  -- Set underline color for read
             vim.cmd([[highlight IlluminatedWordWrite gui=underline]]) -- Set underline color for write
-        end,
-    },
-    {
-        "github/copilot.vim",
-        enabled = false,
-        config = function()
-            vim.g.copilot_no_tab_map = true
-            vim.api.nvim_set_keymap("i", "<C-J>", 'copilot#Accept()', { expr = true, silent = true })
         end,
     },
     {
@@ -499,54 +400,24 @@ require("lazy").setup({
         end,
     },
     {
-        "ahmedkhalf/project.nvim",
+        'Wansmer/symbol-usage.nvim',
+        event = 'LspAttach',
         config = function()
-            require("project_nvim").setup {}
-        end,
-    },
-    {
-        "kndndrj/nvim-dbee",
-        dependencies = {
-            "MunifTanjim/nui.nvim",
-        },
-        build = function()
-            require("dbee").install()
-        end,
-        config = function()
-            require("dbee").setup()
-        end,
-    },
-    {
-        'VidocqH/lsp-lens.nvim',
-        event = 'BufReadPre',
-        config = function()
-            require('lsp-lens').setup({})
+            require('symbol-usage').setup()
         end
     },
     {
-        "toppair/peek.nvim",
-        event = { "VeryLazy" },
-        build = "deno task --quiet build:fast",
-        config = function()
-            require("peek").setup({
-                app = "chromium",
-                filetype = { "markdown", "tex" },
-            })
-            vim.api.nvim_create_user_command("PeekOpen", require("peek").open, {})
-            vim.api.nvim_create_user_command("PeekClose", require("peek").close, {})
+        "iamcco/markdown-preview.nvim",
+        cmd = { "MarkdownPreview", "MarkdownPreviewStop", "MarkdownPreviewToggle" },
+        ft = { "markdown" },
+        build = "cd app && npm install",
+        init = function()
+            vim.g.mkdp_browser = "chromium"
         end,
-    },
-    { 'kdheepak/lazygit.nvim', dependencies = { 'nvim-lua/plenary.nvim' } },
-    {
-        "stevearc/dressing.nvim",
-        opts = {
-            select = {
-                backend = { "telescope", "builtin" },
-            },
-        },
     },
     {
         "carlos-algms/agentic.nvim",
+        enabled = true,
         dependencies = { "hakonharnes/img-clip.nvim" },
 
         opts = {
@@ -625,29 +496,95 @@ require("lazy").setup({
         end,
     },
     {
-        "vim-test/vim-test",
-        enabled = false,
-        config = function()
-            -- run tests in a Neovim terminal
-            vim.g["test#strategy"] = "neovim"
-            -- force dotnet test runner
-            vim.g["test#dotnet#runner"] = "dotnet"
+        "coder/claudecode.nvim",
+        enabled=false,
+        dependencies = { "folke/snacks.nvim" },
 
-            -- optional keymaps
-            vim.keymap.set("n", "<leader>tn", ":TestNearest --no-build<CR>", { desc = "Run nearest test" })
-            --vim.keymap.set("n", "<leader>tf", ":TestFile --no-build<CR>", { desc = "Run test file" })
-            --vim.keymap.set("n", "<leader>ts", ":TestSuite --no-build<CR>", { desc = "Run all tests" })
-        end,
-    },
-    {
-        "ThePrimeagen/refactoring.nvim",
-        enabled = false,
-        dependencies = {
-            "nvim-lua/plenary.nvim",
-            "nvim-treesitter/nvim-treesitter",
-        },
-        lazy = false,
         opts = {},
+
+        keys = {
+            {
+                "<F2>",
+                "<cmd>ClaudeCode<cr>",
+                mode = { "n", "i" },
+                desc = "Toggle Claude Code"
+            },
+            {
+                "<F2>",
+                "<cmd>ClaudeCodeSend<cr>",
+                mode = { "v" },
+                desc = "Send selection to Claude Code"
+            },
+            {
+                "<leader><F2>",
+                "<cmd>ClaudeCode<cr>",
+                mode = { "n" },
+                desc = "New Claude Code Session"
+            },
+            {
+                "<F14>",
+                "<cmd>ClaudeCode --resume<cr>",
+                desc = "Claude Code Resume session",
+                silent = true,
+                mode = { "n", "v", "i" },
+            },
+            {
+                "<c-c>",
+                "<cmd>ClaudeCodeStop<cr>",
+                desc = "Stop Claude Code",
+                ft = { "claudecode_terminal", "snacks_terminal" },
+                mode = { "n", "i" },
+            },
+            {
+                "<S-Tab>",
+                function() vim.api.nvim_feedkeys("\27[Z", "t", false) end,
+                desc = "Claude Code switch mode",
+                ft = { "claudecode_terminal", "snacks_terminal" },
+                mode = { "t" },
+            },
+            {
+                "gf",
+                function()
+                    -- nvim's <cfile> strips :line suffix, <cWORD> has the raw text
+                    local cfile = vim.fn.expand("<cfile>")
+                    if cfile == "" then return end
+                    local line = vim.fn.expand("<cWORD>"):match(":(%d+)")
+                    local cur = vim.api.nvim_get_current_win()
+                    local target
+                    for _, w in ipairs(vim.api.nvim_tabpage_list_wins(0)) do
+                        if w ~= cur and not vim.wo[w].winfixbuf then
+                            target = w
+                            break
+                        end
+                    end
+                    if not target then
+                        vim.cmd("vsplit")
+                        target = vim.api.nvim_get_current_win()
+                    end
+                    vim.api.nvim_set_current_win(target)
+                    vim.cmd("drop " .. vim.fn.fnameescape(cfile))
+                    if line then
+                        vim.cmd(":" .. line)
+                        vim.cmd("normal! zz")
+                    end
+                end,
+                desc = "Open file:line in other window",
+                mode = { "n" },
+            }
+        },
+
+        config = function(_, opts)
+            require("claudecode").setup(opts)
+            vim.api.nvim_create_autocmd({ "BufEnter", "WinEnter" }, {
+                pattern = "*",
+                callback = function()
+                    local ft = vim.bo.filetype
+                    if ft == "claudecode_terminal" or ft == "snacks_terminal" then
+                        vim.cmd("startinsert")
+                    end
+                end,
+            })
+        end,
     },
     {
         "folke/which-key.nvim",
@@ -695,42 +632,6 @@ require("lazy").setup({
             },
         },
     },
-    {
-        'dmtrKovalenko/fff.nvim',
-        enabled = false,
-        build = 'cargo build --release',
-        opts = {},
-        keys = {
-            {
-                '<leader>ff',
-                function() require('fff').find_files() end,
-                desc = 'FFF find files',
-            },
-            {
-                '<leader>fg',
-                function() require('fff').live_grep({
-                    grep = {
-                        modes = {'fuzzy', 'plain'}
-                    }
-                }) end,
-                desc = 'FFF live fuzzy grep word',
-            },
-            {
-                "<leader>ft",
-                function()
-                    require("fff").find_in_git_root()
-                end,
-                desc = "Find files in git root",
-            },
-            {
-                "<leader>fd",
-                function()
-                     require("fff").find_files_in_dir("~/dotfiles/nvim/.config/nvim") -- Find files in a specific directory
-                end,
-                desc = "Find files in specified path",
-            },
-        },
-    },
     { 'stevearc/conform.nvim', opts = {}, },
     {
         'mfussenegger/nvim-lint',
@@ -757,35 +658,13 @@ require("lazy").setup({
     },
     {
         'MeanderingProgrammer/render-markdown.nvim',
-        dependencies = { 'nvim-treesitter/nvim-treesitter', 'nvim-mini/mini.nvim' }, -- if you use the mini.nvim suite
-        -- dependencies = { 'nvim-treesitter/nvim-treesitter', 'nvim-mini/mini.icons' },        -- if you use standalone mini plugins
-        -- dependencies = { 'nvim-treesitter/nvim-treesitter', 'nvim-tree/nvim-web-devicons' }, -- if you prefer nvim-web-devicons
+        dependencies = { 'nvim-mini/mini.nvim' }, -- if you use the mini.nvim suite
         ---@module 'render-markdown'
         ---@type render.md.UserConfig
         opts = {
             file_types = { "markdown", "Avante", "AgenticChat" }
         },
         ft = { "markdown", "Avante", "AgenticChat" }
-    },
-    {
-        "lukas-reineke/indent-blankline.nvim",
-        main = "ibl",
-        ---@module "ibl"
-        ---@type ibl.config
-        opts = {},
-    },
-    {
-        "rcarriga/nvim-notify",
-        config = function()
-            local notify = require("notify")
-            notify.setup({
-                stages = "fade",
-                timeout = 3000,
-                max_width = 80,
-                top_down = false,
-            })
-            vim.notify = notify
-        end,
     },
     {
         "3rd/image.nvim",
@@ -812,7 +691,43 @@ require("lazy").setup({
         "folke/snacks.nvim",
         opts = {
             bigfile = { enabled = true },
+            indent = { enabled = true },
+            input = { enabled = true },
+            picker = { enabled = true, ui_select = true },
+            lazygit = {
+                enabled = true,
+                win = {
+                    wo = {
+                        winhighlight = "NormalFloat:Normal,FloatBorder:Normal",
+                    },
+                },
+            },
+            notifier = {
+                enabled = true,
+                --timeout = 3000,
+                --style = "fade",
+                --top_down = false,
+                width = { max = 80 },
+            },
         },
     },
-    { 'kevinhwang91/nvim-ufo', dependencies = 'kevinhwang91/promise-async' }
+    { 'kevinhwang91/nvim-ufo', dependencies = 'kevinhwang91/promise-async' },
+    {
+        "NvChad/nvim-colorizer.lua",
+        event = { "BufReadPre", "BufNewFile" },
+        config = function()
+            require("colorizer").setup()
+        end,
+    },
+    {
+        "nvim-treesitter/nvim-treesitter",
+        branch = "main",
+        build = ":TSUpdate",
+        config = function()
+            require("nvim-treesitter").install({
+                "go", "python", "c_sharp", "cpp", "rust",
+                "javascript", "typescript", "bash", "json", "yaml",
+            })
+        end,
+    },
 })

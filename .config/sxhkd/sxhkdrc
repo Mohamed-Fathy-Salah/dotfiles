@@ -1,5 +1,5 @@
 super + {Return}
-    {$TERMINAL}
+    tabbed -r 2 {$TERMINAL} -w ''
 
 super + {f, s}
     $TERMINAL -e {yazi, sudo htop}
@@ -17,7 +17,7 @@ super + d
     dmenu_run -i
 
 super + {w, t, o, m}
-    $BROWSER { , 'https://translate.google.com.eg/?hl=ar', 'https://calendar.google.com/calendar/u/1/r', 'https://mail.google.com/mail/u/1/?tab=rm&ogbl#inbox'}
+    $BROWSER { , 'https://translate.google.com.eg/?hl=ar', 'https://calendar.google.com/calendar/u/0/r', 'https://mail.google.com/mail/u/0/?tab=rm&ogbl#inbox'}
 
 super + c
     choice=$(printf "gemini\nchatgpt" | dmenu -p "AI:") && \
