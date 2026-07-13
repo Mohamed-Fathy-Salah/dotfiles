@@ -60,9 +60,9 @@ source "$HOME/.railway/env"
 export PATH="/home/mofasa/.local/bin:$PATH"
 
 # Persistent shared ssh-agent (one passphrase entry per boot)
-export SSH_AUTH_SOCK="$HOME/.ssh/agent.sock"
-ssh-add -l &>/dev/null
-if [ $? -eq 2 ]; then
-  rm -f "$SSH_AUTH_SOCK"
-  eval "$(ssh-agent -a "$SSH_AUTH_SOCK")" &>/dev/null
-fi
+#export SSH_AUTH_SOCK="$HOME/.ssh/agent.sock"
+#ssh-add -l &>/dev/null
+#if [ $? -eq 2 ]; then
+  #rm -f "$SSH_AUTH_SOCK"
+  #eval "$(ssh-agent -a "$SSH_AUTH_SOCK")" &>/dev/null
+#fi

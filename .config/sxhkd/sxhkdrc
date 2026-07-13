@@ -1,8 +1,8 @@
-super + {Return}
-    tabbed -r 2 {$TERMINAL} -w ''
+super + {Return, f}
+    tabbed -r 2 $TERMINAL -w ''{ , -e yazi}
 
-super + {f, s}
-    $TERMINAL -e {yazi, sudo htop}
+super + {s}
+    $TERMINAL -e {sudo htop}
 
 super + {v, r}
     {copyq show, recordScreen}
@@ -42,7 +42,7 @@ ctrl + { ,shift,alt} Print
     maim -{u,us,i $(xdotool getactivewindow)} | xclip -selection clipboard -t image/png
 
 {XF86AudioMute,XF86AudioRaiseVolume,XF86AudioLowerVolume}
-    amixer -q set Master {toggle,5%+,5%-} ; kill -40 $(pidof dwmblocks)
+    pactl set-sink-{mute @DEFAULT_SINK@ toggle,volume @DEFAULT_SINK@ +5%,volume @DEFAULT_SINK@ -5%} ; kill -40 $(pidof dwmblocks)
 #pactl set-sink-{mute 0 toggle,volume 0 +5%,volume 0 -5%} ; kill -44 $(pidof dwmblocks)
 
 super + {XF86AudioMute,XF86AudioRaiseVolume,XF86AudioLowerVolume}

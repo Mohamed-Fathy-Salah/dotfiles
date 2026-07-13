@@ -61,17 +61,13 @@ function M.apply(name)
   end
 end
 
--- Telescope picker integration
+-- Snacks picker integration
 function M.pick(line1, line2)
-  local ok, pickers = pcall(require, "telescope.pickers")
+  local ok, Snacks = pcall(require, "snacks")
   if not ok then
-    vim.notify("Telescope not found", vim.log.levels.ERROR)
+    vim.notify("snacks.nvim not found", vim.log.levels.ERROR)
     return
   end
-  local finders = require("telescope.finders")
-  local conf = require("telescope.config").values
-  local actions = require("telescope.actions")
-  local action_state = require("telescope.actions.state")
 
   -- capture visual selection if present (use range when called from command)
   local sel = nil
@@ -91,7 +87,7 @@ function M.pick(line1, line2)
       local lines = vim.api.nvim_buf_get_lines(0, sr, er + 1, false)
       local text = table.concat(lines, "\n")
       sel = { buf = vim.api.nvim_get_current_buf(), sr = sr, er = er, text = text }
-      -- leave visual mode so Telescope behaves normally
+      -- leave visual mode so the picker behaves normally
       vim.api.nvim_feedkeys(vim.api.nvim_replace_termcodes("<Esc>", true, false, true), 'n', true)
     end
   end
@@ -103,49 +99,43 @@ function M.pick(line1, line2)
     table.insert(entries, { name = v.name, before = v.before, after = v.after, display = v.name })
   end
 
-  local opts = {}
-  pickers.new(opts, {
-    prompt_title = "Surrounds",
-    finder = finders.new_table {
-      results = entries,
-      entry_maker = function(entry)
-        return {
-          value = entry,
-          display = entry.display or entry.name,
-          ordinal = entry.name,
-        }
-      end,
-    },
-    sorter = conf.generic_sorter(opts),
-    attach_mappings = function(prompt_bufnr, map)
-      local function apply_selection()
-        local selection = action_state.get_selected_entry()
-        actions.close(prompt_bufnr)
-        local val = selection.value
-        if val.special then
-          -- prompt for new surround
-          local name = vim.fn.input("Name: ")
-          if name == "" then return end
-          local before = vim.fn.input("Before: ")
-          local after = vim.fn.input("After: ")
-          M.add(name, before, after)
-          vim.notify("Added surround: " .. name, vim.log.levels.INFO)
-          return
-        end
-        local s = { before = val.before, after = val.after }
-        if sel then
-          apply_to_selection(sel, s)
-        else
-          vim.notify("Select text in visual mode before using the picker, or call apply manually", vim.log.levels.INFO)
-        end
-      end
+  local items = {}
+  for i, entry in ipairs(entries) do
+    items[#items + 1] = {
+      idx = i,
+      text = entry.display or entry.name,
+      value = entry,
+    }
+  end
 
-      actions.select_default:replace(function()
-        apply_selection()
-      end)
-      return true
+  Snacks.picker.pick({
+    title = "Surrounds",
+    items = items,
+    format = function(item)
+      return { { item.text } }
     end,
-  }):find()
+    confirm = function(picker, item)
+      picker:close()
+      if not item then return end
+      local val = item.value
+      if val.special then
+        -- prompt for new surround
+        local name = vim.fn.input("Name: ")
+        if name == "" then return end
+        local before = vim.fn.input("Before: ")
+        local after = vim.fn.input("After: ")
+        M.add(name, before, after)
+        vim.notify("Added surround: " .. name, vim.log.levels.INFO)
+        return
+      end
+      local s = { before = val.before, after = val.after }
+      if sel then
+        apply_to_selection(sel, s)
+      else
+        vim.notify("Select text in visual mode before using the picker, or call apply manually", vim.log.levels.INFO)
+      end
+    end,
+  })
 end
 
 -- setup helper: create commands

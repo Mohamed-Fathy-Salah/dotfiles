@@ -12,6 +12,8 @@ require("lazy").setup({
             vim.cmd([[colorscheme gruvbox]])
         end,
     },
+    -- kept loading so bufferline/lualine still have icons after nvim-tree is disabled
+    { "nvim-tree/nvim-web-devicons", lazy = true },
     {
         "nvim-tree/nvim-tree.lua",
         dependencies = { "nvim-tree/nvim-web-devicons", "nvim-neotest/nvim-nio" },
@@ -119,6 +121,7 @@ require("lazy").setup({
     },
     {
         "nvim-telescope/telescope.nvim",
+        enabled = false,
         dependencies = { "nvim-lua/plenary.nvim", "nvim-telescope/telescope-live-grep-args.nvim" },
         config = function()
             local lga_actions = require("telescope-live-grep-args.actions")
@@ -208,12 +211,24 @@ require("lazy").setup({
                 ["<Tab>"] = { "select_next", "snippet_forward", "fallback" },
                 ["<S-Tab>"] = { "select_prev", "snippet_backward", "fallback" },
             },
+            completion = {
+                list = { selection = { preselect = false, auto_insert = true } },
+            },
             sources = {
                 default = { "lsp", "path", "snippets", "buffer" },
             },
             cmdline = {
-                keymap = { preset = "cmdline" },
-                completion = { menu = { auto_show = true } },
+                keymap = {
+                    preset = "cmdline",
+                    -- move selection, insert into cmdline, keep menu open
+                    ["<Tab>"] = { "show", "select_next", "fallback" },
+                    ["<S-Tab>"] = { "show", "select_prev", "fallback" },
+                    ["<CR>"] = { "accept", "fallback" },
+                },
+                completion = {
+                    menu = { auto_show = true },
+                    list = { selection = { preselect = false, auto_insert = true } },
+                },
             },
             fuzzy = { implementation = "prefer_rust_with_warning" },
         },
@@ -221,11 +236,25 @@ require("lazy").setup({
         config = function(_, opts)
             require("blink.cmp").setup(opts)
 
-            local signs = { Error = " ", Warn = " ", Hint = " ", Info = " " }
-            for type, icon in pairs(signs) do
-                local hl = "DiagnosticSign" .. type
-                vim.fn.sign_define(hl, { text = icon, texthl = hl, numhl = hl })
-            end
+            local signs = { Error = "", Warn = "", Hint = "", Info = "" }
+            -- nvim 0.10+ reads sign icons from vim.diagnostic.config, not sign_define
+            local S = vim.diagnostic.severity
+            vim.diagnostic.config({
+                signs = {
+                    text = {
+                        [S.ERROR] = signs.Error,
+                        [S.WARN]  = signs.Warn,
+                        [S.HINT]  = signs.Hint,
+                        [S.INFO]  = signs.Info,
+                    },
+                    numhl = {
+                        [S.ERROR] = "DiagnosticSignError",
+                        [S.WARN]  = "DiagnosticSignWarn",
+                        [S.HINT]  = "DiagnosticSignHint",
+                        [S.INFO]  = "DiagnosticSignInfo",
+                    },
+                },
+            })
         end,
     },
     {
@@ -326,6 +355,7 @@ require("lazy").setup({
     },
     {
         "RRethy/vim-illuminate",
+        enabled = false,
         config = function()
             require("illuminate").configure {
                 under_cursor = true,                                  -- Underline the word under the cursor
@@ -339,6 +369,7 @@ require("lazy").setup({
         "mfussenegger/nvim-dap",
         dependencies = {
             "rcarriga/nvim-dap-ui",
+            "nvim-neotest/nvim-nio",
             "williamboman/mason.nvim",
             "theHamsta/nvim-dap-virtual-text",
             "jay-babu/mason-nvim-dap.nvim", -- optional helper
@@ -351,6 +382,13 @@ require("lazy").setup({
                 handlers = {}, -- let mason-nvim-dap wire default adapters/configs
             })
             require("nvim-dap-virtual-text").setup()
+
+            -- dap reads these signs via sign_define directly
+            vim.fn.sign_define("DapBreakpoint", { text = "", texthl = "DiagnosticSignError", numhl = "" })
+            vim.fn.sign_define("DapBreakpointCondition", { text = "", texthl = "DiagnosticSignWarn", numhl = "" })
+            vim.fn.sign_define("DapBreakpointRejected", { text = "*", texthl = "DiagnosticSignHint", numhl = "" })
+            vim.fn.sign_define("DapLogPoint", { text = "󰽷", texthl = "DiagnosticSignInfo", numhl = "" })
+            vim.fn.sign_define("DapStopped", { text = "", texthl = "DiagnosticSignInfo", linehl = "debugPC", numhl = "" })
 
             local dap = require("dap")
 
@@ -497,7 +535,7 @@ require("lazy").setup({
     },
     {
         "coder/claudecode.nvim",
-        enabled=false,
+        enabled = false,
         dependencies = { "folke/snacks.nvim" },
 
         opts = {},
@@ -632,7 +670,7 @@ require("lazy").setup({
             },
         },
     },
-    { 'stevearc/conform.nvim', opts = {}, },
+    { 'stevearc/conform.nvim',       opts = {}, },
     {
         'mfussenegger/nvim-lint',
         dependencies = {
@@ -668,6 +706,7 @@ require("lazy").setup({
     },
     {
         "3rd/image.nvim",
+        enabled = true,
         opts = {
             backend = "sixel",
             max_width_window_percentage = 100,
@@ -693,7 +732,118 @@ require("lazy").setup({
             bigfile = { enabled = true },
             indent = { enabled = true },
             input = { enabled = true },
-            picker = { enabled = true, ui_select = true },
+            words = { enabled = true, debounce = 100 },
+            explorer = { enabled = true, replace_netrw = true },
+            picker = {
+                enabled = false,
+                ui_select = true,
+                sources = {
+                    explorer = {
+                        hidden = true,      -- show dotfiles
+                        ignored = true,     -- show git-ignored (nvim-tree git.ignore = false)
+                        follow_file = true, -- update_focused_file
+                        auto_close = false,
+                        diagnostics = true,
+                        git_status = true,
+                        win = {
+                            list = {
+                                wo = { number = true, relativenumber = true },
+                                keys = {
+                                    ["l"] = "confirm",         -- open
+                                    ["h"] = "explorer_close",  -- close dir
+                                    ["v"] = "edit_vsplit",     -- open in vertical split
+                                    ["-"] = "explorer_up",     -- root -> parent
+                                    ["a"] = "explorer_add",    -- create file/dir
+                                    ["c"] = "explorer_copy",   -- mark for copy
+                                    ["d"] = "explorer_del",    -- delete
+                                    ["e"] = "explorer_rename", -- rename (no basename-only variant)
+                                    ["r"] = "explorer_rename", -- rename
+                                    ["p"] = "explorer_paste",  -- paste
+                                    ["x"] = "explorer_move",   -- move (cut+paste equivalent)
+                                    ["S"] = "picker_grep",     -- grep in tree dir
+                                    ["y"] = "yank_path_menu",  -- copy path (menu)
+                                    ["<leader>h"] = "toggle_help",
+                                },
+                            },
+                        },
+                        actions = {
+                            -- replicate nvim-tree's "y" copy-path chooser
+                            yank_path_menu = function(picker)
+                                local item = picker:current()
+                                if not item or not item.file then return end
+                                local path = vim.fn.fnamemodify(item.file, ":p")
+                                vim.ui.select(
+                                    { "Filename", "Basename", "Relative Path", "Absolute Path" },
+                                    { prompt = "Copy what?" },
+                                    function(choice)
+                                        local val
+                                        if choice == "Filename" then
+                                            val = vim.fn.fnamemodify(path, ":t")
+                                        elseif choice == "Basename" then
+                                            val = vim.fn.fnamemodify(path, ":t:r")
+                                        elseif choice == "Relative Path" then
+                                            val = vim.fn.fnamemodify(path, ":.")
+                                        elseif choice == "Absolute Path" then
+                                            val = path
+                                        end
+                                        if val then
+                                            vim.fn.setreg("+", val)
+                                            vim.notify("Copied: " .. val, vim.log.levels.INFO)
+                                        end
+                                    end
+                                )
+                            end,
+                        },
+                    },
+                },
+                win = {
+                    input = {
+                        keys = {
+                            -- toggle between files <-> grep, carrying the typed text over
+                            ["<S-Tab>"] = { "toggle_files_grep", mode = { "i", "n" } },
+                            -- grep only: filter results by rg glob / by directory
+                            ["<C-g>"] = { "grep_set_glob", mode = { "i", "n" } },
+                            ["<C-d>"] = { "grep_set_dirs", mode = { "i", "n" } },
+                            -- scroll the preview window
+                            ["J"] = { "preview_scroll_down", mode = { "n" } },
+                            ["K"] = { "preview_scroll_up", mode = { "n" } },
+                        },
+                    },
+                },
+                actions = {
+                    toggle_files_grep = function(picker)
+                        local flt = picker.input.filter
+                        local text = (flt.search ~= "" and flt.search) or flt.pattern or ""
+                        local src = picker.opts.source
+                        picker:close()
+                        if src == "grep" then
+                            Snacks.picker.files({ pattern = text })
+                        else
+                            Snacks.picker.grep({ search = text })
+                        end
+                    end,
+                    -- re-open grep, keeping the current search, scoped to an rg --glob
+                    grep_set_glob = function(picker)
+                        if picker.opts.source ~= "grep" then return end
+                        local search = picker.input.filter.search or ""
+                        vim.ui.input({ prompt = "rg glob (e.g. *.go, !*_test.go): " }, function(g)
+                            if not g or g == "" then return end
+                            picker:close()
+                            Snacks.picker.grep({ search = search, glob = vim.split(g, "%s+") })
+                        end)
+                    end,
+                    -- re-open grep, keeping the current search, scoped to dir(s)
+                    grep_set_dirs = function(picker)
+                        if picker.opts.source ~= "grep" then return end
+                        local search = picker.input.filter.search or ""
+                        vim.ui.input({ prompt = "dirs (space-separated): ", completion = "dir" }, function(d)
+                            if not d or d == "" then return end
+                            picker:close()
+                            Snacks.picker.grep({ search = search, dirs = vim.split(d, "%s+") })
+                        end)
+                    end,
+                },
+            },
             lazygit = {
                 enabled = true,
                 win = {
@@ -710,8 +860,13 @@ require("lazy").setup({
                 width = { max = 80 },
             },
         },
+        config = function(_, opts)
+            require("snacks").setup(opts)
+            for _, g in ipairs({ "LspReferenceText", "LspReferenceRead", "LspReferenceWrite" }) do
+                vim.api.nvim_set_hl(0, g, { underline = true })
+            end
+        end,
     },
-    { 'kevinhwang91/nvim-ufo', dependencies = 'kevinhwang91/promise-async' },
     {
         "NvChad/nvim-colorizer.lua",
         event = { "BufReadPre", "BufNewFile" },
