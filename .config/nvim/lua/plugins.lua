@@ -100,7 +100,7 @@ require("lazy").setup({
                         show = {
                             folder_arrow = false,
                         },
-                        padding = "",
+                        padding = " ",
                         glyphs = {
                             default = " ",
                             symlink = " ",
@@ -117,60 +117,6 @@ require("lazy").setup({
                     },
                 },
             })
-        end,
-    },
-    {
-        "nvim-telescope/telescope.nvim",
-        enabled = false,
-        dependencies = { "nvim-lua/plenary.nvim", "nvim-telescope/telescope-live-grep-args.nvim" },
-        config = function()
-            local lga_actions = require("telescope-live-grep-args.actions")
-            local action_state = require("telescope.actions.state")
-            local actions = require("telescope.actions")
-
-            -- close current picker, open the other, carry the prompt text over
-            local function to_find_files(prompt_bufnr)
-                local text = action_state.get_current_line()
-                actions.close(prompt_bufnr)
-                require("telescope.builtin").find_files({ default_text = text })
-            end
-            local function to_live_grep(prompt_bufnr)
-                local text = action_state.get_current_line()
-                actions.close(prompt_bufnr)
-                require("telescope").extensions.live_grep_args.live_grep_args({ default_text = text })
-            end
-
-            require('telescope').setup {
-                defaults = {
-                    mappings = {
-                        i = {
-                            ["<C-h>"] = "which_key",
-                            ["<S-Tab>"] = to_live_grep,
-                        },
-                        n = {
-                            ["<S-Tab>"] = to_live_grep,
-                        },
-                    }
-                },
-                extensions = {
-                    live_grep_args = {
-                        auto_quoting = true,
-                        mappings = {
-                            i = {
-                                -- quote current prompt so you can append rg flags
-                                ["<C-k>"] = lga_actions.quote_prompt(),
-                                -- prefill a glob filter: type the file pattern after --glob=
-                                ["<C-i>"] = lga_actions.quote_prompt({ postfix = " --iglob **/" }),
-                                ["<S-Tab>"] = to_find_files,
-                            },
-                            n = {
-                                ["<S-Tab>"] = to_find_files,
-                            },
-                        },
-                    },
-                },
-            }
-            require('telescope').load_extension('live_grep_args')
         end,
     },
     {
@@ -354,18 +300,6 @@ require("lazy").setup({
         "preservim/nerdcommenter",
     },
     {
-        "RRethy/vim-illuminate",
-        enabled = false,
-        config = function()
-            require("illuminate").configure {
-                under_cursor = true,                                  -- Underline the word under the cursor
-            }
-            vim.cmd([[highlight IlluminatedWordText gui=underline]])  -- Set underline color
-            vim.cmd([[highlight IlluminatedWordRead gui=underline]])  -- Set underline color for read
-            vim.cmd([[highlight IlluminatedWordWrite gui=underline]]) -- Set underline color for write
-        end,
-    },
-    {
         "mfussenegger/nvim-dap",
         dependencies = {
             "rcarriga/nvim-dap-ui",
@@ -534,97 +468,6 @@ require("lazy").setup({
         end,
     },
     {
-        "coder/claudecode.nvim",
-        enabled = false,
-        dependencies = { "folke/snacks.nvim" },
-
-        opts = {},
-
-        keys = {
-            {
-                "<F2>",
-                "<cmd>ClaudeCode<cr>",
-                mode = { "n", "i" },
-                desc = "Toggle Claude Code"
-            },
-            {
-                "<F2>",
-                "<cmd>ClaudeCodeSend<cr>",
-                mode = { "v" },
-                desc = "Send selection to Claude Code"
-            },
-            {
-                "<leader><F2>",
-                "<cmd>ClaudeCode<cr>",
-                mode = { "n" },
-                desc = "New Claude Code Session"
-            },
-            {
-                "<F14>",
-                "<cmd>ClaudeCode --resume<cr>",
-                desc = "Claude Code Resume session",
-                silent = true,
-                mode = { "n", "v", "i" },
-            },
-            {
-                "<c-c>",
-                "<cmd>ClaudeCodeStop<cr>",
-                desc = "Stop Claude Code",
-                ft = { "claudecode_terminal", "snacks_terminal" },
-                mode = { "n", "i" },
-            },
-            {
-                "<S-Tab>",
-                function() vim.api.nvim_feedkeys("\27[Z", "t", false) end,
-                desc = "Claude Code switch mode",
-                ft = { "claudecode_terminal", "snacks_terminal" },
-                mode = { "t" },
-            },
-            {
-                "gf",
-                function()
-                    -- nvim's <cfile> strips :line suffix, <cWORD> has the raw text
-                    local cfile = vim.fn.expand("<cfile>")
-                    if cfile == "" then return end
-                    local line = vim.fn.expand("<cWORD>"):match(":(%d+)")
-                    local cur = vim.api.nvim_get_current_win()
-                    local target
-                    for _, w in ipairs(vim.api.nvim_tabpage_list_wins(0)) do
-                        if w ~= cur and not vim.wo[w].winfixbuf then
-                            target = w
-                            break
-                        end
-                    end
-                    if not target then
-                        vim.cmd("vsplit")
-                        target = vim.api.nvim_get_current_win()
-                    end
-                    vim.api.nvim_set_current_win(target)
-                    vim.cmd("drop " .. vim.fn.fnameescape(cfile))
-                    if line then
-                        vim.cmd(":" .. line)
-                        vim.cmd("normal! zz")
-                    end
-                end,
-                desc = "Open file:line in other window",
-                mode = { "n" },
-            }
-        },
-
-        config = function(_, opts)
-            require("claudecode").setup(opts)
-            vim.api.nvim_create_autocmd({ "BufEnter", "WinEnter" }, {
-                pattern = "*",
-                callback = function()
-                    local ft = vim.bo.filetype
-                    if ft == "claudecode_terminal" or ft == "snacks_terminal" then
-                        vim.cmd("startinsert")
-                    end
-                end,
-            })
-        end,
-    },
-    {
         "folke/which-key.nvim",
         enabled = false,
         event = "VeryLazy",
@@ -670,7 +513,19 @@ require("lazy").setup({
             },
         },
     },
-    { 'stevearc/conform.nvim',       opts = {}, },
+    {
+        'stevearc/conform.nvim',
+        dependencies = {
+            'mason-org/mason.nvim',
+            'zapling/mason-conform.nvim',
+        },
+        opts = {},
+        config = function(_, opts)
+            require('conform').setup(opts)
+            -- auto-installs formatters declared in formatters_by_ft via Mason
+            require('mason-conform').setup()
+        end,
+    },
     {
         'mfussenegger/nvim-lint',
         dependencies = {
