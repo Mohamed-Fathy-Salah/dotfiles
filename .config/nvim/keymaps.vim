@@ -65,7 +65,8 @@ nnoremap <leader>k :wincmd k<CR>
 nnoremap <leader>l :wincmd l<CR>
 
 nnoremap <leader>q :confirm qall<CR>
-nnoremap <leader>d :bd <CR>
+nnoremap <leader>d <cmd>lua Snacks.bufdelete()<CR>
+nnoremap <leader>D <cmd>lua Snacks.bufdelete.all()<CR>
 nnoremap <leader>Q :q! <CR>
 nnoremap <leader>w :w <CR>
 nnoremap <leader>W :w !sudo tee % <CR>l<CR>
@@ -158,8 +159,8 @@ nnoremap <F2> :CodeCompanionChat<CR>
 nnoremap <leader><F2> :CodeCompanionActions<CR>
 vnoremap <F2> :CodeCompanionChat<CR>
 
-command! Bonly execute '%bd|e#|bd#'
-command! BWonly execute 'wall|%bd!|e#|bd#'
+command! Bonly lua Snacks.bufdelete.other()
+command! BWonly lua vim.cmd('wall'); Snacks.bufdelete.other({force=true})
 
 vnoremap <leader>PS :s/\%#\w\+/\=tolower(substitute(submatch(0), '\C\(\l\)\([A-Z]\)', '\1_\l\2', 'g'))/<CR>
 

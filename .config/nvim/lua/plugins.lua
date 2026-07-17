@@ -223,7 +223,7 @@ require("lazy").setup({
                     -- move selection, insert into cmdline, keep menu open
                     ["<Tab>"] = { "show", "select_next", "fallback" },
                     ["<S-Tab>"] = { "show", "select_prev", "fallback" },
-                    ["<CR>"] = { "accept", "fallback" },
+                    ["<CR>"] = { "fallback" },
                 },
                 completion = {
                     menu = { auto_show = true },
@@ -735,7 +735,7 @@ require("lazy").setup({
             words = { enabled = true, debounce = 100 },
             explorer = { enabled = true, replace_netrw = true },
             picker = {
-                enabled = false,
+                enabled = true,
                 ui_select = true,
                 sources = {
                     explorer = {
